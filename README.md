@@ -65,7 +65,7 @@ HomeController → hiển thị sản phẩm, danh mục
 
 ProductController → chi tiết sản phẩm, tìm kiếm
 
-CartController → giỏ hàng
+CartController → giỏ hàng 
 
 CheckoutController → đặt hàng, thanh toán
 
