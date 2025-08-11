@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 08, 2025 lúc 08:28 AM
+-- Thời gian đã tạo: Th8 09, 2025 lúc 02:09 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `cake_shop`
+-- Cơ sở dữ liệu: `test1`
 --
 
 -- --------------------------------------------------------
@@ -230,6 +230,7 @@ CREATE TABLE `sanpham` (
   `MoTa` text DEFAULT NULL,
   `DonGia` decimal(10,2) NOT NULL,
   `MaDM` int(11) DEFAULT NULL,
+  `SoLuong` int(11) UNSIGNED NOT NULL DEFAULT 0 CHECK (`SoLuong` >= 0),
   `HinhAnh` varchar(255) DEFAULT NULL,
   `TrangThai` enum('Available','OutOfStock','Discontinued') NOT NULL DEFAULT 'Available',
   `NgayThem` datetime NOT NULL DEFAULT current_timestamp()
@@ -535,7 +536,7 @@ ALTER TABLE `chitietdonhang`
 --
 ALTER TABLE `danhgia`
   ADD CONSTRAINT `danhgia_ibfk_1` FOREIGN KEY (`MaKH`) REFERENCES `khachhang` (`MaKH`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `danhgia_ibfk_2` FOREIGN KEY (`MaDh`) REFERENCES `donhang` (`MaDH`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `danhgia_ibfk_2` FOREIGN KEY (`MaDH`) REFERENCES `donhang` (`MaDH`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `diachi`
