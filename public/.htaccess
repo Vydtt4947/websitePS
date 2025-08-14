@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Điều kiện: Chỉ áp dụng quy tắc nếu đường dẫn yêu cầu không phải là một file có thật
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # Điều kiện: Chỉ áp dụng quy tắc nếu đường dẫn yêu cầu không phải là một thư mục có thật
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Quy tắc: Chuyển hướng tất cả các yêu cầu còn lại đến file index.php
+    # cờ [L] có nghĩa là đây là quy tắc cuối cùng, không xử lý thêm
+    RewriteRule . index.php [L]
+</IfModule>
