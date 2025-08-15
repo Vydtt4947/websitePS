@@ -31,16 +31,34 @@
                             <td>
                                 <?php
                                     $statusClass = '';
-                                    switch ($order['MaTrangThai']) {
-                                        case 1: $statusClass = 'bg-primary'; break;
-                                        case 2: $statusClass = 'bg-warning text-dark'; break;
-                                        case 3: $statusClass = 'bg-info text-dark'; break;
-                                        case 4: $statusClass = 'bg-success'; break;
-                                        case 5: $statusClass = 'bg-danger'; break;
-                                        default: $statusClass = 'bg-secondary'; break;
+                                    $statusText = '';
+                                    switch ($order['TenTrangThai']) {
+                                        case 'Pending': 
+                                            $statusClass = 'bg-warning text-dark'; 
+                                            $statusText = 'Chờ xử lý';
+                                            break;
+                                        case 'Processing': 
+                                            $statusClass = 'bg-info text-dark'; 
+                                            $statusText = 'Đang xử lý';
+                                            break;
+                                        case 'Shipping': 
+                                            $statusClass = 'bg-primary'; 
+                                            $statusText = 'Đang giao hàng';
+                                            break;
+                                        case 'Delivered': 
+                                            $statusClass = 'bg-success'; 
+                                            $statusText = 'Đã giao hàng';
+                                            break;
+                                        case 'Cancelled': 
+                                            $statusClass = 'bg-danger'; 
+                                            $statusText = 'Đã hủy';
+                                            break;
+                                        default: 
+                                            $statusClass = 'bg-secondary'; 
+                                            $statusText = $order['TenTrangThai'];
                                     }
                                 ?>
-                                <span class="badge <?= $statusClass ?>"><?= htmlspecialchars($order['TenTrangThai']) ?></span>
+                                <span class="badge <?= $statusClass ?>"><?= htmlspecialchars($statusText) ?></span>
                             </td>
                             <td class="text-end">
                                 <a href="/websitePS/public/orders/show/<?= $order['MaDH'] ?>" class="btn btn-sm btn-info">

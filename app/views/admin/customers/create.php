@@ -32,10 +32,11 @@
             <input type="date" class="form-control" id="ngaySinh" name="ngaySinh">
         </div>
         <div class="mb-3">
-            <label for="maPL" class="form-label">Phân loại</label>
-            <select class="form-select" id="maPL" name="maPL">
+            <label for="maPK" class="form-label">Phân loại</label>
+            <select class="form-select" id="maPK" name="maPK">
+                <option value="">Chưa phân loại</option>
                 <?php foreach ($segments as $segment): ?>
-                <option value="<?= $segment['MaPL'] ?>"><?= htmlspecialchars($segment['TenPhanLoai']) ?></option>
+                <option value="<?= $segment['MaPK'] ?>"><?= htmlspecialchars($segment['TenPK']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

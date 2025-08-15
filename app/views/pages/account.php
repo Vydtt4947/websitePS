@@ -66,9 +66,13 @@
                                                             $statusClass = 'bg-info text-dark'; 
                                                             $statusText = 'Đang xử lý';
                                                             break;
-                                                        case 'Completed': 
+                                                        case 'Shipping': 
+                                                            $statusClass = 'bg-primary'; 
+                                                            $statusText = 'Đang giao hàng';
+                                                            break;
+                                                        case 'Delivered': 
                                                             $statusClass = 'bg-success'; 
-                                                            $statusText = 'Hoàn thành';
+                                                            $statusText = 'Đã giao hàng';
                                                             break;
                                                         case 'Cancelled': 
                                                             $statusClass = 'bg-danger'; 

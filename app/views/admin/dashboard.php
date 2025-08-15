@@ -143,7 +143,18 @@
                                             </td>
                                             <td class="text-end">
                                                 <?= number_format($order['TongTien'], 0, ',', '.') ?> đ<br>
-                                                <small class="badge bg-light text-dark"><?= htmlspecialchars($order['TenTrangThai']) ?></small>
+                                                <?php
+                                                    $statusText = '';
+                                                    switch ($order['TenTrangThai']) {
+                                                        case 'Pending': $statusText = 'Chờ xử lý'; break;
+                                                        case 'Processing': $statusText = 'Đang xử lý'; break;
+                                                        case 'Shipping': $statusText = 'Đang giao hàng'; break;
+                                                        case 'Delivered': $statusText = 'Đã giao hàng'; break;
+                                                        case 'Cancelled': $statusText = 'Đã hủy'; break;
+                                                        default: $statusText = $order['TenTrangThai'];
+                                                    }
+                                                ?>
+                                                <small class="badge bg-light text-dark"><?= htmlspecialchars($statusText) ?></small>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

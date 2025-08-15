@@ -63,8 +63,8 @@
                         <div class="mb-3">
                             <select class="form-select" name="trangThai">
                                 <?php foreach($statuses as $status): ?>
-                                    <option value="<?= $status['MaTrangThai'] ?>" <?= ($status['MaTrangThai'] == $orderDetails['info']['TrangThai']) ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($status['TenTrangThai']) ?>
+                                    <option value="<?= $status['TrangThai'] ?>" <?= ($status['TrangThai'] == $orderDetails['info']['TrangThai']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($status['MoTa']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>

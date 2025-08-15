@@ -28,7 +28,28 @@
                             <td><?= htmlspecialchars($customer['HoTen']) ?></td>
                             <td><?= htmlspecialchars($customer['SoDienThoai']) ?></td>
                             <td><?= htmlspecialchars($customer['Email']) ?></td>
-                            <td><span class="badge bg-info text-dark"><?= htmlspecialchars($customer['TenPhanLoai']) ?></span></td>
+                            <td>
+                                <?php
+                                    $statusClass = '';
+                                    switch ($customer['TenPK']) {
+                                        case 'Bronze': 
+                                            $statusClass = 'bg-warning text-dark'; 
+                                            break;
+                                        case 'Silver': 
+                                            $statusClass = 'bg-secondary'; 
+                                            break;
+                                        case 'Gold': 
+                                            $statusClass = 'bg-warning'; 
+                                            break;
+                                        case 'Chưa phân loại': 
+                                            $statusClass = 'bg-light text-dark'; 
+                                            break;
+                                        default: 
+                                            $statusClass = 'bg-info text-dark';
+                                    }
+                                ?>
+                                <span class="badge <?= $statusClass ?>"><?= htmlspecialchars($customer['TenPK']) ?></span>
+                            </td>
                             <td class="text-center">
                                 <a href="/websitePS/public/customers/show/<?= $customer['MaKH'] ?>" class="btn btn-sm btn-info" title="Xem chi tiết">
                                     <i class="fa fa-eye"></i>

@@ -97,9 +97,14 @@ class OrderModel {
     }
 
     public function getAllStatuses() {
-        $stmt = $this->db->prepare("SELECT * FROM trangthaidonhang");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Return the available status values from the enum in donhang table
+        return [
+            ['TrangThai' => 'Pending', 'MoTa' => 'Chờ xử lý'],
+            ['TrangThai' => 'Processing', 'MoTa' => 'Đang xử lý'],
+            ['TrangThai' => 'Shipping', 'MoTa' => 'Đang giao hàng'],
+            ['TrangThai' => 'Delivered', 'MoTa' => 'Đã giao hàng'],
+            ['TrangThai' => 'Cancelled', 'MoTa' => 'Đã hủy']
+        ];
     }
 
     public function updateStatus($orderId, $statusId) {

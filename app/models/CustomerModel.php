@@ -19,9 +19,9 @@ class CustomerModel {
 
     public function getAllCustomers() {
         $query = "
-            SELECT kh.MaKH, kh.HoTen, kh.SoDienThoai, kh.Email, pk.TenPhanLoai
+            SELECT kh.MaKH, kh.HoTen, kh.SoDienThoai, kh.Email, COALESCE(pk.TenPK, 'Chưa phân loại') as TenPK
             FROM khachhang kh
-            LEFT JOIN phankhuckh pk ON kh.MaPL = pk.MaPL
+            LEFT JOIN phankhuckh pk ON kh.MaPK = pk.MaPK
             ORDER BY kh.MaKH ASC
         ";
         $stmt = $this->db->prepare($query);
@@ -43,26 +43,26 @@ class CustomerModel {
     }
     
     public function createCustomer($data) {
-        $query = "INSERT INTO khachhang (MaKH, HoTen, SoDienThoai, Email, NgaySinh, MaPL) VALUES (:maKH, :hoTen, :soDienThoai, :email, :ngaySinh, :maPL)";
+        $query = "INSERT INTO khachhang (MaKH, HoTen, SoDienThoai, Email, NgaySinh, MaPK) VALUES (:maKH, :hoTen, :soDienThoai, :email, :ngaySinh, :maPK)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':maKH', $data['maKH']);
         $stmt->bindParam(':hoTen', $data['hoTen']);
         $stmt->bindParam(':soDienThoai', $data['soDienThoai']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':ngaySinh', $data['ngaySinh']);
-        $stmt->bindParam(':maPL', $data['maPL'], PDO::PARAM_INT);
+        $stmt->bindParam(':maPK', $data['maPK'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
     public function updateCustomer($id, $data) {
-        $query = "UPDATE khachhang SET HoTen = :hoTen, SoDienThoai = :soDienThoai, Email = :email, NgaySinh = :ngaySinh, MaPL = :maPL WHERE MaKH = :id";
+        $query = "UPDATE khachhang SET HoTen = :hoTen, SoDienThoai = :soDienThoai, Email = :email, NgaySinh = :ngaySinh, MaPK = :maPK WHERE MaKH = :id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':hoTen', $data['hoTen']);
         $stmt->bindParam(':soDienThoai', $data['soDienThoai']);
         $stmt->bindParam(':email', $data['email']);
         $stmt->bindParam(':ngaySinh', $data['ngaySinh']);
-        $stmt->bindParam(':maPL', $data['maPL'], PDO::PARAM_INT);
+        $stmt->bindParam(':maPK', $data['maPK'], PDO::PARAM_INT);
         return $stmt->execute();
     }
 
