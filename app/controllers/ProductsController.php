@@ -43,7 +43,14 @@ class ProductsController extends BaseController {
     public function store() {
         parent::__construct();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->productModel->createProduct($_POST['tenSP'], $_POST['moTa'], $_POST['donGia'], $_POST['maDM']);
+            $hinhAnh = null;
+            
+            // Xử lý hình ảnh
+            if (!empty($_POST['hinhAnh'])) {
+                $hinhAnh = trim($_POST['hinhAnh']);
+            }
+            
+            $this->productModel->createProduct($_POST['tenSP'], $_POST['moTa'], $_POST['donGia'], $_POST['maDM'], $hinhAnh);
             header('Location: /websitePS/public/products');
             exit();
         }
@@ -59,7 +66,14 @@ class ProductsController extends BaseController {
     public function update($id) {
         parent::__construct();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->productModel->updateProduct($id, $_POST['tenSP'], $_POST['moTa'], $_POST['donGia'], $_POST['maDM']);
+            $hinhAnh = null;
+            
+            // Xử lý hình ảnh
+            if (!empty($_POST['hinhAnh'])) {
+                $hinhAnh = trim($_POST['hinhAnh']);
+            }
+            
+            $this->productModel->updateProduct($id, $_POST['tenSP'], $_POST['moTa'], $_POST['donGia'], $_POST['maDM'], $hinhAnh);
             header('Location: /websitePS/public/products');
             exit();
         }

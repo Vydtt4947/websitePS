@@ -93,8 +93,20 @@
 
 <?php
 // Hàm để lấy ảnh cho từng sản phẩm
-function getProductImage($productName) {
-    $productName = strtolower(trim($productName));
+function getProductImage($product) {
+    // Nếu $product là string (tên sản phẩm), chuyển đổi thành array
+    if (is_string($product)) {
+        $productName = $product;
+        $product = ['TenSP' => $productName, 'HinhAnh' => null];
+    }
+    
+    // Ưu tiên sử dụng hình ảnh từ database
+    if (!empty($product['HinhAnh'])) {
+        return $product['HinhAnh'];
+    }
+    
+    // Fallback: sử dụng tên sản phẩm để tìm hình ảnh mặc định
+    $productName = strtolower(trim($product['TenSP']));
     
     // Map ảnh cho từng sản phẩm cụ thể
     $imageMap = [
@@ -160,7 +172,7 @@ function getProductImage($productName) {
                                 <div class="col-md-4 mb-4 d-flex">
                                     <a href="/websitePS/public/products/show/<?= $product['MaSP'] ?>" class="text-decoration-none text-dark w-100">
                                         <div class="card product-card h-100 w-100">
-                                            <img src="<?= getProductImage($product['TenSP']) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['TenSP']) ?>">
+                                            <img src="<?= getProductImage($product) ?>" class="card-img-top" alt="<?= htmlspecialchars($product['TenSP']) ?>">
                                             <div class="card-body d-flex flex-column">
                                                 <h5 class="card-title"><?= htmlspecialchars($product['TenSP']) ?></h5>
                                                 <p class="card-text text-muted small"><?= htmlspecialchars($product['TenDanhMuc']) ?></p>

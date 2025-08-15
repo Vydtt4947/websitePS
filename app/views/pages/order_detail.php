@@ -346,8 +346,20 @@
 
 <?php
 // Hàm để lấy ảnh cho từng sản phẩm
-function getProductImage($productName) {
-    $productName = strtolower(trim($productName));
+function getProductImage($product) {
+    // Nếu $product là string (tên sản phẩm), chuyển đổi thành array
+    if (is_string($product)) {
+        $productName = $product;
+        $product = ['TenSP' => $productName, 'HinhAnh' => null];
+    }
+    
+    // Ưu tiên sử dụng hình ảnh từ database
+    if (!empty($product['HinhAnh'])) {
+        return $product['HinhAnh'];
+    }
+    
+    // Fallback: sử dụng tên sản phẩm để tìm hình ảnh mặc định
+    $productName = strtolower(trim($product['TenSP']));
     
     // Map ảnh cho từng sản phẩm cụ thể
     $imageMap = [
@@ -618,7 +630,7 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
                     <div class="product-card">
                         <div class="row align-items-center">
                             <div class="col-auto">
-                                <img src="<?= getProductImage($item['TenSP']) ?>" 
+                                <img src="<?= getProductImage($item) ?>" 
                                      alt="<?= htmlspecialchars($item['TenSP']) ?>" 
                                      class="product-image">
                             </div>

@@ -23,6 +23,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Hình ảnh</th>
                         <th>Tên Sản phẩm</th>
                         <th>Danh mục</th>
                         <th>Đơn giá</th>
@@ -32,12 +33,25 @@
                 <tbody>
                     <?php if (empty($products)): ?>
                         <tr>
-                            <td colspan="5" class="text-center">Không tìm thấy sản phẩm nào.</td>
+                            <td colspan="6" class="text-center">Không tìm thấy sản phẩm nào.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($products as $product): ?>
                             <tr>
                                 <td><?= htmlspecialchars($product['MaSP']) ?></td>
+                                <td>
+                                    <?php if (!empty($product['HinhAnh'])): ?>
+                                        <img src="<?= htmlspecialchars($product['HinhAnh']) ?>" 
+                                             alt="<?= htmlspecialchars($product['TenSP']) ?>" 
+                                             class="img-thumbnail" 
+                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                    <?php else: ?>
+                                        <div class="bg-light d-flex align-items-center justify-content-center" 
+                                             style="width: 60px; height: 60px;">
+                                            <i class="fas fa-image text-muted"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?= htmlspecialchars($product['TenSP']) ?></td>
                                 <td><?= htmlspecialchars($product['TenDanhMuc']) ?></td>
                                 <td><?= number_format($product['DonGia'], 0, ',', '.') ?> đ</td>

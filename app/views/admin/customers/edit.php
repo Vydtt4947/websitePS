@@ -23,7 +23,7 @@
             <select class="form-select" id="maPK" name="maPK">
                 <option value="">Chưa phân loại</option>
                 <?php foreach ($segments as $segment): ?>
-                <option value="<?= $segment['MaPK'] ?>" <?= ($customer['MaPK'] == $segment['MaPK']) ? 'selected' : '' ?>>
+                <option value="<?= $segment['MaPK'] ?>" <?= ($customer['MaPK'] == $segment['MaPK'] && $customer['MaPK'] !== null) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($segment['TenPK']) ?>
                 </option>
                 <?php endforeach; ?>

@@ -83,7 +83,7 @@ class OrderModel {
         $orderDetails['info'] = $stmtOrder->fetch(PDO::FETCH_ASSOC);
 
         $queryItems = "
-            SELECT sp.TenSP, ctdh.SoLuong, ctdh.DonGia
+            SELECT sp.TenSP, sp.HinhAnh, ctdh.SoLuong, ctdh.DonGia
             FROM chitietdonhang ctdh
             JOIN sanpham sp ON ctdh.MaSP = sp.MaSP
             WHERE ctdh.MaDH = :id
@@ -108,11 +108,43 @@ class OrderModel {
     }
 
     public function updateStatus($orderId, $statusId) {
+        // Lấy trạng thái cũ trước khi cập nhật
+        $oldStatusQuery = "SELECT TrangThai, MaKH FROM donhang WHERE MaDH = :orderId";
+        $oldStatusStmt = $this->db->prepare($oldStatusQuery);
+        $oldStatusStmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
+        $oldStatusStmt->execute();
+        $oldStatusResult = $oldStatusStmt->fetch(PDO::FETCH_ASSOC);
+        
+        $oldStatus = $oldStatusResult['TrangThai'] ?? null;
+        $customerId = $oldStatusResult['MaKH'] ?? null;
+        
+        // Cập nhật trạng thái đơn hàng
         $query = "UPDATE donhang SET TrangThai = :statusId WHERE MaDH = :orderId";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':statusId', $statusId);
         $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
-        return $stmt->execute();
+        $result = $stmt->execute();
+
+        // Xử lý cập nhật phân loại khách hàng
+        if ($result && $customerId) {
+            require_once __DIR__ . '/CustomerModel.php';
+            $customerModel = new CustomerModel();
+            
+            // Trường hợp 1: Đơn hàng được chuyển thành "Delivered" (lên cấp)
+            if ($oldStatus !== 'Delivered' && $statusId === 'Delivered') {
+                $customerModel->updateCustomerTier($customerId);
+            }
+            // Trường hợp 2: Đơn hàng bị hủy từ "Delivered" (hạ cấp)
+            else if ($oldStatus === 'Delivered' && $statusId === 'Cancelled') {
+                $customerModel->updateCustomerTier($customerId);
+            }
+            // Trường hợp 3: Đơn hàng được khôi phục từ "Cancelled" về "Delivered" (lên cấp lại)
+            else if ($oldStatus === 'Cancelled' && $statusId === 'Delivered') {
+                $customerModel->updateCustomerTier($customerId);
+            }
+        }
+
+        return $result;
     }
 
     // PHƯƠNG THỨC MỚI ĐỂ TẠO ĐƠN HÀNG

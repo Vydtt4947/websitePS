@@ -8,6 +8,23 @@
 </head>
 <body>
 <div class="container my-5">
+    <!-- Hiển thị thông báo -->
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['success_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['success_message']); ?>
+    <?php endif; ?>
+    
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($_SESSION['error_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php unset($_SESSION['error_message']); ?>
+    <?php endif; ?>
+    
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Chi tiết Đơn hàng #<?= htmlspecialchars($orderDetails['info']['MaDH']) ?></h2>
         <a href="/websitePS/public/orders" class="btn btn-secondary">Quay lại danh sách</a>
@@ -76,5 +93,7 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

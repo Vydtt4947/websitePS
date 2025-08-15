@@ -432,8 +432,14 @@
         <?php else: ?>
             <?php
             // Hàm để lấy ảnh cho từng sản phẩm
-            function getProductImage($productName) {
-                $productName = strtolower(trim($productName));
+            function getProductImage($product) {
+                // Ưu tiên sử dụng hình ảnh từ database
+                if (!empty($product['HinhAnh'])) {
+                    return $product['HinhAnh'];
+                }
+                
+                // Fallback: sử dụng tên sản phẩm để tìm hình ảnh mặc định
+                $productName = strtolower(trim($product['TenSP']));
                 
                 // Map ảnh cho từng sản phẩm cụ thể
                 $imageMap = [
@@ -462,7 +468,7 @@
                          data-price="<?= $product['DonGia'] ?>"
                          data-category-name="<?= htmlspecialchars($product['TenDanhMuc']) ?>">
                         <div class="product-image-container">
-                            <img src="<?= getProductImage($product['TenSP']) ?>" 
+                            <img src="<?= getProductImage($product) ?>" 
                                  alt="<?= htmlspecialchars($product['TenSP']) ?>" 
                                  class="product-image">
                             <div class="stock-badge">Còn hàng</div>

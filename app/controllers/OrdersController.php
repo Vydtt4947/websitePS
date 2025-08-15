@@ -22,6 +22,11 @@ class OrdersController extends BaseController {
     }
 
     public function show($id) {
+        // Khởi tạo session nếu chưa có
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
         $data = [
             'pageTitle' => 'Chi tiết Đơn hàng #' . $id,
             'orderDetails' => $this->orderModel->getOrderDetailsById($id),
@@ -35,8 +40,20 @@ class OrdersController extends BaseController {
     
     public function update($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trangThai'])) {
+            // Khởi tạo session nếu chưa có
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
             $statusId = $_POST['trangThai'];
-            $this->orderModel->updateStatus($id, $statusId);
+            $result = $this->orderModel->updateStatus($id, $statusId);
+            
+            if ($result) {
+                $_SESSION['success_message'] = 'Cập nhật trạng thái đơn hàng thành công!';
+            } else {
+                $_SESSION['error_message'] = 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng!';
+            }
+            
             header('Location: /websitePS/public/orders/show/' . $id);
             exit();
         }

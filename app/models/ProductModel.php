@@ -140,22 +140,24 @@ class ProductModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createProduct($tenSP, $moTa, $donGia, $maDM) {
-        $stmt = $this->db->prepare("INSERT INTO sanpham (TenSP, MoTa, DonGia, MaDM) VALUES (:tenSP, :moTa, :donGia, :maDM)");
+    public function createProduct($tenSP, $moTa, $donGia, $maDM, $hinhAnh = null) {
+        $stmt = $this->db->prepare("INSERT INTO sanpham (TenSP, MoTa, DonGia, MaDM, HinhAnh) VALUES (:tenSP, :moTa, :donGia, :maDM, :hinhAnh)");
         $stmt->bindParam(':tenSP', $tenSP);
         $stmt->bindParam(':moTa', $moTa);
         $stmt->bindParam(':donGia', $donGia);
         $stmt->bindParam(':maDM', $maDM, PDO::PARAM_INT);
+        $stmt->bindParam(':hinhAnh', $hinhAnh);
         return $stmt->execute();
     }
 
-    public function updateProduct($maSP, $tenSP, $moTa, $donGia, $maDM) {
-        $stmt = $this->db->prepare("UPDATE sanpham SET TenSP = :tenSP, MoTa = :moTa, DonGia = :donGia, MaDM = :maDM WHERE MaSP = :maSP");
+    public function updateProduct($maSP, $tenSP, $moTa, $donGia, $maDM, $hinhAnh = null) {
+        $stmt = $this->db->prepare("UPDATE sanpham SET TenSP = :tenSP, MoTa = :moTa, DonGia = :donGia, MaDM = :maDM, HinhAnh = :hinhAnh WHERE MaSP = :maSP");
         $stmt->bindParam(':maSP', $maSP, PDO::PARAM_INT);
         $stmt->bindParam(':tenSP', $tenSP);
         $stmt->bindParam(':moTa', $moTa);
         $stmt->bindParam(':donGia', $donGia);
         $stmt->bindParam(':maDM', $maDM, PDO::PARAM_INT);
+        $stmt->bindParam(':hinhAnh', $hinhAnh);
         return $stmt->execute();
     }
 

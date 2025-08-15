@@ -18,6 +18,8 @@ class AccountController {
         $customerModel = new CustomerModel();
         $customer = $customerModel->getCustomerById($_SESSION['customer_id']);
         $orderHistory = $customerModel->getOrderHistoryByCustomerId($_SESSION['customer_id']);
+        $tierInfo = $customerModel->getCustomerTierInfo($_SESSION['customer_id']);
+        $tierChangeNotification = $customerModel->getTierChangeNotification();
         $activeTab = 'history'; // Đánh dấu tab đang hoạt động
         
         require_once __DIR__ . '/../views/pages/account.php';
@@ -35,6 +37,8 @@ class AccountController {
         
         $customerModel = new CustomerModel();
         $customer = $customerModel->getCustomerById($_SESSION['customer_id']);
+        $tierInfo = $customerModel->getCustomerTierInfo($_SESSION['customer_id']);
+        $tierChangeNotification = $customerModel->getTierChangeNotification();
         $activeTab = 'profile'; // Đánh dấu tab đang hoạt động
         
         require_once __DIR__ . '/../views/pages/account_profile.php';

@@ -39,7 +39,7 @@ class CartModel {
     // Lấy giỏ hàng từ database
     public function getCart($customerId) {
         try {
-            $query = "SELECT gh.MaSP, gh.SoLuong, sp.TenSP, sp.DonGia, dm.TenDanhMuc 
+            $query = "SELECT gh.MaSP, gh.SoLuong, sp.TenSP, sp.DonGia, sp.HinhAnh, dm.TenDanhMuc 
                       FROM giohang gh 
                       INNER JOIN sanpham sp ON gh.MaSP = sp.MaSP 
                       LEFT JOIN danhmuc dm ON sp.MaDM = dm.MaDM 
@@ -55,7 +55,7 @@ class CartModel {
                     'price' => $row['DonGia'],
                     'quantity' => $row['SoLuong'],
                     'category' => $row['TenDanhMuc'] ?? 'Chưa phân loại',
-                    'image' => $this->getProductImage($row['TenSP'])
+                    'image' => $this->getProductImage($row)
                 ];
             }
             
@@ -67,8 +67,20 @@ class CartModel {
     }
 
     // Hàm để lấy ảnh cho từng sản phẩm
-    private function getProductImage($productName) {
-        $productName = strtolower(trim($productName));
+    private function getProductImage($product) {
+        // Nếu $product là string (tên sản phẩm), chuyển đổi thành array
+        if (is_string($product)) {
+            $productName = $product;
+            $product = ['TenSP' => $productName, 'HinhAnh' => null];
+        }
+        
+        // Ưu tiên sử dụng hình ảnh từ database
+        if (!empty($product['HinhAnh'])) {
+            return $product['HinhAnh'];
+        }
+        
+        // Fallback: sử dụng tên sản phẩm để tìm hình ảnh mặc định
+        $productName = strtolower(trim($product['TenSP']));
         
         // Map ảnh cho từng sản phẩm cụ thể
         $imageMap = [

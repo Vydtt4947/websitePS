@@ -847,7 +847,7 @@
                 <!-- Team Member 1 -->
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://plus.unsplash.com/premium_photo-1661962655543-b88aafe382e9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVtZXxlbnwwfHwwfHx8MA%3D%3D" 
+                        <img src="https://media.istockphoto.com/id/1366434595/photo/portrait-of-fluffy-white-cat-with-funny-smile-grimace-merry-christmas-decoration-and-red.webp?a=1&b=1&s=612x612&w=0&k=20&c=VOwnp_BOSyerK1aOKzgkPhzhvFIqQKl3OHV1mwm9Akc=" 
                              alt="Chef chính" 
                              class="member-avatar">
                         <div class="member-overlay">
@@ -910,7 +910,7 @@
                 <!-- Team Member 4 -->
                 <div class="team-member">
                     <div class="member-image">
-                        <img src="https://media.istockphoto.com/id/1366434595/photo/portrait-of-fluffy-white-cat-with-funny-smile-grimace-merry-christmas-decoration-and-red.webp?a=1&b=1&s=612x612&w=0&k=20&c=VOwnp_BOSyerK1aOKzgkPhzhvFIqQKl3OHV1mwm9Akc=" 
+                        <img src="https://plus.unsplash.com/premium_photo-1661962655543-b88aafe382e9?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWVtZXxlbnwwfHwwfHx8MA%3D%3D" 
                              alt="Nhân viên bán hàng" 
                              class="member-avatar">
                         <div class="member-overlay">
