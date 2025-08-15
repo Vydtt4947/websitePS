@@ -208,6 +208,16 @@
             outline: none;
         }
         
+        /* Ẩn spinner của input number */
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .quantity-input[type=number] {
+            -moz-appearance: textfield;
+        }
+        
         /* Remove Button */
         .remove-btn {
             background: linear-gradient(135deg, #ff6b6b, #ee5a52);
@@ -357,6 +367,21 @@
             color: var(--secondary-color);
             margin-bottom: 1.5rem;
         }
+
+        /* Session Messages */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -368,31 +393,49 @@
         <div class="container">
             <h1 class="hero-title">Giỏ Hàng Của Bạn</h1>
             <p class="hero-subtitle">Kiểm tra và hoàn tất đơn hàng của bạn</p>
+            
+            <!-- Banner tra cứu đơn hàng cho khách vãng lai -->
+            <?php if (!isset($_SESSION['customer_id'])): ?>
+                <div class="mt-4" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 20px; backdrop-filter: blur(15px); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                            <i class="fas fa-search" style="font-size: 1.3rem; color: var(--primary-color);"></i>
+                        </div>
+                        <div class="text-center">
+                            <p class="mb-2" style="color: rgba(255,255,255,0.95); font-weight: 600; font-size: 1.1rem; margin: 0;">
+                                Đã đặt hàng trước đó? 
+                                <a href="/websitePS/public/ordertracking" class="text-white text-decoration-underline fw-bold" style="font-size: 1.1rem;">
+                                    Tra cứu đơn hàng ngay
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 
     <div class="container">
-        <?php if (!isset($_SESSION['customer_id'])): ?>
-            <div class="cart-container">
-                <div class="empty-cart">
-                    <div class="empty-cart-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h3>Vui lòng đăng nhập để xem giỏ hàng</h3>
-                    <p>Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng và thực hiện đặt hàng</p>
-                    <div class="d-flex gap-3 justify-content-center">
-                        <a href="/websitePS/public/customerauth/login" class="btn btn-primary-custom">
-                            <i class="fas fa-sign-in-alt me-2"></i>
-                            Đăng nhập
-                        </a>
-                        <a href="/websitePS/public/customerauth/register" class="btn btn-outline-primary-custom">
-                            <i class="fas fa-user-plus me-2"></i>
-                            Đăng ký
-                        </a>
-                    </div>
-                </div>
+        <!-- Session Messages -->
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <?= htmlspecialchars($_SESSION['success_message']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        <?php elseif (empty($cart)): ?>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <?= htmlspecialchars($_SESSION['error_message']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+        
+        <?php if (empty($cart)): ?>
             <div class="cart-container">
                 <div class="empty-cart">
                     <div class="empty-cart-icon">
@@ -407,6 +450,33 @@
                 </div>
             </div>
         <?php else: ?>
+            <?php if (!isset($_SESSION['customer_id'])): ?>
+                                 <!-- Thông báo cho khách vãng lai -->
+                 <div class="alert alert-info mb-4">
+                     <div class="d-flex align-items-center">
+                         <i class="fas fa-user-clock me-3" style="font-size: 1.5rem;"></i>
+                         <div>
+                             <h6 class="mb-1">Bạn đang mua hàng mà không cần tài khoản</h6>
+                             <p class="mb-2">
+                                 Đăng nhập hoặc đăng ký để nhận ưu đãi và theo dõi đơn hàng dễ dàng hơn. 
+                                 Sau khi hoàn tất đặt hàng, bạn có thể tra cứu đơn hàng tại 
+                                 <a href="/websitePS/public/ordertracking" class="text-decoration-underline fw-bold">Trang Tra Cứu Đơn hàng</a>.
+                             </p>
+                             <div class="d-flex gap-2">
+                                 <a href="/websitePS/public/customerauth/login" class="btn btn-sm btn-primary-custom">
+                                     <i class="fas fa-sign-in-alt me-1"></i>
+                                     Đăng nhập ngay
+                                 </a>
+                                 <a href="/websitePS/public/ordertracking" class="btn btn-sm btn-outline-primary-custom">
+                                     <i class="fas fa-search me-1"></i>
+                                     Tra cứu đơn hàng
+                                 </a>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+            <?php endif; ?>
+            
             <div class="row">
                 <div class="col-lg-8">
                     <div class="cart-container">
@@ -416,116 +486,50 @@
                         </h3>
                         
                         <?php $total = 0; ?>
-                        <?php foreach ($cart as $id => $item): ?>
-                            <?php $subtotal = $item['price'] * $item['quantity']; $total += $subtotal; ?>
-                            <div class="product-card">
-                                <div class="row align-items-center">
-                                    <div class="col-md-2 col-4">
-                                        <img src="<?= $item['image'] ?>" class="product-image img-fluid">
-                                    </div>
-                                    <div class="col-md-4 col-8">
-                                        <div class="product-info">
-                                            <h5><?= htmlspecialchars($item['name']) ?></h5>
-                                            <div class="product-code">Mã: <?= $id ?></div>
-                                            <div class="product-price"><?= number_format($item['price'], 0, ',', '.') ?> đ</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-6">
-                                        <div class="quantity-control">
-                                            <button class="quantity-btn" onclick="updateQuantity(<?= $id ?>, -1)">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <input type="number" class="quantity-input" value="<?= $item['quantity'] ?>" 
-                                                   min="1" onchange="updateQuantity(<?= $id ?>, this.value - <?= $item['quantity'] ?>)">
-                                            <button class="quantity-btn" onclick="updateQuantity(<?= $id ?>, 1)">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 col-3 text-end">
-                                        <div class="product-total"><?= number_format($subtotal, 0, ',', '.') ?> đ</div>
-                                    </div>
-                                    <div class="col-md-1 col-3 text-end">
-                                        <a href="/websitePS/public/cart/remove/<?= $id ?>" class="remove-btn" 
-                                           title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+                                                 <?php foreach ($cart as $id => $item): ?>
+                             <?php $subtotal = $item['price'] * $item['quantity']; $total += $subtotal; ?>
+                             <div class="product-card" data-product-id="<?= $id ?>">
+                                 <div class="row align-items-center">
+                                     <div class="col-md-2 col-4">
+                                         <img src="<?= $item['image'] ?>" class="product-image img-fluid">
+                                     </div>
+                                     <div class="col-md-4 col-8">
+                                         <div class="product-info">
+                                             <h5><?= htmlspecialchars($item['name']) ?></h5>
+                                             <div class="product-code">Mã: <?= $id ?></div>
+                                             <div class="product-price"><?= number_format($item['price'], 0, ',', '.') ?> đ</div>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-3 col-6">
+                                         <div class="quantity-control">
+                                             <button class="quantity-btn" onclick="updateQuantity(<?= $id ?>, -1)">
+                                                 <i class="fas fa-minus"></i>
+                                             </button>
+                                             <input type="number" class="quantity-input" value="<?= $item['quantity'] ?>" 
+                                                    min="1" data-original-quantity="<?= $item['quantity'] ?>">
+                                             <button class="quantity-btn" onclick="updateQuantity(<?= $id ?>, 1)">
+                                                 <i class="fas fa-plus"></i>
+                                             </button>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-2 col-3 text-end">
+                                         <div class="product-total"><?= number_format($subtotal, 0, ',', '.') ?> đ</div>
+                                     </div>
+                                     <div class="col-md-1 col-3 text-end">
+                                         <a href="/websitePS/public/cart/remove/<?= $id ?>" class="remove-btn" 
+                                            title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                             <i class="fas fa-trash"></i>
+                                         </a>
+                                     </div>
+                                 </div>
+                             </div>
+                         <?php endforeach; ?>
                     </div>
                 </div>
                 
-                <div class="col-lg-4">
-                    <div class="cart-summary">
-                        <div class="summary-header">
-                            <h4><i class="fas fa-receipt me-2"></i>Tóm tắt đơn hàng</h4>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <span class="summary-label">Số sản phẩm:</span>
-                            <span class="summary-value"><?= count($cart) ?></span>
-                        </div>
-                        
-                        <?php
-                        // Sử dụng logic ưu đãi từ controller
-                        $shippingFee = isset($shippingFee) ? $shippingFee : 0;
-                        $finalTotal = isset($finalTotal) ? $finalTotal : ($total + $shippingFee);
-                        $appliedPromotions = isset($appliedPromotions) ? $appliedPromotions : [];
-                        $totalDiscount = isset($totalDiscount) ? $totalDiscount : 0;
-                        ?>
-                        
-                        <div class="summary-item">
-                            <span class="summary-label">Tổng tiền hàng:</span>
-                            <span class="summary-value"><?= number_format($total, 0, ',', '.') ?> đ</span>
-                        </div>
-                        
-                        <?php if (!empty($appliedPromotions)): ?>
-                            <div class="summary-item" style="background: #f8f9fa; border-radius: 10px; margin: 10px 0; padding: 15px;">
-                                <div style="width: 100%;">
-                                    <div style="color: #28a745; font-weight: 600; margin-bottom: 10px;">
-                                        <i class="fas fa-gift me-2"></i>Ưu đãi đã áp dụng:
-                                    </div>
-                                    <?php foreach ($appliedPromotions as $promotion): ?>
-                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; font-size: 0.9rem;">
-                                            <span style="color: #6c757d;"><?= htmlspecialchars($promotion['description']) ?></span>
-                                            <span style="color: #dc3545; font-weight: 600;">-<?= number_format($promotion['discount'], 0, ',', '.') ?> đ</span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <?php if ($totalDiscount > 0): ?>
-                            <div class="summary-item">
-                                <span class="summary-label">Tổng giảm giá:</span>
-                                <span class="summary-value" style="color: #dc3545;">-<?= number_format($totalDiscount, 0, ',', '.') ?> đ</span>
-                            </div>
-                        <?php endif; ?>
-                        
-                        <div class="summary-item">
-                            <span class="summary-label">Phí vận chuyển:</span>
-                            <span class="summary-value"><?= $shippingFee > 0 ? number_format($shippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' ?></span>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <span class="summary-label">Tổng cộng:</span>
-                            <span class="summary-value summary-total"><?= number_format($finalTotal, 0, ',', '.') ?> đ</span>
-                        </div>
-                        
-                        <div class="action-buttons">
-                            <a href="/websitePS/public/products/list" class="btn-continue">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                Tiếp tục mua sắm
-                            </a>
-                            <a href="/websitePS/public/checkout" class="btn-checkout">
-                                <i class="fas fa-credit-card me-2"></i>
-                                Thanh toán ngay
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                                 <div class="col-lg-4">
+                     <?php include __DIR__ . '/cart_summary.php'; ?>
+                 </div>
             </div>
         <?php endif; ?>
     </div>
@@ -557,12 +561,240 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    function updateQuantity(productId, change) {
-        // This would typically make an AJAX call to update the cart
-        // For now, we'll just reload the page with the new quantity
-        window.location.href = `/websitePS/public/cart/update/${productId}/${change}`;
-    }
-    </script>
+         <script>
+           function updateQuantity(productId, change) {
+           console.log('updateQuantity called with:', { productId, change });
+           
+           // Sử dụng AJAX để cập nhật số lượng sản phẩm mà không reload trang
+           const formData = new FormData();
+           formData.append('productId', productId);
+           formData.append('change', change);
+           
+           // Hiển thị loading cho sản phẩm cụ thể
+           const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+           console.log('Product card found:', productCard);
+           
+           if (productCard) {
+               const quantityInput = productCard.querySelector('.quantity-input');
+               const originalValue = quantityInput.value;
+               quantityInput.disabled = true;
+               quantityInput.style.opacity = '0.5';
+           }
+           
+           console.log('Sending request to /websitePS/public/cart/updateQuantity');
+           fetch('/websitePS/public/cart/updateQuantity', {
+               method: 'POST',
+               body: formData
+           })
+           .then(response => {
+               console.log('Response status:', response.status);
+               return response.json();
+           })
+           .then(data => {
+               console.log('Response data:', data);
+               if (data.success) {
+                   // Cập nhật số lượng hiển thị
+                   if (productCard) {
+                       const quantityInput = productCard.querySelector('.quantity-input');
+                       const subtotalElement = productCard.querySelector('.product-total');
+                       
+                       quantityInput.value = data.newQuantity;
+                       quantityInput.disabled = false;
+                       quantityInput.style.opacity = '1';
+                       
+                       // Cập nhật data-original-quantity
+                       quantityInput.setAttribute('data-original-quantity', data.newQuantity);
+                       
+                       if (subtotalElement) {
+                           subtotalElement.textContent = data.newSubtotal + ' đ';
+                       }
+                   }
+                   
+                   // Cập nhật toàn bộ cart summary
+                   updateCartSummary();
+                   
+                   // Bỏ thông báo thành công
+                   // showSuccessMessage('Đã cập nhật số lượng sản phẩm thành công!');
+               } else {
+                   // Khôi phục giá trị cũ nếu có lỗi
+                   if (productCard) {
+                       const quantityInput = productCard.querySelector('.quantity-input');
+                       quantityInput.disabled = false;
+                       quantityInput.style.opacity = '1';
+                   }
+                   showErrorMessage(data.message || 'Có lỗi xảy ra khi cập nhật số lượng!');
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               // Khôi phục giá trị cũ nếu có lỗi
+               if (productCard) {
+                   const quantityInput = productCard.querySelector('.quantity-input');
+                   quantityInput.disabled = false;
+                   quantityInput.style.opacity = '1';
+               }
+               showErrorMessage('Có lỗi xảy ra khi cập nhật số lượng sản phẩm!');
+           });
+       }
+      
+      function updateCartSummary() {
+          // Cập nhật cart summary thông qua AJAX
+          fetch('/websitePS/public/cart/getSummary', {
+              method: 'GET'
+          })
+          .then(response => response.text())
+          .then(html => {
+              const currentSummary = document.querySelector('.cart-summary');
+              if (currentSummary) {
+                  currentSummary.innerHTML = html;
+                  
+                  // Thêm lại event listeners cho các checkbox mới
+                  const newCheckboxes = currentSummary.querySelectorAll('input[name="selected_promotions[]"]');
+                  newCheckboxes.forEach(checkbox => {
+                      checkbox.addEventListener('change', function() {
+                          updatePromotions();
+                      });
+                  });
+              }
+          })
+          .catch(error => {
+              console.error('Error updating cart summary:', error);
+          });
+      }
+     
+           function updatePromotions() {
+          // Sử dụng AJAX để cập nhật khuyến mãi mà không reload trang
+          const form = document.getElementById('promotionForm');
+          if (form) {
+              const formData = new FormData(form);
+              
+              // Hiển thị loading
+              const submitBtn = document.querySelector('.btn-checkout');
+              if (submitBtn) {
+                  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang cập nhật...';
+                  submitBtn.disabled = true;
+              }
+              
+              fetch('/websitePS/public/cart/updatePromotions', {
+                  method: 'POST',
+                  body: formData
+              })
+              .then(response => response.text())
+              .then(html => {
+                  // Cập nhật phần cart summary
+                  const currentSummary = document.querySelector('.cart-summary');
+                  
+                  if (currentSummary) {
+                      currentSummary.innerHTML = html;
+                      
+                      // Thêm lại event listeners cho các checkbox mới
+                      const newCheckboxes = currentSummary.querySelectorAll('input[name="selected_promotions[]"]');
+                      newCheckboxes.forEach(checkbox => {
+                          checkbox.addEventListener('change', function() {
+                              updatePromotions();
+                          });
+                      });
+                  }
+                  
+                  // Khôi phục nút checkout
+                  if (submitBtn) {
+                      submitBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Thanh toán ngay';
+                      submitBtn.disabled = false;
+                  }
+                  
+                  // Bỏ thông báo thành công
+                  // showSuccessMessage('Đã cập nhật khuyến mãi thành công!');
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  // Khôi phục nút checkout
+                  if (submitBtn) {
+                      submitBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Thanh toán ngay';
+                      submitBtn.disabled = false;
+                  }
+                  showErrorMessage('Có lỗi xảy ra khi cập nhật khuyến mãi!');
+              });
+          }
+      }
+      
+             // Thêm event listener để theo dõi thay đổi checkbox và quantity input
+       document.addEventListener('DOMContentLoaded', function() {
+           // Event listener cho checkbox promotions
+           const checkboxes = document.querySelectorAll('input[name="selected_promotions[]"]');
+           checkboxes.forEach(checkbox => {
+               checkbox.addEventListener('change', function() {
+                   // Sử dụng AJAX để cập nhật ngay khi có thay đổi
+                   updatePromotions();
+               });
+           });
+           
+                       // Event listener cho quantity input
+            const quantityInputs = document.querySelectorAll('.quantity-input');
+            quantityInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    const productId = this.closest('.product-card').getAttribute('data-product-id');
+                    const originalQuantity = parseInt(this.getAttribute('data-original-quantity'));
+                    const newQuantity = parseInt(this.value);
+                    const change = newQuantity - originalQuantity;
+                    
+                    if (change !== 0) {
+                        updateQuantity(productId, change);
+                    }
+                });
+            });
+       });
+     
+           function clearPromotions() {
+          // Xóa tất cả checkbox
+          const checkboxes = document.querySelectorAll('input[name="selected_promotions[]"]');
+          checkboxes.forEach(checkbox => {
+              checkbox.checked = false;
+          });
+          // Sử dụng AJAX để cập nhật
+          updatePromotions();
+      }
+     
+     
+     
+                  // Hàm hiển thị thông báo thành công
+       function showSuccessMessage(message) {
+           const alertDiv = document.createElement('div');
+           alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+           alertDiv.innerHTML = `
+               <i class="fas fa-check-circle me-2"></i>
+               ${message}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+           `;
+           
+           const container = document.querySelector('.container');
+           container.insertBefore(alertDiv, container.firstChild);
+           
+           // Tự động ẩn sau 3 giây
+           setTimeout(() => {
+               alertDiv.remove();
+           }, 3000);
+       }
+       
+       // Hàm hiển thị thông báo lỗi
+       function showErrorMessage(message) {
+           const alertDiv = document.createElement('div');
+           alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+           alertDiv.innerHTML = `
+               <i class="fas fa-exclamation-triangle me-2"></i>
+               ${message}
+               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+           `;
+           
+           const container = document.querySelector('.container');
+           container.insertBefore(alertDiv, container.firstChild);
+           
+           // Tự động ẩn sau 5 giây
+           setTimeout(() => {
+               alertDiv.remove();
+           }, 5000);
+       }
+     
+     
+     </script>
 </body>
 </html>

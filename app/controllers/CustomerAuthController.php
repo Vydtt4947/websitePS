@@ -4,7 +4,9 @@
 // KHÔNG KẾ THỪA TỪ BASECONTROLLER
 // require_once __DIR__ . '/BaseController.php'; 
 require_once __DIR__ . '/../models/CustomerModel.php';
+require_once __DIR__ . '/../models/CustomerAuthModel.php';
 require_once __DIR__ . '/../models/CartModel.php';
+require_once __DIR__ . '/../models/SessionCartModel.php';
 
 class CustomerAuthController {
 
@@ -15,8 +17,15 @@ class CustomerAuthController {
 
     public function authenticate() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $customerModel = new CustomerModel();
-            $customer = $customerModel->findByEmail($_POST['email']);
+            // Validation
+            if (empty($_POST['email']) || empty($_POST['password'])) {
+                $error = "Vui lòng nhập email và mật khẩu.";
+                require_once __DIR__ . '/../views/pages/login.php';
+                exit();
+            }
+
+            $customerAuthModel = new CustomerAuthModel();
+            $customer = $customerAuthModel->attemptLogin($_POST['email'], $_POST['password']);
 
             if ($customer) {
                 if (session_status() === PHP_SESSION_NONE) {
@@ -27,15 +36,17 @@ class CustomerAuthController {
                 $_SESSION['customer_email'] = $customer['Email'];
                 $_SESSION['customer_phone'] = $customer['SoDienThoai'] ?? '';
                 
-                // Đồng bộ giỏ hàng từ database
-                $cartModel = new CartModel();
-                $dbCart = $cartModel->getCart($customer['MaKH']);
+                // Đồng bộ giỏ hàng session vào database
+                $sessionCartModel = new SessionCartModel();
+                $sessionCart = $sessionCartModel->getCart();
                 
-                // Chỉ xử lý session cart nếu nó tồn tại và khác với database cart
-                if (!empty($_SESSION['cart'])) {
+                if (!empty($sessionCart)) {
+                    $cartModel = new CartModel();
+                    $dbCart = $cartModel->getCart($customer['MaKH']);
+                    
                     // Nếu có giỏ hàng trong database, chỉ thêm sản phẩm mới từ session
                     if (!empty($dbCart)) {
-                        foreach ($_SESSION['cart'] as $productId => $sessionItem) {
+                        foreach ($sessionCart as $productId => $sessionItem) {
                             if (!isset($dbCart[$productId])) {
                                 // Chỉ thêm sản phẩm mới từ session vào database
                                 $cartModel->addCartItem($customer['MaKH'], $productId, $sessionItem['quantity']);
@@ -43,12 +54,12 @@ class CustomerAuthController {
                         }
                     } else {
                         // Nếu không có giỏ hàng trong database, lưu toàn bộ session cart
-                        $cartModel->saveCart($customer['MaKH'], $_SESSION['cart']);
+                        $cartModel->saveCart($customer['MaKH'], $sessionCart);
                     }
+                    
+                    // Xóa giỏ hàng session sau khi đã đồng bộ
+                    $sessionCartModel->clearCart();
                 }
-                
-                // Xóa giỏ hàng session sau khi đã đồng bộ
-                unset($_SESSION['cart']);
                 
                 header('Location: /websitePS/public/');
                 exit();
@@ -67,18 +78,45 @@ class CustomerAuthController {
 
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $customerModel = new CustomerModel();
+            // Validation
+            if (empty($_POST['fullname']) || empty($_POST['email']) || empty($_POST['password'])) {
+                $error = "Vui lòng điền đầy đủ thông tin.";
+                require_once __DIR__ . '/../views/pages/register.php';
+                exit();
+            }
+
+            if (strlen($_POST['password']) < 6) {
+                $error = "Mật khẩu phải có ít nhất 6 ký tự.";
+                require_once __DIR__ . '/../views/pages/register.php';
+                exit();
+            }
+
+            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                $error = "Email không hợp lệ.";
+                require_once __DIR__ . '/../views/pages/register.php';
+                exit();
+            }
+
+            $customerAuthModel = new CustomerAuthModel();
             
-            $existingCustomer = $customerModel->findByEmail($_POST['email']);
+            $existingCustomer = $customerAuthModel->checkEmailExists($_POST['email']);
             if ($existingCustomer) {
                 $error = "Email này đã được sử dụng. Vui lòng chọn email khác.";
                 require_once __DIR__ . '/../views/pages/register.php';
                 exit();
             }
 
-            $customerModel->registerCustomer($_POST);
+            // Tạo dữ liệu cho CustomerAuthModel
+            $customerData = [
+                'HoTen' => trim($_POST['fullname']),
+                'Email' => trim($_POST['email']),
+                'MatKhau' => $_POST['password'],
+                'SoDienThoai' => trim($_POST['phone'] ?? '')
+            ];
+
+            $customerAuthModel->createCustomer($customerData);
             
-            $customer = $customerModel->findByEmail($_POST['email']);
+            $customer = $customerAuthModel->attemptLogin($_POST['email'], $_POST['password']);
             if ($customer) {
                 if (session_status() === PHP_SESSION_NONE) {
                     session_start();
@@ -88,11 +126,14 @@ class CustomerAuthController {
                 $_SESSION['customer_email'] = $customer['Email'];
                 $_SESSION['customer_phone'] = $customer['SoDienThoai'] ?? '';
                 
-                // Đồng bộ giỏ hàng từ session vào database cho tài khoản mới
-                if (!empty($_SESSION['cart'])) {
+                // Đồng bộ giỏ hàng session vào database cho tài khoản mới
+                $sessionCartModel = new SessionCartModel();
+                $sessionCart = $sessionCartModel->getCart();
+                
+                if (!empty($sessionCart)) {
                     $cartModel = new CartModel();
-                    $cartModel->saveCart($customer['MaKH'], $_SESSION['cart']);
-                    unset($_SESSION['cart']);
+                    $cartModel->saveCart($customer['MaKH'], $sessionCart);
+                    $sessionCartModel->clearCart();
                 }
             }
             header('Location: /websitePS/public/');
@@ -108,7 +149,9 @@ class CustomerAuthController {
         unset($_SESSION['customer_name']);
         unset($_SESSION['customer_email']);
         unset($_SESSION['customer_phone']);
-        unset($_SESSION['cart']); // Xóa giỏ hàng session khi logout
+        // Xóa giỏ hàng session khi logout
+        $sessionCartModel = new SessionCartModel();
+        $sessionCartModel->clearCart();
         header('Location: /websitePS/public/');
         exit();
     }

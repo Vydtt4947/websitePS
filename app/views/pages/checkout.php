@@ -322,27 +322,34 @@
 
     <div class="container">
         <?php if (!isset($_SESSION['customer_id'])): ?>
+            <!-- Thông báo cho khách vãng lai -->
             <div class="checkout-container">
-                <div class="text-center py-5">
-                    <div class="mb-4">
-                        <i class="fas fa-lock" style="font-size: 4rem; color: var(--primary-color);"></i>
+                <div class="text-center py-3">
+                    <div class="mb-3">
+                        <i class="fas fa-user-clock" style="font-size: 3rem; color: var(--primary-color);"></i>
                     </div>
-                    <h3>Vui lòng đăng nhập để thanh toán</h3>
-                    <p class="text-muted mb-4">Bạn cần đăng nhập để thực hiện đặt hàng và thanh toán</p>
+                    <h4>Bạn đang mua hàng mà không cần tài khoản</h4>
+                    <p class="text-muted mb-3">
+                        Vui lòng nhập thông tin giao hàng để hoàn tất đơn hàng. 
+                        Đăng nhập hoặc đăng ký để nhận ưu đãi và theo dõi đơn hàng dễ dàng hơn. 
+                        Sau khi hoàn tất đặt hàng, bạn sẽ nhận được mã đơn hàng để tra cứu tại 
+                        <a href="/websitePS/public/ordertracking" class="text-decoration-underline fw-bold">Trang Tra Cứu Đơn hàng</a>.
+                    </p>
                     <div class="d-flex gap-3 justify-content-center">
                         <a href="/websitePS/public/customerauth/login" class="btn btn-primary-custom">
                             <i class="fas fa-sign-in-alt me-2"></i>
-                            Đăng nhập
+                            Đăng nhập để có ưu đãi
                         </a>
-                        <a href="/websitePS/public/customerauth/register" class="btn btn-outline-primary-custom">
-                            <i class="fas fa-user-plus me-2"></i>
-                            Đăng ký
+                        <a href="/websitePS/public/ordertracking" class="btn btn-outline-primary-custom">
+                            <i class="fas fa-search me-2"></i>
+                            Tra cứu đơn hàng
                         </a>
                     </div>
                 </div>
             </div>
-        <?php else: ?>
-            <div class="breadcrumb-nav">
+        <?php endif; ?>
+        
+        <div class="breadcrumb-nav">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/websitePS/public/">Trang chủ</a></li>
@@ -448,7 +455,7 @@
                             </div>
                         <?php endif; ?>
                         
-                        <form action="/websitePS/public/checkout/placeOrder" method="POST" id="checkoutForm">
+                        <form action="/websitePS/public/checkout/process" method="POST" id="checkoutForm">
                             <div class="row g-3" id="addressForm" <?= (!empty($customer['DiaChiGiaoHang']) && !empty($customer['TinhThanh'])) ? 'style="display: none;"' : '' ?>>
                                 <div class="col-12">
                                     <div class="form-floating">
@@ -589,7 +596,6 @@
                                  </div>
                              </div>
                          </div>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -657,7 +663,6 @@
                 </div>
             </div>
         </div>
-        <?php endif; ?>
     </div>
 </div>
 

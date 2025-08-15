@@ -148,6 +148,11 @@
                 </div>
                 
                 <div class="form-floating">
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Số điện thoại">
+                    <label for="phone">Số điện thoại (tùy chọn)</label>
+                </div>
+                
+                <div class="form-floating">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required>
                     <label for="password">Mật khẩu</label>
                 </div>

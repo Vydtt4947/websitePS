@@ -6,6 +6,8 @@ $request_uri = $_SERVER['REQUEST_URI'];
 // Kiểm tra các trang cụ thể
 if (strpos($request_uri, '/products/show/') !== false || strpos($request_uri, '/products/list') !== false) {
     $current_page = 'products';
+} elseif (strpos($request_uri, '/promotion/tierBenefits') !== false) {
+    $current_page = 'tier_benefits';
 } elseif (strpos($request_uri, '/promotion') !== false) {
     $current_page = 'promotion';
 } elseif (strpos($request_uri, '/about') !== false) {
@@ -16,7 +18,7 @@ if (strpos($request_uri, '/products/show/') !== false || strpos($request_uri, '/
     $current_page = 'cart';
 } elseif (strpos($request_uri, '/checkout') !== false) {
     $current_page = 'checkout';
-} elseif (strpos($request_uri, '/account') !== false || strpos($request_uri, '/order') !== false) {
+} elseif (strpos($request_uri, '/account') !== false || strpos($request_uri, '/customerorders') !== false) {
     $current_page = 'account';
 } elseif ($request_uri == '/websitePS/public/' || $request_uri == '/websitePS/public/index.php' || $request_uri == '/websitePS/public') {
     $current_page = 'home';
@@ -41,12 +43,26 @@ if (strpos($request_uri, '/products/show/') !== false || strpos($request_uri, '/
                 <?php
                     $cartItemCount = 0;
                     if (isset($_SESSION['customer_id'])) {
-                        // Lấy số lượng giỏ hàng từ database
-                        require_once __DIR__ . '/../../../models/CartModel.php';
-                        $cartModel = new CartModel();
-                        $cart = $cartModel->getCart($_SESSION['customer_id']);
-                        foreach ($cart as $item) { 
-                            $cartItemCount += $item['quantity']; 
+                        try {
+                            // Lấy số lượng giỏ hàng từ database cho khách hàng đã đăng nhập
+                            require_once __DIR__ . '/../../../models/CartModel.php';
+                            $cartModel = new CartModel();
+                            $cart = $cartModel->getCart($_SESSION['customer_id']);
+                            if (!empty($cart)) {
+                                foreach ($cart as $item) { 
+                                    $cartItemCount += $item['quantity']; 
+                                }
+                            }
+                        } catch (Exception $e) {
+                            // Nếu có lỗi, đặt cartItemCount = 0
+                            $cartItemCount = 0;
+                        }
+                    } else {
+                        // Lấy số lượng giỏ hàng từ session cho khách vãng lai
+                        if (isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
+                            foreach ($_SESSION['guest_cart'] as $item) { 
+                                $cartItemCount += $item['quantity']; 
+                            }
                         }
                     }
                 ?>
@@ -67,6 +83,7 @@ if (strpos($request_uri, '/products/show/') !== false || strpos($request_uri, '/
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="/websitePS/public/account"><i class="fas fa-user me-2"></i>Tài khoản của tôi</a></li>
                             <li><a class="dropdown-item" href="/websitePS/public/account"><i class="fas fa-history me-2"></i>Lịch sử đơn hàng</a></li>
+                            <li><a class="dropdown-item" href="/websitePS/public/promotion/tierBenefits"><i class="fas fa-crown me-2"></i>Ưu đãi phân khúc</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/websitePS/public/customerauth/logout"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
                         </ul>

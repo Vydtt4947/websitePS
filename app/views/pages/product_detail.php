@@ -859,43 +859,39 @@ function getProductImage($product) {
 
                             <!-- Purchase Section -->
                             <div class="purchase-section">
-                                <?php if (isset($_SESSION['customer_id'])): ?>
-                                    <form action="/websitePS/public/cart/add" method="POST">
-                                        <input type="hidden" name="productId" value="<?= $product['MaSP'] ?>">
-                                        
-                                        <div class="quantity-section">
-                                            <label for="quantity" class="form-label fw-bold" style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;">
-                                                <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
-                                            </label>
-                                            <div class="quantity-control">
-                                                <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-                                                <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1">
-                                                <button type="button" class="quantity-btn" onclick="changeQuantity(1)">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
+                                <form action="/websitePS/public/cart/add" method="POST">
+                                    <input type="hidden" name="productId" value="<?= $product['MaSP'] ?>">
+                                    
+                                    <div class="quantity-section">
+                                        <label for="quantity" class="form-label fw-bold" style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
+                                        </label>
+                                        <div class="quantity-control">
+                                            <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1">
+                                            <button type="button" class="quantity-btn" onclick="changeQuantity(1)">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
                                         </div>
-
-                                        <button type="submit" class="btn btn-primary-custom add-to-cart-btn">
-                                            <i class="fas fa-shopping-cart me-2"></i>
-                                            Thêm vào giỏ hàng
-                                        </button>
-                                    </form>
-                                <?php else: ?>
-                                    <div class="login-required-section">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Vui lòng đăng nhập để mua hàng</strong>
-                                        <p class="mt-2 mb-0">Đăng nhập để có thể thêm sản phẩm vào giỏ hàng và đặt hàng</p>
                                     </div>
-                                    <a href="/websitePS/public/customerauth/login" class="btn btn-primary-custom w-100">
-                                        <i class="fas fa-sign-in-alt me-2"></i>
-                                        Đăng nhập ngay
-                                    </a>
+
+                                    <button type="submit" class="btn btn-primary-custom add-to-cart-btn">
+                                        <i class="fas fa-shopping-cart me-2"></i>
+                                        Thêm vào giỏ hàng
+                                    </button>
+                                </form>
+                                
+                                <?php if (!isset($_SESSION['customer_id'])): ?>
                                     <div class="text-center mt-3">
-                                        <small class="text-muted">Chưa có tài khoản? 
-                                            <a href="/websitePS/public/customerauth/register" class="text-decoration-none">Đăng ký miễn phí</a>
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Bạn đang mua hàng với tư cách khách vãng lai. 
+                                            <a href="/websitePS/public/customerauth/login" class="text-decoration-none">Đăng nhập</a> 
+                                            để có thêm nhiều lợi ích! 
+                                            Sau khi đặt hàng, bạn có thể tra cứu tại 
+                                            <a href="/websitePS/public/ordertracking" class="text-decoration-none">trang tra cứu đơn hàng</a>.
                                         </small>
                                     </div>
                                 <?php endif; ?>

@@ -70,11 +70,24 @@ class OrderModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getOrderById($id) {
+        $query = "
+            SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
+            FROM donhang dh
+            LEFT JOIN khachhang kh ON dh.MaKH = kh.MaKH
+            WHERE dh.MaDH = :id
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getOrderDetailsById($id) {
         $queryOrder = "
             SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
             FROM donhang dh
-            JOIN khachhang kh ON dh.MaKH = kh.MaKH
+            LEFT JOIN khachhang kh ON dh.MaKH = kh.MaKH
             WHERE dh.MaDH = :id
         ";
         $stmtOrder = $this->db->prepare($queryOrder);
@@ -159,16 +172,20 @@ class OrderModel {
             error_log("Session customer_id: " . ($_SESSION['customer_id'] ?? 'null'));
             error_log("Customer ID before create: " . ($customerId ?? 'null'));
             
-            // Nếu chưa có customer, tạo customer mới
-            if (!$customerId) {
+            // Xử lý khách hàng dựa trên trạng thái đăng nhập
+            if ($customerId) {
+                // Khách hàng đã đăng nhập - sử dụng customer ID hiện tại
+                error_log("Using existing customer ID: " . $customerId);
+            } else {
+                // Khách vãng lai - tạo customer mới hoặc sử dụng null
                 $customerId = $this->createCustomerIfNotExists($customerData);
-                error_log("Created new customer ID: " . $customerId);
+                error_log("Created new customer ID for guest: " . $customerId);
             }
 
             // Debug: Log final customer ID
             error_log("Final customer ID for order: " . $customerId);
 
-            // Tạo đơn hàng với customer ID đã có
+            // Tạo đơn hàng với customer ID (có thể null cho khách vãng lai)
             $queryOrder = "INSERT INTO donhang (MaKH, NgayDatHang, TongTien, TrangThai, PhuongThucThanhToan) VALUES (:maKH, NOW(), :tongTien, 'Pending', :paymentMethod)";
             $stmtOrder = $this->db->prepare($queryOrder);
             $stmtOrder->bindParam(':maKH', $customerId, PDO::PARAM_INT);
@@ -249,5 +266,92 @@ class OrderModel {
         $stmt->execute();
 
         return $this->db->lastInsertId();
+    }
+
+    // PHƯƠNG THỨC TRA CỨU ĐƠN HÀNG CHO KHÁCH VÃNG LAI
+    public function getOrderByCode($orderCode) {
+        $query = "
+            SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
+            FROM donhang dh
+            LEFT JOIN khachhang kh ON dh.MaKH = kh.MaKH
+            WHERE dh.MaDH = :orderCode
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':orderCode', $orderCode, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrderByCodeAndPhone($orderCode, $phone) {
+        // Debug log
+        error_log("Order tracking search - OrderCode: $orderCode, Phone: $phone");
+        
+        // Thử tìm đơn hàng với số điện thoại khớp chính xác
+        $query = "
+            SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
+            FROM donhang dh
+            LEFT JOIN khachhang kh ON dh.MaKH = kh.MaKH
+            WHERE dh.MaDH = :orderCode AND kh.SoDienThoai = :phone
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':orderCode', $orderCode, PDO::PARAM_INT);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        error_log("Query 1 result: " . print_r($result, true));
+        
+        if ($result) {
+            return $result;
+        }
+        
+        // Nếu không tìm thấy với số điện thoại, thử tìm chỉ với mã đơn hàng
+        $query2 = "
+            SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
+            FROM donhang dh
+            LEFT JOIN khachhang kh ON dh.MaKH = kh.MaKH
+            WHERE dh.MaDH = :orderCode
+        ";
+        $stmt2 = $this->db->prepare($query2);
+        $stmt2->bindParam(':orderCode', $orderCode, PDO::PARAM_INT);
+        $stmt2->execute();
+        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+        
+        error_log("Query 2 result: " . print_r($result2, true));
+        
+        if ($result2) {
+            // Nếu tìm thấy đơn hàng nhưng số điện thoại không khớp, vẫn trả về kết quả
+            // nhưng log để debug
+            error_log("Found order but phone doesn't match. Order phone: " . ($result2['SoDienThoai'] ?? 'NULL') . ", Search phone: $phone");
+            return $result2;
+        }
+        
+        return null;
+    }
+
+    // Lấy trạng thái đơn hàng dưới dạng text
+    public function getOrderStatusText($status) {
+        $statusMap = [
+            'Pending' => 'Chờ xử lý',
+            'Processing' => 'Đang xử lý',
+            'Shipped' => 'Đã giao hàng',
+            'Delivered' => 'Đã nhận hàng',
+            'Cancelled' => 'Đã hủy'
+        ];
+        
+        return $statusMap[$status] ?? $status;
+    }
+
+    // Lấy màu sắc cho trạng thái đơn hàng
+    public function getOrderStatusColor($status) {
+        $colorMap = [
+            'Pending' => 'warning',
+            'Processing' => 'info',
+            'Shipped' => 'primary',
+            'Delivered' => 'success',
+            'Cancelled' => 'danger'
+        ];
+        
+        return $colorMap[$status] ?? 'secondary';
     }
 }

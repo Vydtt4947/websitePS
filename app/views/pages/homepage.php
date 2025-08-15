@@ -143,7 +143,7 @@ function getProductImage($product) {
     <div class="container">
         <h1 class="display-3">Ngọt ngào từng khoảnh khắc</h1>
         <p class="lead mb-4">Khám phá thế giới bánh tươi ngon được làm từ tâm huyết mỗi ngày.</p>
-        <a href="#" class="btn btn-primary-custom rounded-pill">Khám Phá Thực Đơn</a>
+        <a href="/websitePS/public/products/list" class="btn btn-primary-custom rounded-pill">Thưởng Thức Ngay</a>
     </div>
 </section>
 

@@ -282,11 +282,43 @@
                     <i class="fas fa-home me-2"></i>
                     Về trang chủ
                 </a>
-                <a href="/websitePS/public/customerorders/show/<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : '' ?>" class="btn-orders">
-                    <i class="fas fa-list me-2"></i>
-                    Xem đơn hàng
-                </a>
+                <?php if (isset($_SESSION['customer_id'])): ?>
+                    <a href="/websitePS/public/customerorders/show/<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : '' ?>" class="btn-orders">
+                        <i class="fas fa-list me-2"></i>
+                        Xem đơn hàng
+                    </a>
+                <?php else: ?>
+                    <a href="/websitePS/public/ordertracking" class="btn-orders">
+                        <i class="fas fa-search me-2"></i>
+                        Tra cứu đơn hàng
+                    </a>
+                <?php endif; ?>
             </div>
+            
+            <?php if (!isset($_SESSION['customer_id'])): ?>
+                <div class="mt-4 p-4 bg-primary text-white rounded">
+                    <h6 class="mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Thông tin quan trọng cho khách vãng lai
+                    </h6>
+                    <div class="mb-3">
+                        <strong>Mã đơn hàng của bạn:</strong> 
+                        <div class="mt-2">
+                            <span class="badge bg-white text-primary fs-5 px-3 py-2">#<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : 'PS' . date('YmdHis') ?></span>
+                        </div>
+                    </div>
+                    <p class="mb-2">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Vui lòng lưu lại mã đơn hàng này!</strong>
+                    </p>
+                    <p class="mb-0 small">
+                        Để tra cứu tình trạng đơn hàng sau này, vui lòng truy cập: 
+                        <a href="/websitePS/public/ordertracking" class="text-white text-decoration-underline fw-bold">Trang tra cứu đơn hàng</a>
+                        <br>
+                        Sử dụng mã đơn hàng và số điện thoại đã đăng ký để tra cứu.
+                    </p>
+                </div>
+            <?php endif; ?>
             
             <div class="mt-4">
                 <p class="text-muted">

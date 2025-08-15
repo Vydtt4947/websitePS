@@ -79,9 +79,43 @@ class CustomerModel {
     }
 
     public function deleteCustomer($id) {
-        $stmt = $this->db->prepare("DELETE FROM khachhang WHERE MaKH = :id");
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+        try {
+            $this->db->beginTransaction();
+            
+            // 1. Lấy user_id trước khi xóa khách hàng
+            $getUserIdQuery = "SELECT user_id FROM khachhang WHERE MaKH = :id";
+            $getUserIdStmt = $this->db->prepare($getUserIdQuery);
+            $getUserIdStmt->bindParam(':id', $id);
+            $getUserIdStmt->execute();
+            $customer = $getUserIdStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$customer) {
+                $this->db->rollBack();
+                return false; // Khách hàng không tồn tại
+            }
+            
+            $userId = $customer['user_id'];
+            
+            // 2. Xóa khách hàng trước (vì có foreign key constraint)
+            $deleteCustomerStmt = $this->db->prepare("DELETE FROM khachhang WHERE MaKH = :id");
+            $deleteCustomerStmt->bindParam(':id', $id);
+            $deleteCustomerStmt->execute();
+            
+            // 3. Xóa user tương ứng
+            if ($userId) {
+                $deleteUserStmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
+                $deleteUserStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                $deleteUserStmt->execute();
+            }
+            
+            $this->db->commit();
+            return true;
+            
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Error deleting customer: " . $e->getMessage());
+            return false;
+        }
     }
     public function getOrderHistoryByCustomerId($customerId) {
         $query = "

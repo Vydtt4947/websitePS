@@ -487,20 +487,11 @@
                             </div>
                             
                             <div class="product-actions">
-                                <?php if (isset($_SESSION['customer_id'])): ?>
-                                    <a href="/websitePS/public/cart/add?productId=<?= $product['MaSP'] ?>&quantity=1" 
-                                       class="btn-add-cart">
-                                        <i class="fas fa-shopping-cart"></i>
-                                        Thêm vào giỏ
-                                    </a>
-                                <?php else: ?>
-                                    <a href="/websitePS/public/customerauth/login" 
-                                       class="btn-add-cart" 
-                                       title="Đăng nhập để thêm vào giỏ hàng">
-                                        <i class="fas fa-lock"></i>
-                                        Đăng nhập để mua
-                                    </a>
-                                <?php endif; ?>
+                                <a href="/websitePS/public/cart/add?productId=<?= $product['MaSP'] ?>&quantity=1" 
+                                   class="btn-add-cart">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Thêm vào giỏ
+                                </a>
                                 <a href="/websitePS/public/products/show/<?= $product['MaSP'] ?>" class="btn-view-details">
                                     <i class="fas fa-eye"></i>
                                     Xem chi tiết
