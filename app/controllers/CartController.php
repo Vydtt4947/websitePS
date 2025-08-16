@@ -13,6 +13,11 @@ class CartController {
             session_start();
         }
         
+        // Debug: Kiểm tra session ID và status
+        error_log("DEBUG: Session ID: " . session_id());
+        error_log("DEBUG: Session status: " . session_status());
+        error_log("DEBUG: All session data: " . json_encode($_SESSION));
+        
         // Debug logs removed for production
         
         try {
@@ -60,23 +65,37 @@ class CartController {
             
             // Lấy ưu đãi được chọn từ session hoặc form
             $selectedPromotions = [];
+            
+            // Debug: Kiểm tra session
+            error_log("DEBUG: Session selected_promotions: " . (isset($_SESSION['selected_promotions']) ? json_encode($_SESSION['selected_promotions']) : 'NOT SET'));
+            error_log("DEBUG: POST promotion_form_submitted: " . (isset($_POST['promotion_form_submitted']) ? 'YES' : 'NO'));
+            
             if (isset($_POST['promotion_form_submitted'])) {
                 // Form đã được submit, sử dụng POST data
                 $selectedPromotions = isset($_POST['selected_promotions']) && is_array($_POST['selected_promotions']) ? $_POST['selected_promotions'] : [];
+                // Giới hạn tối đa 3 khuyến mãi
+                $selectedPromotions = array_slice($selectedPromotions, 0, 3);
                 $_SESSION['selected_promotions'] = $selectedPromotions;
-                // Debug logs removed for production
+                error_log("DEBUG: Set from POST: " . json_encode($selectedPromotions));
             } elseif (isset($_SESSION['selected_promotions'])) {
+                // Lấy từ session nếu không có POST data (khi refresh trang)
                 $selectedPromotions = $_SESSION['selected_promotions'];
-                // Debug logs removed for production
+                // Giới hạn tối đa 3 khuyến mãi
+                $selectedPromotions = array_slice($selectedPromotions, 0, 3);
+                $_SESSION['selected_promotions'] = $selectedPromotions;
+                error_log("DEBUG: Loaded from session: " . json_encode($selectedPromotions));
             } elseif (isset($_SESSION['promotion_from_page'])) {
                 // Nếu có khuyến mãi từ trang khuyến mãi, tự động chọn
                 $selectedPromotions = $_SESSION['promotion_from_page'];
+                // Giới hạn tối đa 3 khuyến mãi
+                $selectedPromotions = array_slice($selectedPromotions, 0, 3);
                 $_SESSION['selected_promotions'] = $selectedPromotions;
-                // Debug logs removed for production
+                error_log("DEBUG: Set from promotion_from_page: " . json_encode($selectedPromotions));
             } else {
                 // Khởi tạo mảng rỗng - không chọn sẵn khuyến mãi cho khách hàng
                 $selectedPromotions = [];
-                // Debug logs removed for production
+                // KHÔNG ghi đè session nếu không có dữ liệu mới
+                error_log("DEBUG: No promotions selected, using empty array");
             }
             
             // Debug logs removed for production
@@ -166,6 +185,16 @@ class CartController {
         }
 
         if (!$productId || $quantity <= 0) {
+            // Kiểm tra nếu là AJAX request
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Thông tin sản phẩm không hợp lệ!'
+                ]);
+                return;
+            }
+            
             $_SESSION['error_message'] = 'Thông tin sản phẩm không hợp lệ!';
             header('Location: /websitePS/public/');
             exit();
@@ -182,6 +211,38 @@ class CartController {
             $result = $sessionCartModel->addCartItem($productId, $quantity);
         }
 
+        // Kiểm tra nếu là AJAX request
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+            header('Content-Type: application/json');
+            
+            if ($result) {
+                // Tính toán số lượng sản phẩm trong giỏ hàng
+                $cartCount = 0;
+                if (isset($_SESSION['customer_id'])) {
+                    $cart = $cartModel->getCart($_SESSION['customer_id']);
+                } else {
+                    $cart = $sessionCartModel->getCart();
+                }
+                
+                foreach ($cart as $item) {
+                    $cartCount += $item['quantity'];
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Đã thêm sản phẩm vào giỏ hàng thành công!',
+                    'cartCount' => $cartCount
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!'
+                ]);
+            }
+            return;
+        }
+
+        // Xử lý redirect cho non-AJAX request
         if ($result) {
             $_SESSION['success_message'] = 'Đã thêm sản phẩm vào giỏ hàng thành công!';
         } else {
@@ -266,15 +327,74 @@ class CartController {
             $result = $sessionCartModel->removeCartItem($productId);
         }
 
+        // Kiểm tra nếu là AJAX request
+        $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        
         if ($result) {
-            // Bỏ thông báo thành công khi xóa sản phẩm
-            // $_SESSION['success_message'] = 'Đã xóa sản phẩm khỏi giỏ hàng thành công!';
+            if ($isAjax) {
+                // Lấy cart count mới
+                $cartCount = 0;
+                if (isset($_SESSION['customer_id'])) {
+                    $cart = $cartModel->getCart($_SESSION['customer_id']);
+                    if (!empty($cart)) {
+                        foreach ($cart as $item) {
+                            $cartCount += $item['quantity'];
+                        }
+                    }
+                } else {
+                    if (isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
+                        foreach ($_SESSION['guest_cart'] as $item) {
+                            $cartCount += $item['quantity'];
+                        }
+                    }
+                }
+                
+                // Tính tổng tiền mới
+                $cartTotal = 0;
+                if (isset($_SESSION['customer_id'])) {
+                    $cart = $cartModel->getCart($_SESSION['customer_id']);
+                    if (!empty($cart)) {
+                        foreach ($cart as $item) {
+                            $cartTotal += $item['price'] * $item['quantity'];
+                        }
+                    }
+                } else {
+                    if (isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
+                        foreach ($_SESSION['guest_cart'] as $item) {
+                            $cartTotal += $item['price'] * $item['quantity'];
+                        }
+                    }
+                }
+                
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Đã xóa sản phẩm khỏi giỏ hàng thành công!',
+                    'cartCount' => $cartCount,
+                    'cartTotal' => number_format($cartTotal, 0, ',', '.')
+                ]);
+                exit();
+            } else {
+                // Bỏ thông báo thành công khi xóa sản phẩm
+                // $_SESSION['success_message'] = 'Đã xóa sản phẩm khỏi giỏ hàng thành công!';
+            }
         } else {
-            $_SESSION['error_message'] = 'Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng!';
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng!'
+                ]);
+                exit();
+            } else {
+                $_SESSION['error_message'] = 'Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng!';
+            }
         }
 
-        header('Location: /websitePS/public/cart');
-        exit();
+        if (!$isAjax) {
+            header('Location: /websitePS/public/cart');
+            exit();
+        }
     }
 
          public function clear() {
@@ -348,9 +468,22 @@ class CartController {
              
              // Lấy ưu đãi được chọn
              $selectedPromotions = [];
+             
+             // Debug: Kiểm tra POST data
+             error_log("DEBUG updatePromotions: POST selected_promotions: " . (isset($_POST['selected_promotions']) ? json_encode($_POST['selected_promotions']) : 'NOT SET'));
+             error_log("DEBUG updatePromotions: Session selected_promotions: " . (isset($_SESSION['selected_promotions']) ? json_encode($_SESSION['selected_promotions']) : 'NOT SET'));
+             
              if (isset($_POST['selected_promotions']) && is_array($_POST['selected_promotions'])) {
-                 $selectedPromotions = $_POST['selected_promotions'];
+                 // Giới hạn tối đa 3 khuyến mãi
+                 $selectedPromotions = array_slice($_POST['selected_promotions'], 0, 3);
                  $_SESSION['selected_promotions'] = $selectedPromotions;
+                 error_log("DEBUG updatePromotions: Set from POST: " . json_encode($selectedPromotions));
+             } elseif (isset($_SESSION['selected_promotions'])) {
+                 // Lấy từ session nếu không có POST data (khi refresh trang)
+                 $selectedPromotions = $_SESSION['selected_promotions'];
+                 error_log("DEBUG updatePromotions: Loaded from session: " . json_encode($selectedPromotions));
+             } else {
+                 error_log("DEBUG updatePromotions: No promotions selected");
              }
              
              // Tính toán ưu đãi
@@ -599,6 +732,103 @@ class CartController {
           } catch (Exception $e) {
               http_response_code(500);
               echo json_encode(['error' => 'Internal server error']);
+          }
+      }
+
+      public function updateProductPromotions() {
+          // Method riêng để xử lý AJAX request cho khuyến mãi sản phẩm đơn lẻ
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          
+          // Chỉ cho phép POST request
+          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+              http_response_code(405);
+              echo json_encode(['error' => 'Method not allowed']);
+              return;
+          }
+          
+          // Chỉ cho phép khách hàng đã đăng nhập
+          if (!isset($_SESSION['customer_id'])) {
+              http_response_code(403);
+              echo json_encode(['error' => 'Unauthorized']);
+              return;
+          }
+          
+          try {
+              $promotionModel = new PromotionModel();
+              
+              // Lấy thông tin sản phẩm từ POST
+              $productId = $_POST['product_id'] ?? null;
+              
+              if (!$productId) {
+                  echo json_encode(['success' => false, 'message' => 'Thiếu thông tin sản phẩm']);
+                  return;
+              }
+              
+              // Lấy thông tin sản phẩm
+              require_once __DIR__ . '/../models/ProductModel.php';
+              $productModel = new ProductModel();
+              $product = $productModel->getProductById($productId);
+              
+              if (!$product) {
+                  echo json_encode(['success' => false, 'message' => 'Sản phẩm không tồn tại']);
+                  return;
+              }
+              
+              // Lấy ưu đãi được chọn
+              $selectedPromotions = [];
+              
+              if (isset($_POST['selected_promotions']) && is_array($_POST['selected_promotions'])) {
+                  // Giới hạn tối đa 3 khuyến mãi
+                  $selectedPromotions = array_slice($_POST['selected_promotions'], 0, 3);
+                  $_SESSION['selected_promotions'] = $selectedPromotions;
+              } elseif (isset($_SESSION['selected_promotions'])) {
+                  // Lấy từ session nếu không có POST data
+                  $selectedPromotions = $_SESSION['selected_promotions'];
+              }
+              
+              // Tính toán ưu đãi cho sản phẩm đơn lẻ
+              $availablePromotions = $promotionModel->getAvailablePromotions(
+                  $_SESSION['customer_id'], 
+                  $product['DonGia'], 
+                  $product['TenDanhMuc'] ?? null
+              );
+              
+              $discountResult = $promotionModel->calculateAllDiscounts(
+                  $_SESSION['customer_id'], 
+                  $product['DonGia'], 
+                  $product['TenDanhMuc'] ?? null, 
+                  $selectedPromotions
+              );
+              
+              $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {
+                  return isset($promotion['isSelected']) && $promotion['isSelected'];
+              });
+              
+              $totalDiscount = $discountResult['totalDiscount'];
+              $finalPrice = $discountResult['finalTotal'];
+              
+              // Trả về JSON response
+              header('Content-Type: application/json');
+              echo json_encode([
+                  'success' => true,
+                  'message' => 'Cập nhật ưu đãi thành công!',
+                  'totalDiscount' => $totalDiscount,
+                  'finalPrice' => $finalPrice,
+                  'originalPrice' => $product['DonGia'],
+                  'appliedPromotions' => $appliedPromotions,
+                  'availablePromotions' => $availablePromotions,
+                  'selectedPromotions' => $selectedPromotions
+              ]);
+              
+          } catch (Exception $e) {
+              error_log("Error in updateProductPromotions: " . $e->getMessage());
+              header('Content-Type: application/json');
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra khi cập nhật ưu đãi!'
+              ]);
           }
       }
   }

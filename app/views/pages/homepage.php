@@ -87,6 +87,27 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        
+        /* Styles cho phần đánh giá */
+        .review-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        .rating-stars {
+            font-size: 0.9rem;
+        }
+        .rating-stars .fa-star {
+            transition: color 0.2s ease;
+        }
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+        .user-avatar {
+            background: linear-gradient(135deg, var(--primary-color), #00796b);
+        }
     </style>
 </head>
 <body>
@@ -195,6 +216,10 @@ function getProductImage($product) {
         </div>
     </div>
 </section>
+
+
+
+
 
 <footer class="footer pt-5 pb-4">
     <div class="container text-center text-md-start">

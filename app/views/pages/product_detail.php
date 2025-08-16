@@ -737,6 +737,269 @@ function getProductImage($product) {
                 font-size: 2.5rem;
             }
         }
+        
+        /* Review Section Styles */
+        .reviews-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        
+        .review-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        
+        .rating-input {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 0.25rem;
+        }
+        
+        .rating-input input[type="radio"] {
+            display: none;
+        }
+        
+        .rating-star {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #ddd;
+            transition: color 0.2s ease;
+        }
+        
+        .rating-star:hover,
+        .rating-star:hover ~ .rating-star,
+        .rating-input input[type="radio"]:checked ~ .rating-star {
+            color: #ffc107;
+        }
+        
+        .rating-stars {
+            font-size: 1rem;
+        }
+        
+        .rating-stars .fa-star {
+            transition: color 0.2s ease;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, var(--primary-color), #00796b);
+        }
+        
+        .review-form-section .card {
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .review-form-section .card-header {
+            background: linear-gradient(135deg, var(--primary-color), #00796b) !important;
+            border: none;
+        }
+        
+        /* Rating Filter Styles */
+        .rating-filter {
+            display: flex;
+            align-items: center;
+        }
+        
+        .rating-filter .btn-group {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        
+        .filter-btn {
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 0 !important;
+        }
+        
+        .filter-btn:first-child {
+            border-radius: 25px 0 0 25px !important;
+        }
+        
+        .filter-btn:last-child {
+            border-radius: 0 25px 25px 0 !important;
+        }
+        
+        .filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), #00796b);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .filter-btn.active:hover {
+            background: linear-gradient(135deg, #00796b, var(--primary-color));
+        }
+        
+        /* Review Item Animation */
+        .review-item {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.5s ease forwards;
+            animation-delay: 0s;
+        }
+        
+        .review-item.hidden {
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+            pointer-events: none;
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .review-item.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            position: relative;
+            left: auto;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+                 /* Toast Notification Styles */
+         .toast-notification {
+             position: fixed;
+             top: 20px;
+             right: 20px;
+             z-index: 9999;
+             min-width: 300px;
+             max-width: 400px;
+             background: white;
+             border-radius: 10px;
+             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+             border-left: 4px solid var(--primary-color);
+             transform: translateX(100%);
+             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+             overflow: hidden;
+         }
+         
+         .toast-notification.show {
+             transform: translateX(0);
+         }
+         
+         .toast-notification.success {
+             border-left-color: #28a745;
+         }
+         
+         .toast-notification.error {
+             border-left-color: #dc3545;
+         }
+         
+         .toast-header {
+             padding: 15px 20px 10px;
+             display: flex;
+             align-items: center;
+             gap: 10px;
+         }
+         
+         .toast-icon {
+             width: 24px;
+             height: 24px;
+             border-radius: 50%;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: white;
+             font-size: 12px;
+         }
+         
+         .toast-icon.success {
+             background: #28a745;
+         }
+         
+         .toast-icon.error {
+             background: #dc3545;
+         }
+         
+         .toast-title {
+             font-weight: 600;
+             color: var(--text-color);
+             margin: 0;
+             font-size: 14px;
+         }
+         
+         .toast-body {
+             padding: 0 20px 15px;
+             color: #6c757d;
+             font-size: 13px;
+             line-height: 1.4;
+         }
+         
+         .toast-close {
+             position: absolute;
+             top: 10px;
+             right: 15px;
+             background: none;
+             border: none;
+             color: #6c757d;
+             cursor: pointer;
+             font-size: 16px;
+             padding: 0;
+             width: 20px;
+             height: 20px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             border-radius: 50%;
+             transition: all 0.2s ease;
+         }
+         
+         .toast-close:hover {
+             background: #f8f9fa;
+             color: var(--text-color);
+         }
+         
+         /* Loading Button Styles */
+         .add-to-cart-btn:disabled {
+             opacity: 0.7;
+             cursor: not-allowed;
+         }
+         
+         
+         
+         /* Responsive Filter */
+         @media (max-width: 768px) {
+             .rating-filter {
+                 margin-top: 1rem;
+             }
+             
+             .rating-filter .btn-group {
+                 flex-wrap: wrap;
+                 justify-content: center;
+             }
+             
+             .filter-btn {
+                 margin: 2px;
+                 border-radius: 20px !important;
+             }
+             
+             .toast-notification {
+                 min-width: 280px;
+                 max-width: 320px;
+                 right: 10px;
+                 top: 10px;
+             }
+             
+             
+         }
     </style>
 </head>
 <body>
@@ -830,10 +1093,10 @@ function getProductImage($product) {
                                 </span>
                             </div>
                             
-                            <!-- Product Price -->
-                            <div class="product-price">
-                                <?= number_format($product['DonGia'], 0, ',', '.') ?> ₫
-                            </div>
+                                                         <!-- Product Price -->
+                             <div class="product-price">
+                                 <?= number_format($product['DonGia'], 0, ',', '.') ?> ₫
+                             </div>
                             
                             <!-- Product Meta Information -->
                             <div class="product-meta">
@@ -857,31 +1120,36 @@ function getProductImage($product) {
                                 <?= htmlspecialchars($product['MoTa']) ?>
                             </div>
 
-                            <!-- Purchase Section -->
-                            <div class="purchase-section">
-                                <form action="/websitePS/public/cart/add" method="POST">
-                                    <input type="hidden" name="productId" value="<?= $product['MaSP'] ?>">
-                                    
-                                    <div class="quantity-section">
-                                        <label for="quantity" class="form-label fw-bold" style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;">
-                                            <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
-                                        </label>
-                                        <div class="quantity-control">
-                                            <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1">
-                                            <button type="button" class="quantity-btn" onclick="changeQuantity(1)">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                                                         <!-- Purchase Section -->
+                             <div class="purchase-section">
+                                 <form id="addToCartForm" onsubmit="addToCart(event)">
+                                     <input type="hidden" name="productId" value="<?= $product['MaSP'] ?>">
+                                     
+                                     
+                                     
+                                     <div class="quantity-section">
+                                         <label for="quantity" class="form-label fw-bold" style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                             <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
+                                         </label>
+                                         <div class="quantity-control">
+                                             <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">
+                                                 <i class="fas fa-minus"></i>
+                                             </button>
+                                             <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1">
+                                             <button type="button" class="quantity-btn" onclick="changeQuantity(1)">
+                                                 <i class="fas fa-plus"></i>
+                                             </button>
+                                         </div>
+                                     </div>
 
-                                    <button type="submit" class="btn btn-primary-custom add-to-cart-btn">
-                                        <i class="fas fa-shopping-cart me-2"></i>
-                                        Thêm vào giỏ hàng
-                                    </button>
-                                </form>
+                                     <button type="submit" class="btn btn-primary-custom add-to-cart-btn" id="addToCartBtn">
+                                         <i class="fas fa-shopping-cart me-2"></i>
+                                         <span id="addToCartText">Thêm vào giỏ hàng</span>
+                                         <span id="addToCartLoading" style="display: none;">
+                                             <i class="fas fa-spinner fa-spin me-2"></i>Đang thêm...
+                                         </span>
+                                     </button>
+                                 </form>
                                 
                                 <?php if (!isset($_SESSION['customer_id'])): ?>
                                     <div class="text-center mt-3">
@@ -889,16 +1157,197 @@ function getProductImage($product) {
                                             <i class="fas fa-info-circle me-1"></i>
                                             Bạn đang mua hàng với tư cách khách vãng lai. 
                                             <a href="/websitePS/public/customerauth/login" class="text-decoration-none">Đăng nhập</a> 
-                                            để có thêm nhiều lợi ích! 
+                                            để có thêm nhiều lợi ích và ưu đãi khuyến mãi! 
                                             Sau khi đặt hàng, bạn có thể tra cứu tại 
                                             <a href="/websitePS/public/ordertracking" class="text-decoration-none">trang tra cứu đơn hàng</a>.
                                         </small>
                                     </div>
-                                <?php endif; ?>
+                                                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Product Reviews Section -->
+        <div class="reviews-section py-5">
+            <div class="container">
+                <h2 class="section-title text-center mb-5">
+                    <i class="fas fa-star me-2"></i>
+                    Đánh giá từ khách hàng
+                </h2>
+                
+                <!-- Overall Rating -->
+                <?php if (!empty($productRating) && $productRating['TrungBinh'] > 0): ?>
+                <div class="text-center mb-4">
+                    <div class="d-inline-block bg-white p-4 rounded shadow-sm">
+                        <h4 class="text-primary mb-2">Đánh giá trung bình</h4>
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <?php 
+                            $avgRating = round($productRating['TrungBinh'], 1);
+                            for ($i = 1; $i <= 5; $i++): 
+                            ?>
+                                <i class="fas fa-star <?= $i <= $avgRating ? 'text-warning' : 'text-muted' ?>"></i>
+                            <?php endfor; ?>
+                            <span class="ms-2 fw-bold"><?= $avgRating ?>/5</span>
+                        </div>
+                        <p class="text-muted mb-0">Dựa trên <?= $productRating['TongDanhGia'] ?> đánh giá xác thực
+                            <?php if (isset($reviewStats) && $reviewStats['TongDanhGia'] > 0): ?>
+                                <br><small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    <?= $reviewStats['TyLeXacThuc'] ?>% đánh giá từ khách hàng đã mua hàng
+                                </small>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                </div>
+                <?php endif; ?>
+                
+                <!-- Review Form for Logged-in Customers -->
+                <?php if (isset($_SESSION['customer_id']) && $canReview && $canReview['canReview']): ?>
+                <div class="review-form-section mb-5">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-edit me-2"></i>
+                                Viết đánh giá của bạn
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <?php if (count($canReview['purchasedProducts']) > 1): ?>
+                            <div class="alert alert-info mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Bạn có <?= count($canReview['purchasedProducts']) ?> đơn hàng chưa đánh giá cho sản phẩm này.
+                            </div>
+                            <?php endif; ?>
+                            
+                            <?php foreach ($canReview['purchasedProducts'] as $index => $order): ?>
+                            <div class="review-form-item mb-4 <?= $index > 0 ? 'border-top pt-3' : '' ?>">
+                                <h6 class="text-primary mb-2">
+                                    <i class="fas fa-shopping-bag me-2"></i>
+                                    Đơn hàng #<?= $order['MaDH'] ?> 
+                                    <small class="text-muted">(<?= date('d/m/Y', strtotime($order['NgayDatHang'])) ?>)</small>
+                                </h6>
+                                
+                                <form action="/websitePS/public/review/submit" method="POST">
+                                    <input type="hidden" name="product_id" value="<?= $product['MaSP'] ?>">
+                                    <input type="hidden" name="order_id" value="<?= $order['MaDH'] ?>">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Đánh giá của bạn:</label>
+                                        <div class="rating-input">
+                                            <?php for ($i = 5; $i >= 1; $i--): ?>
+                                            <input type="radio" name="rating" value="<?= $i ?>" id="rating_<?= $order['MaDH'] ?>_<?= $i ?>" required>
+                                            <label for="rating_<?= $order['MaDH'] ?>_<?= $i ?>" class="rating-star">
+                                                <i class="fas fa-star"></i>
+                                            </label>
+                                            <?php endfor; ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="content_<?= $order['MaDH'] ?>" class="form-label">Nhận xét: <small class="text-muted">(không bắt buộc)</small></label>
+                                        <textarea name="content" id="content_<?= $order['MaDH'] ?>" class="form-control" rows="3" 
+                                                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này... (không bắt buộc)"></textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        Gửi đánh giá cho đơn hàng #<?= $order['MaDH'] ?>
+                                    </button>
+                                </form>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php elseif (isset($_SESSION['customer_id']) && $canReview && !$canReview['canReview']): ?>
+                <div class="alert alert-info mb-5">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <?= htmlspecialchars($canReview['reason']) ?>
+                </div>
+                <?php elseif (!isset($_SESSION['customer_id'])): ?>
+                <div class="alert alert-warning mb-5">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Bạn cần <a href="/websitePS/public/customerauth/login" class="alert-link">đăng nhập</a> và mua sản phẩm này để có thể đánh giá.
+                </div>
+                <?php endif; ?>
+                
+                <!-- Reviews List with Filter -->
+                <?php if (!empty($reviews)): ?>
+                <div class="reviews-list">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Tất cả đánh giá (<?= count($reviews) ?>)</h4>
+                        
+                        <!-- Rating Filter -->
+                        <div class="rating-filter">
+                            <div class="btn-group" role="group" aria-label="Rating filter">
+                                <button type="button" class="btn btn-outline-primary filter-btn active" data-rating="all">
+                                    <i class="fas fa-star me-1"></i>Tất cả
+                                </button>
+                                <?php for ($i = 5; $i >= 1; $i--): ?>
+                                <button type="button" class="btn btn-outline-warning filter-btn" data-rating="<?= $i ?>">
+                                    <?= $i ?> <i class="fas fa-star"></i>
+                                </button>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="reviews-container" style="display: flex;">
+                        <?php foreach ($reviews as $review): ?>
+                        <div class="col-md-6 col-lg-4 mb-4 review-item" data-rating="<?= $review['SoSao'] ?>">
+                            <div class="card h-100 shadow-sm review-card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="user-avatar text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="mb-1"><?= htmlspecialchars($review['TenKhachHang'] ?? 'Khách hàng') ?></h6>
+                                            <div class="text-warning rating-stars">
+                                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                    <i class="fas fa-star <?= $i <= $review['SoSao'] ? 'text-warning' : 'text-muted' ?>"></i>
+                                                <?php endfor; ?>
+                                            </div>
+                                            <?php if (isset($review['TrangThaiMuaHang']) && $review['TrangThaiMuaHang'] === 'Đã mua hàng'): ?>
+                                                <small class="text-success">
+                                                    <i class="fas fa-check-circle me-1"></i>
+                                                    Đã mua hàng
+                                                    <?php if (isset($review['MaDH'])): ?>
+                                                        <br><small class="text-muted">Đơn hàng #<?= $review['MaDH'] ?></small>
+                                                    <?php endif; ?>
+                                                </small>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <p class="card-text"><?= htmlspecialchars($review['NoiDung']) ?></p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <?= date('d/m/Y', strtotime($review['NgayDanhGia'])) ?>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    
+                    <!-- No reviews message for filtered results -->
+                    <div id="no-reviews-message" class="text-center py-5" style="display: none;">
+                        <i class="fas fa-filter fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Không có đánh giá nào phù hợp</h5>
+                        <p class="text-muted">Thử chọn bộ lọc khác để xem đánh giá</p>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="text-center py-5">
+                    <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Chưa có đánh giá nào</h5>
+                    <p class="text-muted">Hãy là người đầu tiên đánh giá sản phẩm này!</p>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
         
@@ -1012,6 +1461,209 @@ document.getElementById('quantity').addEventListener('input', function() {
     if (this.value < 1) {
         this.value = 1;
     }
+});
+
+// Toast Notification Function
+function showToast(message, type = 'success') {
+    // Remove existing toasts
+    const existingToasts = document.querySelectorAll('.toast-notification');
+    existingToasts.forEach(toast => toast.remove());
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    
+    const icon = type === 'success' ? 'fas fa-check' : 'fas fa-exclamation-triangle';
+    const title = type === 'success' ? 'Thành công!' : 'Lỗi!';
+    
+    toast.innerHTML = `
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="toast-header">
+            <div class="toast-icon ${type}">
+                <i class="${icon}"></i>
+            </div>
+            <h6 class="toast-title">${title}</h6>
+        </div>
+        <div class="toast-body">
+            ${message}
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(toast);
+    
+    // Show animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Auto hide after 4 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 300);
+    }, 4000);
+}
+
+// Add to Cart Function
+function addToCart(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const button = document.getElementById('addToCartBtn');
+    const textSpan = document.getElementById('addToCartText');
+    const loadingSpan = document.getElementById('addToCartLoading');
+    
+    // Show loading state
+    button.disabled = true;
+    textSpan.style.display = 'none';
+    loadingSpan.style.display = 'inline';
+    
+    // Send AJAX request
+    fetch('/websitePS/public/cart/add', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message || 'Đã thêm sản phẩm vào giỏ hàng thành công!', 'success');
+            
+            // Reset form
+            document.getElementById('quantity').value = 1;
+            
+            // Update cart count if available
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement && data.cartCount !== undefined) {
+                cartCountElement.textContent = data.cartCount;
+                cartCountElement.style.display = data.cartCount > 0 ? 'block' : 'none';
+            }
+        } else {
+            showToast(data.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        button.disabled = false;
+        textSpan.style.display = 'inline';
+        loadingSpan.style.display = 'none';
+    });
+}
+
+// Rating Filter Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const reviewItems = document.querySelectorAll('.review-item');
+    const noReviewsMessage = document.getElementById('no-reviews-message');
+    const reviewsContainer = document.getElementById('reviews-container');
+    
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const selectedRating = this.getAttribute('data-rating');
+                
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filter and sort reviews
+                let visibleItems = [];
+                let hiddenItems = [];
+                
+                reviewItems.forEach(item => {
+                    const itemRating = item.getAttribute('data-rating');
+                    
+                    if (selectedRating === 'all' || itemRating === selectedRating) {
+                        visibleItems.push(item);
+                    } else {
+                        hiddenItems.push(item);
+                    }
+                });
+                
+                // Sort visible items by rating (highest first) and then by date (newest first)
+                visibleItems.sort((a, b) => {
+                    const ratingA = parseInt(a.getAttribute('data-rating'));
+                    const ratingB = parseInt(b.getAttribute('data-rating'));
+                    
+                    // First sort by rating (highest first)
+                    if (ratingA !== ratingB) {
+                        return ratingB - ratingA;
+                    }
+                    
+                    // If same rating, sort by date (newest first)
+                    const dateA = a.querySelector('small.text-muted').textContent.trim();
+                    const dateB = b.querySelector('small.text-muted').textContent.trim();
+                    
+                    // Convert date format dd/mm/yyyy to yyyy-mm-dd for comparison
+                    const convertDate = (dateStr) => {
+                        const parts = dateStr.split('/');
+                        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                    };
+                    
+                    return new Date(convertDate(dateB)) - new Date(convertDate(dateA));
+                });
+                
+                // Clear container and re-append sorted items
+                reviewsContainer.innerHTML = '';
+                
+                // Reset animation delays
+                reviewItems.forEach(item => {
+                    item.style.animationDelay = '0s';
+                });
+                
+                // Add visible items in sorted order with staggered animation
+                visibleItems.forEach((item, index) => {
+                    item.classList.remove('hidden');
+                    item.classList.add('visible');
+                    reviewsContainer.appendChild(item);
+                    
+                    // Add staggered animation delay
+                    item.style.animationDelay = `${index * 0.1}s`;
+                });
+                
+                // Add hidden items at the end (they will be hidden by CSS)
+                hiddenItems.forEach(item => {
+                    item.classList.add('hidden');
+                    item.classList.remove('visible');
+                    reviewsContainer.appendChild(item);
+                });
+                
+                // Show/hide no reviews message
+                if (visibleItems.length === 0) {
+                    noReviewsMessage.style.display = 'block';
+                    reviewsContainer.style.display = 'none';
+                } else {
+                    noReviewsMessage.style.display = 'none';
+                    reviewsContainer.style.display = 'flex';
+                }
+                
+                // Update review count
+                const reviewCountElement = document.querySelector('.reviews-list h4');
+                if (reviewCountElement) {
+                    if (selectedRating === 'all') {
+                        reviewCountElement.textContent = `Tất cả đánh giá (${reviewItems.length})`;
+                    } else {
+                        reviewCountElement.textContent = `Đánh giá ${selectedRating} sao (${visibleItems.length})`;
+                    }
+                }
+            });
+        });
+    }
+    
+    
 });
 </script>
 </body>

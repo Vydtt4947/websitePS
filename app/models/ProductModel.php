@@ -216,4 +216,92 @@ class ProductModel {
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getProductReviews($productId = null, $limit = 10) {
+        $sql = "
+            SELECT 
+                dg.MaDG,
+                dg.SoSao,
+                dg.NoiDung,
+                dg.NgayDanhGia,
+                kh.HoTen as TenKhachHang,
+                sp.TenSP as TenSanPham,
+                sp.MaSP
+            FROM danhgia dg
+            LEFT JOIN khachhang kh ON dg.MaKH = kh.MaKH
+            LEFT JOIN sanpham sp ON dg.MaSP = sp.MaSP
+            WHERE 1=1
+        ";
+        
+        $params = [];
+        
+        if ($productId) {
+            $sql .= " AND dg.MaSP = :productId";
+            $params[':productId'] = $productId;
+        }
+        
+        $sql .= " ORDER BY dg.NgayDanhGia DESC LIMIT :limit";
+        
+        $stmt = $this->db->prepare($sql);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAverageRating($productId = null) {
+        $sql = "
+            SELECT 
+                AVG(SoSao) as TrungBinh,
+                COUNT(*) as TongDanhGia
+            FROM danhgia
+        ";
+        
+        $params = [];
+        
+        if ($productId) {
+            $sql .= " WHERE MaSP = :productId";
+            $params[':productId'] = $productId;
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getTopRatedProducts($limit = 6) {
+        $sql = "
+            SELECT 
+                sp.MaSP,
+                sp.TenSP,
+                sp.MoTa,
+                sp.DonGia,
+                sp.HinhAnh,
+                dm.TenDanhMuc,
+                AVG(dg.SoSao) as TrungBinhSao,
+                COUNT(dg.MaDG) as SoDanhGia
+            FROM sanpham sp
+            LEFT JOIN danhmuc dm ON sp.MaDM = dm.MaDM
+            LEFT JOIN danhgia dg ON sp.MaSP = dg.MaSP
+            GROUP BY sp.MaSP
+            HAVING TrungBinhSao IS NOT NULL
+            ORDER BY TrungBinhSao DESC, SoDanhGia DESC
+            LIMIT :limit
+        ";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

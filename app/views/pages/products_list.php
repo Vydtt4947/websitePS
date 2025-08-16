@@ -239,11 +239,17 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            cursor: pointer;
         }
         .btn-add-cart:hover {
             background-color: #00796b;
             border-color: #00796b;
             color: white;
+        }
+        .btn-add-cart:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
         .btn-view-details {
             background-color: transparent;
@@ -306,6 +312,109 @@
             }
             .search-filter-section {
                 padding: 1rem;
+            }
+        }
+        
+        /* Toast Notification Styles */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-left: 4px solid var(--primary-color);
+            transform: translateX(100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+        
+        .toast-notification.success {
+            border-left-color: #28a745;
+        }
+        
+        .toast-notification.error {
+            border-left-color: #dc3545;
+        }
+        
+        .toast-header {
+            padding: 15px 20px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .toast-icon.success {
+            background: #28a745;
+        }
+        
+        .toast-icon.error {
+            background: #dc3545;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .toast-body {
+            padding: 0 20px 15px;
+            color: #6c757d;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .toast-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .toast-close:hover {
+            background: #f8f9fa;
+            color: var(--text-color);
+        }
+        
+        /* Responsive Toast */
+        @media (max-width: 768px) {
+            .toast-notification {
+                min-width: 280px;
+                max-width: 320px;
+                right: 10px;
+                top: 10px;
             }
         }
         
@@ -487,11 +596,16 @@
                             </div>
                             
                             <div class="product-actions">
-                                <a href="/websitePS/public/cart/add?productId=<?= $product['MaSP'] ?>&quantity=1" 
-                                   class="btn-add-cart">
+                                <button type="button" 
+                                        class="btn-add-cart" 
+                                        onclick="addToCartFromList('<?= $product['MaSP'] ?>', '<?= htmlspecialchars($product['TenSP']) ?>')"
+                                        data-product-id="<?= $product['MaSP'] ?>">
                                     <i class="fas fa-shopping-cart"></i>
-                                    Thêm vào giỏ
-                                </a>
+                                    <span class="btn-text">Thêm vào giỏ</span>
+                                    <span class="btn-loading" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i> Đang thêm...
+                                    </span>
+                                </button>
                                 <a href="/websitePS/public/products/show/<?= $product['MaSP'] ?>" class="btn-view-details">
                                     <i class="fas fa-eye"></i>
                                     Xem chi tiết
@@ -755,6 +869,105 @@ function clearFilters() {
     // Ẩn thông tin bộ lọc
     document.getElementById('filterInfo').style.display = 'none';
 }
+
+// Toast Notification Function
+function showToast(message, type = 'success') {
+    // Remove existing toasts
+    const existingToasts = document.querySelectorAll('.toast-notification');
+    existingToasts.forEach(toast => toast.remove());
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    
+    const icon = type === 'success' ? 'fas fa-check' : 'fas fa-exclamation-triangle';
+    const title = type === 'success' ? 'Thành công!' : 'Lỗi!';
+    
+    toast.innerHTML = `
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="toast-header">
+            <div class="toast-icon ${type}">
+                <i class="${icon}"></i>
+            </div>
+            <h6 class="toast-title">${title}</h6>
+        </div>
+        <div class="toast-body">
+            ${message}
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(toast);
+    
+    // Show animation
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Auto hide after 4 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.remove();
+            }
+        }, 300);
+    }, 4000);
+}
+
+// Add to Cart Function for Product List
+function addToCartFromList(productId, productName) {
+    const button = event.target.closest('.btn-add-cart');
+    const textSpan = button.querySelector('.btn-text');
+    const loadingSpan = button.querySelector('.btn-loading');
+    
+    // Show loading state
+    button.disabled = true;
+    textSpan.style.display = 'none';
+    loadingSpan.style.display = 'inline';
+    
+    // Create form data
+    const formData = new FormData();
+    formData.append('productId', productId);
+    formData.append('quantity', '1');
+    
+    // Send AJAX request
+    fetch('/websitePS/public/cart/add', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(`Đã thêm "${productName}" vào giỏ hàng thành công!`, 'success');
+            
+            // Update cart count if available
+            const cartCountElement = document.querySelector('.cart-count');
+            if (cartCountElement && data.cartCount !== undefined) {
+                cartCountElement.textContent = data.cartCount;
+                cartCountElement.style.display = data.cartCount > 0 ? 'block' : 'none';
+            }
+        } else {
+            showToast(data.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Có lỗi xảy ra khi thêm vào giỏ hàng!', 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        button.disabled = false;
+        textSpan.style.display = 'inline';
+        loadingSpan.style.display = 'none';
+    });
+}
+
 </script>
 
 </body>

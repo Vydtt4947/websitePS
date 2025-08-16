@@ -123,6 +123,23 @@ class ProductsController extends BaseController {
         // Lấy sản phẩm liên quan (cùng danh mục hoặc khác danh mục)
         $relatedProducts = $this->productModel->getRelatedProducts($id, $product['MaDM'] ?? null);
 
+        // Lấy đánh giá sản phẩm
+        require_once __DIR__ . '/../models/ReviewModel.php';
+        $reviewModel = new ReviewModel();
+        
+        // Lấy đánh giá của sản phẩm (cả đánh giá xác thực và chưa xác thực)
+        $reviews = $reviewModel->getProductReviews($id, 20, false);
+        $productRating = $reviewModel->getAverageRating($id, true); // Chỉ tính đánh giá xác thực
+        $reviewStats = $reviewModel->getReviewStatistics($id);
+        
+        // Kiểm tra khách hàng có thể đánh giá không
+        $canReview = null;
+        if (isset($_SESSION['customer_id'])) {
+            $canReview = $reviewModel->canCustomerReview($_SESSION['customer_id'], $id);
+        }
+
+
+
         require_once __DIR__ . '/../views/pages/product_detail.php';
     }
 }

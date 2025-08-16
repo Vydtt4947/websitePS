@@ -1,6 +1,17 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Redirect URL cũ về URL mới
+    RewriteRule ^reviews/submit$ review/submit [R=301,L]
+    RewriteRule ^reviews/form/(.*)$ review/form/$1 [R=301,L]
+    RewriteRule ^admin/reviews$ admin/review [R=301,L]
+    RewriteRule ^review/submitReview$ review/submit [R=301,L]
+    RewriteRule ^review/showReviewForm/(.*)$ review/form/$1 [R=301,L]
+    RewriteRule ^review/showProductReviews/(.*)$ review/product/$1 [R=301,L]
+    RewriteRule ^review/getProductReviewsApi/(.*)$ review/api/$1 [R=301,L]
+    RewriteRule ^review/adminReviews$ review/admin [R=301,L]
+    RewriteRule ^review/deleteReview/(.*)$ review/delete/$1 [R=301,L]
+
     # Điều kiện: Chỉ áp dụng quy tắc nếu đường dẫn yêu cầu không phải là một file có thật
     RewriteCond %{REQUEST_FILENAME} !-f
     # Điều kiện: Chỉ áp dụng quy tắc nếu đường dẫn yêu cầu không phải là một thư mục có thật

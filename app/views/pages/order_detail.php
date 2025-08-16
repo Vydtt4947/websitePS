@@ -298,6 +298,63 @@
             border-left-color: #28a745;
         }
         
+        /* Review Section Styles */
+        .review-section {
+            border: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        
+        .existing-review {
+            border-left: 4px solid #28a745;
+            padding-left: 1rem;
+        }
+        
+        .review-form {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1rem;
+        }
+        
+        .cannot-review {
+            border-left: 4px solid #6c757d;
+            padding-left: 1rem;
+        }
+        
+        .rating-input {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 0.25rem;
+        }
+        
+        .rating-input input[type="radio"] {
+            display: none;
+        }
+        
+        .rating-star {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #ddd;
+            transition: color 0.2s ease;
+        }
+        
+        .rating-star:hover,
+        .rating-star:hover ~ .rating-star,
+        .rating-input input[type="radio"]:checked ~ .rating-star {
+            color: #ffc107;
+        }
+        
+        .rating-stars {
+            font-size: 1rem;
+        }
+        
+        .rating-stars .fa-star {
+            transition: color 0.2s ease;
+        }
+        
+        .review-content {
+            font-style: italic;
+            color: #6c757d;
+        }
+        
         .timeline-content.completed {
             background: #e8f5e8;
             border-left-color: #28a745;
@@ -448,7 +505,7 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
 
 <?php include __DIR__ . '/layouts/navbar.php'; ?>
 
-<!-- Success/Error Messages -->
+<!-- Success/Error Messages (Legacy - kept for non-AJAX requests) -->
 <?php if (isset($_SESSION['success_message'])): ?>
     <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999;">
         <i class="fas fa-check-circle me-2"></i>
@@ -649,6 +706,83 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- Review Section -->
+                        <?php if ($orderDetails['info']['TenTrangThai'] === 'Delivered' && isset($reviewStatus[$item['MaSP']])): ?>
+                        <div class="review-section mt-3 p-3 bg-light rounded">
+                            <?php $reviewInfo = $reviewStatus[$item['MaSP']]; ?>
+                            
+                            <?php if ($reviewInfo['existingReview']): ?>
+                                <!-- Existing Review -->
+                                <div class="existing-review">
+                                    <h6 class="text-success mb-2">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Bạn đã đánh giá sản phẩm này cho đơn hàng này
+                                    </h6>
+                                                                         <?php // The existingReview here is a single review object for the current order, not an array ?>
+                                     <div class="review-item mb-3 p-3 bg-white rounded border">
+                                         <div class="rating-stars mb-2">
+                                             <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                 <i class="fas fa-star <?= $i <= $reviewInfo['existingReview']['SoSao'] ? 'text-warning' : 'text-muted' ?>"></i>
+                                             <?php endfor; ?>
+                                             <span class="ms-2"><?= $reviewInfo['existingReview']['SoSao'] ?>/5</span>
+                                         </div>
+                                         <p class="review-content mb-2"><?= htmlspecialchars($reviewInfo['existingReview']['NoiDung']) ?></p>
+                                         <small class="text-muted">
+                                             Đánh giá ngày: <?= date('d/m/Y', strtotime($reviewInfo['existingReview']['NgayDanhGia'])) ?>
+                                             <?php if (isset($reviewInfo['existingReview']['MaDH'])): ?>
+                                                 <br>Đơn hàng #<?= $reviewInfo['existingReview']['MaDH'] ?>
+                                             <?php endif; ?>
+                                         </small>
+                                     </div>
+                                </div>
+                            <?php elseif ($reviewInfo['canReview']): ?>
+                                <!-- Review Form -->
+                                <div class="review-form">
+                                    <h6 class="text-primary mb-2">
+                                        <i class="fas fa-star me-2"></i>
+                                        Đánh giá sản phẩm này
+                                    </h6>
+                                                                         <form action="/websitePS/public/review/submit" method="POST" class="review-form-content">
+                                        <input type="hidden" name="product_id" value="<?= $item['MaSP'] ?>">
+                                        <input type="hidden" name="order_id" value="<?= $reviewInfo['orderId'] ?>">
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Đánh giá của bạn:</label>
+                                            <div class="rating-input">
+                                                <?php for ($i = 5; $i >= 1; $i--): ?>
+                                                <input type="radio" name="rating" value="<?= $i ?>" id="rating_<?= $item['MaSP'] ?>_<?= $i ?>" required>
+                                                <label for="rating_<?= $item['MaSP'] ?>_<?= $i ?>" class="rating-star">
+                                                    <i class="fas fa-star"></i>
+                                                </label>
+                                                <?php endfor; ?>
+                                            </div>
+                                        </div>
+                                        
+                                                                                 <div class="mb-3">
+                                             <label for="content_<?= $item['MaSP'] ?>" class="form-label">Nhận xét: <small class="text-muted">(không bắt buộc)</small></label>
+                                             <textarea name="content" id="content_<?= $item['MaSP'] ?>" 
+                                                       class="form-control" rows="3" 
+                                                       placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này... (không bắt buộc)"></textarea>
+                                         </div>
+                                        
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-paper-plane me-2"></i>
+                                            Gửi đánh giá
+                                        </button>
+                                    </form>
+                                </div>
+                            <?php else: ?>
+                                <!-- Cannot Review -->
+                                <div class="cannot-review">
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <?= htmlspecialchars($reviewInfo['reason']) ?>
+                                    </p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -689,12 +823,12 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
                         </a>
                         
                         <?php if ($orderDetails['info']['TenTrangThai'] === 'Pending'): ?>
-                        <a href="/websitePS/public/customerorders/cancel/<?= $orderDetails['info']['MaDH'] ?>" 
-                           class="btn btn-danger w-100"
-                           onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')">
+                        <button type="button" 
+                                class="btn btn-danger w-100"
+                                onclick="cancelOrder(<?= $orderDetails['info']['MaDH'] ?>)">
                             <i class="fas fa-times me-2"></i>
                             Hủy đơn hàng
-                        </a>
+                        </button>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -730,6 +864,196 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Toast Notification Styles -->
+    <style>
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 0;
+            min-width: 300px;
+            max-width: 400px;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+        
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+        
+        .toast-notification.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .toast-notification.error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .toast-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .toast-close:hover {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        
+        .toast-header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px 10px 20px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+        }
+        
+        .toast-icon.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .toast-icon.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .toast-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .toast-body {
+            padding: 10px 20px 15px 20px;
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+    </style>
+    
+    <!-- Toast Notification JavaScript -->
+    <script>
+        // Toast Notification Function
+        function showToast(message, type = 'success') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast-notification');
+            existingToasts.forEach(toast => toast.remove());
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            
+            const icon = type === 'success' ? 'fas fa-check' : 'fas fa-exclamation-triangle';
+            const title = type === 'success' ? 'Thành công!' : 'Lỗi!';
+            
+            toast.innerHTML = `
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="toast-header">
+                    <div class="toast-icon ${type}">
+                        <i class="${icon}"></i>
+                    </div>
+                    <h6 class="toast-title">${title}</h6>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            
+            // Add to page
+            document.body.appendChild(toast);
+            
+            // Show animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Auto hide after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 4000);
+        }
+        
+        // Order Cancellation Function
+        function cancelOrder(orderId) {
+            if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+                return;
+            }
+            
+            // Show loading state
+            const cancelBtn = document.querySelector(`[onclick="cancelOrder(${orderId})"]`);
+            const originalText = cancelBtn.innerHTML;
+            cancelBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang hủy...';
+            cancelBtn.disabled = true;
+            
+            // Send AJAX request
+            fetch(`/websitePS/public/customerorders/cancel/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message || 'Đơn hàng đã được hủy thành công!', 'success');
+                    
+                    // Reload page after a short delay to update the UI
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showToast(data.message || 'Có lỗi xảy ra khi hủy đơn hàng!', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Có lỗi xảy ra khi hủy đơn hàng!', 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                cancelBtn.innerHTML = originalText;
+                cancelBtn.disabled = false;
+            });
+        }
+    </script>
 </body>
 </html>

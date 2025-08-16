@@ -231,10 +231,16 @@
             justify-content: center;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(255,107,107,0.3);
+            cursor: pointer;
         }
         .remove-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 15px rgba(255,107,107,0.4);
+        }
+        .remove-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
         
         /* Cart Summary */
@@ -243,8 +249,59 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 2rem;
-            position: sticky;
-            top: 2rem;
+        }
+        
+
+        
+        /* Promotion Section Styles for Cart */
+        .promotion-section-cart {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
+        }
+        
+
+        
+        .promotion-title-cart {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .promotion-option-cart {
+            background: white;
+            border-radius: 8px;
+            padding: 0.75rem;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+        
+        .promotion-option-cart:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,150,136,0.1);
+        }
+        
+        .promotion-option-cart .form-check-input:checked + .form-check-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .promotion-option-cart .form-check-input:disabled + .form-check-label {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .promotion-info-cart {
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
         }
         .summary-header {
             text-align: center;
@@ -282,6 +339,8 @@
         .summary-total {
             color: var(--primary-color) !important;
         }
+        
+
         
         /* Action Buttons */
         .action-buttons {
@@ -381,6 +440,107 @@
         .alert-danger {
             background: linear-gradient(135deg, #f8d7da, #f5c6cb);
             color: #721c24;
+        }
+        
+        /* Toast Notification Styles */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease-out;
+            font-family: var(--body-font);
+        }
+        
+        .toast-notification.success {
+            border-left-color: #28a745;
+        }
+        
+        .toast-notification.error {
+            border-left-color: #dc3545;
+        }
+        
+        .toast-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px 8px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 12px;
+        }
+        
+        .toast-notification.success .toast-icon {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .toast-notification.error .toast-icon {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+            flex-grow: 1;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+        }
+        
+        .toast-close:hover {
+            color: #333;
+        }
+        
+        .toast-body {
+            padding: 8px 16px 12px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .toast-notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -516,10 +676,11 @@
                                          <div class="product-total"><?= number_format($subtotal, 0, ',', '.') ?> đ</div>
                                      </div>
                                      <div class="col-md-1 col-3 text-end">
-                                         <a href="/websitePS/public/cart/remove/<?= $id ?>" class="remove-btn" 
-                                            title="Xóa sản phẩm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                         <button type="button" class="remove-btn" 
+                                                 title="Xóa sản phẩm" 
+                                                 onclick="removeFromCart('<?= $id ?>', '<?= htmlspecialchars($item['name']) ?>')">
                                              <i class="fas fa-trash"></i>
-                                         </a>
+                                         </button>
                                      </div>
                                  </div>
                              </div>
@@ -622,7 +783,7 @@
                        quantityInput.disabled = false;
                        quantityInput.style.opacity = '1';
                    }
-                   showErrorMessage(data.message || 'Có lỗi xảy ra khi cập nhật số lượng!');
+                                       showToast(data.message || 'Có lỗi xảy ra khi cập nhật số lượng!', 'error');
                }
            })
            .catch(error => {
@@ -633,7 +794,7 @@
                    quantityInput.disabled = false;
                    quantityInput.style.opacity = '1';
                }
-               showErrorMessage('Có lỗi xảy ra khi cập nhật số lượng sản phẩm!');
+                               showToast('Có lỗi xảy ra khi cập nhật số lượng sản phẩm!', 'error');
            });
        }
       
@@ -648,13 +809,14 @@
               if (currentSummary) {
                   currentSummary.innerHTML = html;
                   
-                  // Thêm lại event listeners cho các checkbox mới
-                  const newCheckboxes = currentSummary.querySelectorAll('input[name="selected_promotions[]"]');
-                  newCheckboxes.forEach(checkbox => {
-                      checkbox.addEventListener('change', function() {
-                          updatePromotions();
-                      });
-                  });
+                                     // Thêm lại event listeners cho các checkbox mới
+                   const newCheckboxes = currentSummary.querySelectorAll('input[name="selected_promotions[]"]');
+                   newCheckboxes.forEach(checkbox => {
+                       checkbox.addEventListener('change', function() {
+                           console.log('DEBUG: Checkbox changed (updateCartSummary):', this.value, 'checked:', this.checked);
+                           updatePromotions();
+                       });
+                   });
               }
           })
           .catch(error => {
@@ -667,6 +829,12 @@
           const form = document.getElementById('promotionForm');
           if (form) {
               const formData = new FormData(form);
+              
+              // Debug: Kiểm tra form data
+              console.log('DEBUG: Form data being sent:');
+              for (let [key, value] of formData.entries()) {
+                  console.log(key + ': ' + value);
+              }
               
               // Hiển thị loading
               const submitBtn = document.querySelector('.btn-checkout');
@@ -687,13 +855,20 @@
                   if (currentSummary) {
                       currentSummary.innerHTML = html;
                       
-                      // Thêm lại event listeners cho các checkbox mới
-                      const newCheckboxes = currentSummary.querySelectorAll('input[name="selected_promotions[]"]');
-                      newCheckboxes.forEach(checkbox => {
-                          checkbox.addEventListener('change', function() {
-                              updatePromotions();
-                          });
-                      });
+                                             // Thêm lại event listeners cho các checkbox mới
+                       const newCheckboxes = currentSummary.querySelectorAll('input[name="selected_promotions[]"]');
+                       newCheckboxes.forEach(checkbox => {
+                           checkbox.addEventListener('change', function() {
+                               console.log('DEBUG: Checkbox changed:', this.value, 'checked:', this.checked);
+                               updatePromotions();
+                           });
+                       });
+                       
+                       // Debug: Kiểm tra xem có bao nhiêu checkbox được tìm thấy
+                       console.log('DEBUG: Found', newCheckboxes.length, 'checkboxes after update');
+                       newCheckboxes.forEach((checkbox, index) => {
+                           console.log('DEBUG: Checkbox', index, 'checked:', checkbox.checked, 'value:', checkbox.value);
+                       });
                   }
                   
                   // Khôi phục nút checkout
@@ -712,7 +887,7 @@
                       submitBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Thanh toán ngay';
                       submitBtn.disabled = false;
                   }
-                  showErrorMessage('Có lỗi xảy ra khi cập nhật khuyến mãi!');
+                                     showToast('Có lỗi xảy ra khi cập nhật khuyến mãi!', 'error');
               });
           }
       }
@@ -744,54 +919,119 @@
             });
        });
      
-           function clearPromotions() {
-          // Xóa tất cả checkbox
-          const checkboxes = document.querySelectorAll('input[name="selected_promotions[]"]');
-          checkboxes.forEach(checkbox => {
-              checkbox.checked = false;
-          });
-          // Sử dụng AJAX để cập nhật
-          updatePromotions();
-      }
+
      
      
      
-                  // Hàm hiển thị thông báo thành công
-       function showSuccessMessage(message) {
-           const alertDiv = document.createElement('div');
-           alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
-           alertDiv.innerHTML = `
-               <i class="fas fa-check-circle me-2"></i>
-               ${message}
-               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-           `;
-           
-           const container = document.querySelector('.container');
-           container.insertBefore(alertDiv, container.firstChild);
-           
-           // Tự động ẩn sau 3 giây
-           setTimeout(() => {
-               alertDiv.remove();
-           }, 3000);
-       }
+                          // Hàm hiển thị toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            
+            const icon = type === 'success' ? 'fas fa-check' : 'fas fa-exclamation-triangle';
+            const title = type === 'success' ? 'Thành công' : 'Lỗi';
+            
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <div class="toast-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="toast-title">${title}</div>
+                    <button type="button" class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Tự động ẩn sau 3 giây
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
        
-       // Hàm hiển thị thông báo lỗi
-       function showErrorMessage(message) {
-           const alertDiv = document.createElement('div');
-           alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
-           alertDiv.innerHTML = `
-               <i class="fas fa-exclamation-triangle me-2"></i>
-               ${message}
-               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-           `;
+       // Hàm xóa sản phẩm khỏi giỏ hàng bằng AJAX
+       function removeFromCart(productId, productName) {
+           if (!confirm(`Bạn có chắc muốn xóa sản phẩm "${productName}" khỏi giỏ hàng?`)) {
+               return;
+           }
            
-           const container = document.querySelector('.container');
-           container.insertBefore(alertDiv, container.firstChild);
+           // Tìm product card và remove button để hiển thị loading
+           const productCard = document.querySelector(`[data-product-id="${productId}"]`);
+           const removeButton = event.target.closest('.remove-btn');
            
-           // Tự động ẩn sau 5 giây
-           setTimeout(() => {
-               alertDiv.remove();
-           }, 5000);
+           if (productCard) {
+               productCard.style.opacity = '0.5';
+               productCard.style.pointerEvents = 'none';
+           }
+           
+           if (removeButton) {
+               removeButton.disabled = true;
+           }
+           
+           // Gửi AJAX request
+           fetch(`/websitePS/public/cart/remove/${productId}`, {
+               method: 'GET',
+               headers: {
+                   'X-Requested-With': 'XMLHttpRequest'
+               }
+           })
+           .then(response => response.json())
+           .then(data => {
+               if (data.success) {
+                   // Xóa product card khỏi DOM
+                   if (productCard) {
+                       productCard.remove();
+                   }
+                   
+                   // Cập nhật cart count trong navbar
+                   const cartCountElement = document.querySelector('.cart-count');
+                   if (cartCountElement && data.cartCount !== undefined) {
+                       cartCountElement.textContent = data.cartCount;
+                       cartCountElement.style.display = data.cartCount > 0 ? 'block' : 'none';
+                   }
+                   
+                                       // Cập nhật toàn bộ cart summary
+                    updateCartSummary();
+                    
+                    // Kiểm tra nếu giỏ hàng trống
+                    const remainingProducts = document.querySelectorAll('.product-card');
+                    if (remainingProducts.length === 0) {
+                        // Reload trang để hiển thị empty cart
+                        location.reload();
+                    }
+                   
+                                       showToast(`Đã xóa "${productName}" khỏi giỏ hàng thành công!`, 'success');
+                } else {
+                    // Khôi phục product card và button
+                    if (productCard) {
+                        productCard.style.opacity = '1';
+                        productCard.style.pointerEvents = 'auto';
+                    }
+                    if (removeButton) {
+                        removeButton.disabled = false;
+                    }
+                    showToast(data.message || 'Có lỗi xảy ra khi xóa sản phẩm!', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Khôi phục product card và button
+                if (productCard) {
+                    productCard.style.opacity = '1';
+                    productCard.style.pointerEvents = 'auto';
+                }
+                if (removeButton) {
+                    removeButton.disabled = false;
+                }
+                showToast('Có lỗi xảy ra khi xóa sản phẩm!', 'error');
+            });
        }
      
      

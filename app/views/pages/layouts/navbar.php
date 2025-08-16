@@ -69,8 +69,12 @@ if (strpos($request_uri, '/products/show/') !== false || strpos($request_uri, '/
                 <a href="/websitePS/public/cart" class="btn btn-outline-light text-dark me-2 position-relative">
                     <i class="fa fa-shopping-cart"></i>
                     <?php if ($cartItemCount > 0): ?>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="display: <?= $cartItemCount > 0 ? 'block' : 'none' ?>;">
                             <?= $cartItemCount ?>
+                        </span>
+                    <?php else: ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="display: none;">
+                            0
                         </span>
                     <?php endif; ?>
                 </a>

@@ -96,7 +96,7 @@ class OrderModel {
         $orderDetails['info'] = $stmtOrder->fetch(PDO::FETCH_ASSOC);
 
         $queryItems = "
-            SELECT sp.TenSP, sp.HinhAnh, ctdh.SoLuong, ctdh.DonGia
+            SELECT sp.MaSP, sp.TenSP, sp.HinhAnh, ctdh.SoLuong, ctdh.DonGia
             FROM chitietdonhang ctdh
             JOIN sanpham sp ON ctdh.MaSP = sp.MaSP
             WHERE ctdh.MaDH = :id

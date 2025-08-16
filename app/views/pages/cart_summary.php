@@ -28,17 +28,16 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         <span class="summary-value"><?= number_format($total, 0, ',', '.') ?> đ</span>
     </div>
     
-    <!-- Chọn ưu đãi (chỉ cho khách hàng đã đăng nhập) -->
-    <?php if (!empty($availablePromotions) && isset($_SESSION['customer_id'])): ?>
-        <div class="summary-item" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 10px; margin: 10px 0; padding: 15px;">
-            <div style="width: 100%;">
-                <div style="color: #1976d2; font-weight: 600; margin-bottom: 15px;">
-                    <i class="fas fa-gift me-2"></i>Chọn ưu đãi (Tùy chọn - Tối đa 3 khuyến mãi):
-                </div>
-                <div style="font-size: 0.85rem; color: #6c757d; margin-bottom: 10px; font-style: italic;">
-                    <i class="fas fa-info-circle me-1"></i>
-                    Bạn có thể chọn 0-3 khuyến mãi hoặc không chọn khuyến mãi nào
-                </div>
+         <!-- Chọn ưu đãi (chỉ cho khách hàng đã đăng nhập) -->
+     <?php if (isset($_SESSION['customer_id'])): ?>
+        <div class="promotion-section-cart">
+            <div class="promotion-title-cart">
+                <i class="fas fa-gift me-2"></i>Chọn ưu đãi (Tùy chọn - Tối đa 3 khuyến mãi):
+            </div>
+            <div style="font-size: 0.85rem; color: #6c757d; margin-bottom: 10px; font-style: italic;">
+                <i class="fas fa-info-circle me-1"></i>
+                Bạn có thể chọn 0-3 khuyến mãi hoặc không chọn khuyến mãi nào
+            </div>
                 
                 <form method="POST" action="/websitePS/public/cart" id="promotionForm" style="margin: 0;">
                     <!-- Hidden input để đảm bảo form luôn có data khi submit -->
@@ -47,75 +46,67 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
                     // Hiển thị tất cả ưu đãi khách hàng có thể chọn (bao gồm cả tier discount)
                     $selectablePromotions = $availablePromotions;
                     ?>
+                                         <?php if (!empty($selectablePromotions)): ?>
+                         <?php foreach ($selectablePromotions as $promotion): ?>
+                             <?php 
+                             $isSelected = in_array($promotion['promotionType'], $selectedPromotions);
+                             $selectedCount = count($selectedPromotions);
+                             // Cho phép bỏ chọn tất cả khuyến mãi, không disable
+                             $isDisabled = false;
+                             ?>
+                                                           <div class="promotion-option-cart">
+                                 <div style="display: flex; align-items: center;">
+                                     <div style="flex: 1; min-width: 0;">
+                                         <label style="display: flex; align-items: center; margin: 0; cursor: pointer;">
+                                             <input type="checkbox" 
+                                                    name="selected_promotions[]" 
+                                                    value="<?= $promotion['promotionType'] ?>"
+                                                    <?= $isSelected ? 'checked' : '' ?>
+                                                    onchange="updatePromotions()"
+                                                    style="margin-right: 10px; cursor: pointer;">
+                                             <span style="color: #495057; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                 <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
+                                                     <i class="fas fa-crown me-2" style="color: #ffc107;"></i>
+                                                 <?php elseif ($promotion['promotionType'] === 'flash_sale_cupcake'): ?>
+                                                     <i class="fas fa-fire me-2" style="color: #ff6b35;"></i>
+                                                 <?php elseif ($promotion['promotionType'] === 'birthday_cake_25'): ?>
+                                                     <i class="fas fa-birthday-cake me-2" style="color: #e91e63;"></i>
+                                                 <?php elseif ($promotion['promotionType'] === 'general_20'): ?>
+                                                     <i class="fas fa-percentage me-2" style="color: #2196f3;"></i>
+                                                 <?php elseif ($promotion['promotionType'] === 'free_shipping'): ?>
+                                                     <i class="fas fa-shipping-fast me-2" style="color: #4caf50;"></i>
+                                                 <?php endif; ?>
+                                                 <?= htmlspecialchars($promotion['description']) ?>
+                                                 <?php if ($promotion['discount'] > 0): ?>
+                                                     <span class="badge bg-success ms-2" style="font-size: 0.7rem;">
+                                                         -<?= number_format($promotion['discount'], 0, ',', '.') ?> ₫
+                                                     </span>
+                                                 <?php endif; ?>
+                                             </span>
+                                         </label>
+                                     </div>
+                                 </div>
+                             </div>
+                         <?php endforeach; ?>
+                     <?php else: ?>
+                         <div style="text-align: center; padding: 15px; color: #6c757d; font-style: italic;">
+                             <i class="fas fa-info-circle me-2"></i>
+                             Hiện tại không có ưu đãi khuyến mãi nào khả dụng cho đơn hàng này
+                         </div>
+                     <?php endif; ?>
+                    
                     <?php if (!empty($selectablePromotions)): ?>
-                        <?php foreach ($selectablePromotions as $promotion): ?>
-                            <?php 
-                            $isSelected = in_array($promotion['promotionType'], $selectedPromotions);
-                            $selectedCount = count($selectedPromotions);
-                            $isDisabled = $selectedCount >= 3 && !$isSelected;
-                            ?>
-                            <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 8px; border: 2px solid <?= $isSelected ? '#28a745' : '#e9ecef' ?>;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div style="flex: 1; min-width: 0;">
-                                        <label style="display: flex; align-items: center; margin: 0; cursor: <?= $isDisabled ? 'not-allowed' : 'pointer' ?>;">
-                                            <input type="checkbox" 
-                                                   name="selected_promotions[]" 
-                                                   value="<?= $promotion['promotionType'] ?>"
-                                                   <?= $isSelected ? 'checked' : '' ?>
-                                                   <?= $isDisabled ? 'disabled' : '' ?>
-                                                   onchange="updatePromotions()"
-                                                   style="margin-right: 10px; cursor: pointer;">
-                                            <span style="color: #495057; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                <?php if ($promotion['promotionType'] === 'flash_sale_cupcake'): ?>
-                                                    <i class="fas fa-fire me-2" style="color: #ff6b35;"></i>
-                                                <?php elseif ($promotion['promotionType'] === 'birthday_cake_25'): ?>
-                                                    <i class="fas fa-birthday-cake me-2" style="color: #e91e63;"></i>
-                                                <?php elseif ($promotion['promotionType'] === 'general_20'): ?>
-                                                    <i class="fas fa-percentage me-2" style="color: #2196f3;"></i>
-                                                <?php elseif ($promotion['promotionType'] === 'free_shipping'): ?>
-                                                    <i class="fas fa-shipping-fast me-2" style="color: #4caf50;"></i>
-                                                <?php endif; ?>
-                                                <?= htmlspecialchars($promotion['description']) ?>
-                                            </span>
-                                        </label>
-                                    </div>
-                                    <div style="text-align: right; flex-shrink: 0; margin-left: 10px;">
-                                        <div style="color: #dc3545; font-weight: 600; font-size: 0.9rem;">
-                                            -<?= number_format($promotion['discount'], 0, ',', '.') ?> đ
-                                        </div>
-                                        <?php if ($isDisabled): ?>
-                                            <div style="font-size: 0.75rem; color: #6c757d; font-style: italic; white-space: nowrap;">
-                                                (Đã đạt giới hạn)
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
+                        <div class="promotion-info-cart">
+                            <div style="text-align: center; font-size: 0.8rem; color: #6c757d;">
+                                Đã chọn: <span id="selected-count"><?= count($selectedPromotions) ?></span>/3 khuyến mãi
+                                <div id="no-promotion-message" style="<?= count($selectedPromotions) === 0 ? '' : 'display: none;' ?>">
+                                    <span style="color: #28a745; font-weight: 500;">✓ Không áp dụng khuyến mãi</span>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div style="text-align: center; padding: 15px; color: #6c757d; font-style: italic;">
-                            Không có ưu đãi khuyến mãi nào khả dụng
                         </div>
                     <?php endif; ?>
                     
-                    <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.8); border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                            <span style="color: #495057; font-weight: 500;">Tổng giảm giá:</span>
-                            <span style="color: #dc3545; font-weight: 600;">-<?= number_format($totalDiscount, 0, ',', '.') ?> đ</span>
-                        </div>
-                        <div style="text-align: center; font-size: 0.8rem; color: #6c757d;">
-                            Đã chọn: <?= count($selectedPromotions) ?>/3 khuyến mãi
-                            <?php if (count($selectedPromotions) === 0): ?>
-                                <br><span style="color: #28a745; font-weight: 500;">✓ Không áp dụng khuyến mãi</span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    
                     <div style="margin-top: 15px; text-align: center;">
-                        <button type="button" onclick="clearPromotions()" class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-times me-1"></i>
-                            Xóa tất cả ưu đãi
-                        </button>
                         <button type="submit" style="display: none;" id="hiddenSubmitBtn">Submit</button>
                     </div>
                 </form>
@@ -123,43 +114,50 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         </div>
     <?php endif; ?>
     
-    <!-- Hiển thị ưu đãi đã áp dụng (chỉ cho khách hàng đã đăng nhập) -->
-    <?php if (!empty($appliedPromotions) && isset($_SESSION['customer_id'])): ?>
+         <!-- Hiển thị ưu đãi đã áp dụng (chỉ cho khách hàng đã đăng nhập) -->
+     <?php if (isset($_SESSION['customer_id'])): ?>
         <div class="summary-item" style="background: #f8f9fa; border-radius: 10px; margin: 10px 0; padding: 15px;">
             <div style="width: 100%;">
                 <div style="color: #28a745; font-weight: 600; margin-bottom: 10px;">
                     <i class="fas fa-check-circle me-2"></i>Ưu đãi đã áp dụng:
                 </div>
                 
-                <!-- Tất cả ưu đãi đã áp dụng -->
-                <?php 
-                $stepNumber = 1;
-                foreach ($appliedPromotions as $promotion): 
-                ?>
-                    <div style="margin-bottom: 5px; padding: 6px; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #6c757d; font-size: 0.8rem; font-weight: 600;">
-                                <?= $stepNumber ?>. 
-                                <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
-                                    <i class="fas fa-crown me-1" style="color: #ffd700;"></i>
-                                <?php elseif ($promotion['promotionType'] === 'flash_sale_cupcake'): ?>
-                                    <i class="fas fa-fire me-1" style="color: #ff6b35;"></i>
-                                <?php elseif ($promotion['promotionType'] === 'birthday_cake_25'): ?>
-                                    <i class="fas fa-birthday-cake me-1" style="color: #e91e63;"></i>
-                                <?php elseif ($promotion['promotionType'] === 'general_20'): ?>
-                                    <i class="fas fa-percentage me-1" style="color: #2196f3;"></i>
-                                <?php elseif ($promotion['promotionType'] === 'free_shipping'): ?>
-                                    <i class="fas fa-shipping-fast me-1" style="color: #4caf50;"></i>
-                                <?php endif; ?>
-                                <?= htmlspecialchars($promotion['description']) ?>
-                            </span>
-                            <span style="color: #dc3545; font-weight: 600; font-size: 0.85rem;">-<?= number_format($promotion['discount'], 0, ',', '.') ?> đ</span>
-                        </div>
-                    </div>
-                <?php 
-                    $stepNumber++;
-                endforeach; 
-                ?>
+                                 <!-- Tất cả ưu đãi đã áp dụng -->
+                 <div id="applied-promotions-list">
+                     <?php 
+                     $stepNumber = 1;
+                     foreach ($appliedPromotions as $promotion): 
+                     ?>
+                         <div style="margin-bottom: 5px; padding: 6px; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
+                             <div style="display: flex; align-items: center;">
+                                 <span style="color: #6c757d; font-size: 0.8rem; font-weight: 600;">
+                                     <?= $stepNumber ?>. 
+                                     <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
+                                         <i class="fas fa-crown me-1" style="color: #ffd700;"></i>
+                                     <?php elseif ($promotion['promotionType'] === 'flash_sale_cupcake'): ?>
+                                         <i class="fas fa-fire me-1" style="color: #ff6b35;"></i>
+                                     <?php elseif ($promotion['promotionType'] === 'birthday_cake_25'): ?>
+                                         <i class="fas fa-birthday-cake me-1" style="color: #e91e63;"></i>
+                                     <?php elseif ($promotion['promotionType'] === 'general_20'): ?>
+                                         <i class="fas fa-percentage me-1" style="color: #2196f3;"></i>
+                                     <?php elseif ($promotion['promotionType'] === 'free_shipping'): ?>
+                                         <i class="fas fa-shipping-fast me-1" style="color: #4caf50;"></i>
+                                     <?php endif; ?>
+                                     <?= htmlspecialchars($promotion['description']) ?>
+                                 </span>
+                             </div>
+                         </div>
+                     <?php 
+                         $stepNumber++;
+                     endforeach; 
+                     ?>
+                 </div>
+                 <?php if (empty($appliedPromotions)): ?>
+                     <div style="text-align: center; padding: 10px; color: #6c757d; font-style: italic; font-size: 0.8rem;">
+                         <i class="fas fa-info-circle me-1"></i>
+                         Chưa có ưu đãi nào được áp dụng
+                     </div>
+                 <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>
@@ -188,17 +186,14 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         </div>
     <?php endif; ?>
     
-    <?php if ($totalDiscount > 0 && isset($_SESSION['customer_id'])): ?>
-        <div class="summary-item">
-            <span class="summary-label">Tổng giảm giá:</span>
-            <span class="summary-value" style="color: #dc3545;">-<?= number_format($totalDiscount, 0, ',', '.') ?> đ</span>
-        </div>
-    <?php elseif (isset($_SESSION['customer_id']) && !empty($availablePromotions)): ?>
-        <div class="summary-item">
-            <span class="summary-label">Tổng giảm giá:</span>
-            <span class="summary-value" style="color: #6c757d;">0 đ</span>
-        </div>
-    <?php endif; ?>
+         <?php if (isset($_SESSION['customer_id'])): ?>
+         <div class="summary-item">
+             <span class="summary-label">Tổng giảm giá:</span>
+             <span class="summary-value" id="total-discount" style="color: <?= $totalDiscount > 0 ? '#dc3545' : '#6c757d' ?>;">
+                 <?= $totalDiscount > 0 ? '-' . number_format($totalDiscount, 0, ',', '.') . ' đ' : '0 đ' ?>
+             </span>
+         </div>
+     <?php endif; ?>
     
     <div class="summary-item">
         <span class="summary-label">Phí vận chuyển:</span>
