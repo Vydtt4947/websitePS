@@ -13,8 +13,7 @@ class CartController {
             session_start();
         }
         
-        error_log("CartController::index() called");
-        error_log("Session customer_id: " . (isset($_SESSION['customer_id']) ? $_SESSION['customer_id'] : 'not set'));
+        // Debug logs removed for production
         
         try {
             $cartModel = new CartModel();
@@ -22,21 +21,17 @@ class CartController {
             $promotionModel = new PromotionModel();
             $cart = [];
             
-            // Debug: Log request method
-            error_log("Cart: Request method: " . $_SERVER['REQUEST_METHOD']);
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                error_log("Cart: POST data: " . print_r($_POST, true));
-            }
+            // Debug logs removed for production
             
             // Lấy giỏ hàng dựa trên trạng thái đăng nhập
             if (isset($_SESSION['customer_id'])) {
                 // Khách hàng đã đăng nhập - lấy từ database
                 $cart = $cartModel->getCart($_SESSION['customer_id']);
-                error_log("Cart items count (logged in): " . count($cart));
+                // Debug logs removed for production
             } else {
                 // Khách vãng lai - lấy từ session
                 $cart = $sessionCartModel->getCart();
-                error_log("Cart items count (guest): " . count($cart));
+                // Debug logs removed for production
             }
             
             // Không redirect khi giỏ hàng trống, chỉ hiển thị trang giỏ hàng trống
@@ -61,7 +56,7 @@ class CartController {
                 }
             }
             
-            error_log("Total cart value: " . $total);
+            // Debug logs removed for production
             
             // Lấy ưu đãi được chọn từ session hoặc form
             $selectedPromotions = [];
@@ -69,27 +64,24 @@ class CartController {
                 // Form đã được submit, sử dụng POST data
                 $selectedPromotions = isset($_POST['selected_promotions']) && is_array($_POST['selected_promotions']) ? $_POST['selected_promotions'] : [];
                 $_SESSION['selected_promotions'] = $selectedPromotions;
-                error_log("Cart: Selected promotions from POST: " . print_r($selectedPromotions, true));
+                // Debug logs removed for production
             } elseif (isset($_SESSION['selected_promotions'])) {
                 $selectedPromotions = $_SESSION['selected_promotions'];
-                error_log("Cart: Selected promotions from SESSION: " . print_r($selectedPromotions, true));
+                // Debug logs removed for production
             } elseif (isset($_SESSION['promotion_from_page'])) {
                 // Nếu có khuyến mãi từ trang khuyến mãi, tự động chọn
                 $selectedPromotions = $_SESSION['promotion_from_page'];
                 $_SESSION['selected_promotions'] = $selectedPromotions;
-                error_log("Cart: Selected promotions from promotion page: " . print_r($selectedPromotions, true));
+                // Debug logs removed for production
             } else {
                 // Khởi tạo mảng rỗng - không chọn sẵn khuyến mãi cho khách hàng
                 $selectedPromotions = [];
-                error_log("Cart: No selected promotions found, initializing empty array");
+                // Debug logs removed for production
             }
             
-            error_log("Cart: Final selected promotions: " . print_r($selectedPromotions, true));
+            // Debug logs removed for production
             
-            // Debug: Log cart information
-            error_log("Cart: Customer ID: " . (isset($_SESSION['customer_id']) ? $_SESSION['customer_id'] : 'not set'));
-            error_log("Cart: Total value: " . $total);
-            error_log("Cart: Product categories: " . implode(',', $productCategories));
+            // Debug logs removed for production
             
             // Tính toán ưu đãi nếu có sản phẩm trong giỏ hàng và đã đăng nhập
             $availablePromotions = [];
@@ -123,14 +115,12 @@ class CartController {
                 $maxDiscount = $discountResult['maxDiscount'];
                 $discountPercentage = $discountResult['discountPercentage'];
                 
-                // Debug: Log promotion details
-                error_log("Cart: Applied promotions: " . print_r($appliedPromotions, true));
-                error_log("Cart: Discount percentage: " . $discountPercentage);
+                // Debug logs removed for production
             }
             
-            // Tính phí vận chuyển
+            // Tính phí vận chuyển - chỉ tính khi có sản phẩm trong giỏ hàng
             $shippingFee = 0;
-            if ($finalTotal < 100000) {
+            if (!empty($cart) && $finalTotal < 100000) {
                 $shippingFee = 15000;
             }
             
@@ -144,16 +134,9 @@ class CartController {
             
             $finalTotal += $shippingFee;
             
-            // Debug: Log promotion calculation results
-            error_log("Cart: Available promotions count: " . count($availablePromotions));
-            error_log("Cart: Applied promotions count: " . count($appliedPromotions));
-            error_log("Cart: Total discount: " . $totalDiscount);
-            error_log("Cart: Final total: " . $finalTotal);
-            error_log("Cart: Shipping fee: " . $shippingFee);
+            // Debug logs removed for production
             
-            error_log("About to include cart.php view");
             require_once __DIR__ . '/../views/pages/cart.php';
-            error_log("Cart.php view included successfully");
             
         } catch (Exception $e) {
             error_log("Error in CartController::index(): " . $e->getMessage());
@@ -399,9 +382,9 @@ class CartController {
                  $discountPercentage = $discountResult['discountPercentage'];
              }
              
-             // Tính phí vận chuyển
+             // Tính phí vận chuyển - chỉ tính khi có sản phẩm trong giỏ hàng
              $shippingFee = 0;
-             if ($finalTotal < 100000) {
+             if (!empty($cart) && $finalTotal < 100000) {
                  $shippingFee = 15000;
              }
              
@@ -434,9 +417,7 @@ class CartController {
               session_start();
           }
           
-          error_log("updateQuantity method called");
-          error_log("Request method: " . $_SERVER['REQUEST_METHOD']);
-          error_log("POST data: " . print_r($_POST, true));
+                     // Debug logs removed for production
           
           // Chỉ cho phép POST request
           if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -448,8 +429,7 @@ class CartController {
           $productId = $_POST['productId'] ?? null;
           $change = isset($_POST['change']) ? (int)$_POST['change'] : 0;
           
-          error_log("Product ID: " . $productId);
-          error_log("Change: " . $change);
+                     // Debug logs removed for production
           
           if (!$productId) {
               http_response_code(400);
@@ -462,20 +442,19 @@ class CartController {
               if (isset($_SESSION['customer_id'])) {
                   $cartModel = new CartModel();
                   $cart = $cartModel->getCart($_SESSION['customer_id']);
-                  error_log("Using CartModel for logged in user");
+                                     // Debug logs removed for production
               } else {
                   $sessionCartModel = new SessionCartModel();
                   $cart = $sessionCartModel->getCart();
-                  error_log("Using SessionCartModel for guest user");
+                                     // Debug logs removed for production
               }
               
-              error_log("Current cart: " . print_r($cart, true));
+                             // Debug logs removed for production
               
               $currentQuantity = $cart[$productId]['quantity'] ?? 0;
               $newQuantity = $currentQuantity + $change;
               
-              error_log("Current quantity: " . $currentQuantity);
-              error_log("New quantity: " . $newQuantity);
+                             // Debug logs removed for production
               
               // Kiểm tra số lượng mới
               if ($newQuantity <= 0) {
@@ -487,7 +466,7 @@ class CartController {
                       'message' => ''
                   ];
                   
-                  error_log("Quantity would be 0, returning current quantity without error");
+                                     // Debug logs removed for production
                   echo json_encode($response);
                   return;
               }
@@ -499,7 +478,7 @@ class CartController {
                   $result = $sessionCartModel->updateCartItem($productId, $newQuantity);
               }
               
-              error_log("Update result: " . ($result ? 'true' : 'false'));
+                             // Debug logs removed for production
               
               if ($result) {
                   // Tính toán subtotal mới
@@ -513,16 +492,16 @@ class CartController {
                       'message' => 'Đã cập nhật số lượng sản phẩm thành công!'
                   ];
                   
-                  error_log("Sending response: " . json_encode($response));
+                                     // Debug logs removed for production
                   echo json_encode($response);
               } else {
                   $response = ['success' => false, 'message' => 'Có lỗi xảy ra khi cập nhật số lượng!'];
-                  error_log("Sending error response: " . json_encode($response));
+                                     // Debug logs removed for production
                   echo json_encode($response);
               }
               
           } catch (Exception $e) {
-              error_log("Exception in updateQuantity: " . $e->getMessage());
+                             // Debug logs removed for production
               http_response_code(500);
               echo json_encode(['success' => false, 'message' => 'Internal server error']);
           }
@@ -594,21 +573,21 @@ class CartController {
                   $discountPercentage = $discountResult['discountPercentage'];
               }
               
-              // Tính phí vận chuyển
-              $shippingFee = 0;
-              if ($finalTotal < 100000) {
-                  $shippingFee = 15000;
-              }
-              
-              // Kiểm tra ưu đãi miễn phí vận chuyển
-              foreach ($appliedPromotions as $promotion) {
-                  if ($promotion['promotionType'] === 'free_shipping') {
-                      $shippingFee = 0;
-                      break;
-                  }
-              }
-              
-              $finalTotal += $shippingFee;
+                           // Tính phí vận chuyển - chỉ tính khi có sản phẩm trong giỏ hàng
+             $shippingFee = 0;
+             if (!empty($cart) && $finalTotal < 100000) {
+                 $shippingFee = 15000;
+             }
+             
+             // Kiểm tra ưu đãi miễn phí vận chuyển
+             foreach ($appliedPromotions as $promotion) {
+                 if ($promotion['promotionType'] === 'free_shipping') {
+                     $shippingFee = 0;
+                     break;
+                 }
+             }
+             
+             $finalTotal += $shippingFee;
               
               // Trả về HTML của cart summary
               ob_start();

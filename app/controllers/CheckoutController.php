@@ -60,9 +60,9 @@ class CheckoutController {
             $finalTotal = $discountResult['finalTotal'];
         }
         
-        // Tính phí vận chuyển
+        // Tính phí vận chuyển - chỉ tính khi có sản phẩm trong giỏ hàng
         $shippingFee = 0;
-        if ($total < 100000) {
+        if (!empty($cart) && $total < 100000) {
             $shippingFee = 15000;
         }
         
@@ -156,9 +156,9 @@ class CheckoutController {
             $finalTotal = $discountResult['finalTotal'];
         }
         
-        // Tính phí vận chuyển
+        // Tính phí vận chuyển - chỉ tính khi có sản phẩm trong giỏ hàng
         $shippingFee = 0;
-        if ($total < 100000) {
+        if (!empty($cart) && $total < 100000) {
             $shippingFee = 15000;
         }
         

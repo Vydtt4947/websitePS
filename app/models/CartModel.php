@@ -187,5 +187,32 @@ class CartModel {
             return false;
         }
     }
+
+    // Merge giỏ hàng session vào database (dành cho việc đăng nhập)
+    public function mergeSessionCart($customerId, $sessionCart) {
+        try {
+            if (empty($sessionCart)) {
+                return true;
+            }
+
+            $dbCart = $this->getCart($customerId);
+            
+            foreach ($sessionCart as $productId => $sessionItem) {
+                if (isset($dbCart[$productId])) {
+                    // Nếu sản phẩm đã có trong database, cộng dồn số lượng
+                    $newQuantity = $dbCart[$productId]['quantity'] + $sessionItem['quantity'];
+                    $this->updateCartItem($customerId, $productId, $newQuantity);
+                } else {
+                    // Nếu sản phẩm chưa có trong database, thêm mới
+                    $this->addCartItem($customerId, $productId, $sessionItem['quantity']);
+                }
+            }
+            
+            return true;
+        } catch (Exception $e) {
+            error_log("Error merging session cart: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>

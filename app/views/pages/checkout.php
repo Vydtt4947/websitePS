@@ -381,10 +381,7 @@
             $finalTotal = $total + $shippingFee;
         }
         
-        // Debug logging
-        error_log("Checkout page - Total: " . $total);
-        error_log("Checkout page - Shipping fee: " . $shippingFee);
-        error_log("Checkout page - Final total: " . $finalTotal);
+        // Debug logs removed for production
         ?>
         
         <div class="row g-5">

@@ -42,20 +42,8 @@ class CustomerAuthController {
                 
                 if (!empty($sessionCart)) {
                     $cartModel = new CartModel();
-                    $dbCart = $cartModel->getCart($customer['MaKH']);
-                    
-                    // Nếu có giỏ hàng trong database, chỉ thêm sản phẩm mới từ session
-                    if (!empty($dbCart)) {
-                        foreach ($sessionCart as $productId => $sessionItem) {
-                            if (!isset($dbCart[$productId])) {
-                                // Chỉ thêm sản phẩm mới từ session vào database
-                                $cartModel->addCartItem($customer['MaKH'], $productId, $sessionItem['quantity']);
-                            }
-                        }
-                    } else {
-                        // Nếu không có giỏ hàng trong database, lưu toàn bộ session cart
-                        $cartModel->saveCart($customer['MaKH'], $sessionCart);
-                    }
+                    // Sử dụng method merge để tránh duplicate
+                    $cartModel->mergeSessionCart($customer['MaKH'], $sessionCart);
                     
                     // Xóa giỏ hàng session sau khi đã đồng bộ
                     $sessionCartModel->clearCart();
@@ -132,7 +120,8 @@ class CustomerAuthController {
                 
                 if (!empty($sessionCart)) {
                     $cartModel = new CartModel();
-                    $cartModel->saveCart($customer['MaKH'], $sessionCart);
+                    // Sử dụng method merge để đảm bảo tính nhất quán
+                    $cartModel->mergeSessionCart($customer['MaKH'], $sessionCart);
                     $sessionCartModel->clearCart();
                 }
             }
