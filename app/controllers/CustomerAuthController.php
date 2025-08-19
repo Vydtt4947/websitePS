@@ -102,31 +102,46 @@ class CustomerAuthController {
                 'SoDienThoai' => trim($_POST['phone'] ?? '')
             ];
 
-            $customerAuthModel->createCustomer($customerData);
-            
-            $customer = $customerAuthModel->attemptLogin($_POST['email'], $_POST['password']);
-            if ($customer) {
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
+            // Tạo tài khoản mới
+            if ($customerAuthModel->createCustomer($customerData)) {
+                // Tự động đăng nhập sau khi tạo tài khoản thành công
+                $customer = $customerAuthModel->attemptLogin($_POST['email'], $_POST['password']);
+                if ($customer) {
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $_SESSION['customer_id'] = $customer['MaKH'];
+                    $_SESSION['customer_name'] = $customer['HoTen'];
+                    $_SESSION['customer_email'] = $customer['Email'];
+                    $_SESSION['customer_phone'] = $customer['SoDienThoai'] ?? '';
+                    
+                    // Đồng bộ giỏ hàng session vào database cho tài khoản mới
+                    $sessionCartModel = new SessionCartModel();
+                    $sessionCart = $sessionCartModel->getCart();
+                    
+                    if (!empty($sessionCart)) {
+                        $cartModel = new CartModel();
+                        // Sử dụng method merge để đảm bảo tính nhất quán
+                        $cartModel->mergeSessionCart($customer['MaKH'], $sessionCart);
+                        $sessionCartModel->clearCart();
+                    }
+                    
+                    // Thông báo thành công và chuyển hướng
+                    $_SESSION['success_message'] = 'Tạo tài khoản thành công! Chào mừng bạn đến với Parrot Smell!';
+                    header('Location: /websitePS/public/');
+                    exit();
+                } else {
+                    // Nếu không thể tự động đăng nhập, yêu cầu người dùng đăng nhập thủ công
+                    $_SESSION['success_message'] = 'Tạo tài khoản thành công! Vui lòng đăng nhập để tiếp tục.';
+                    header('Location: /websitePS/public/customerauth/login');
+                    exit();
                 }
-                $_SESSION['customer_id'] = $customer['MaKH'];
-                $_SESSION['customer_name'] = $customer['HoTen'];
-                $_SESSION['customer_email'] = $customer['Email'];
-                $_SESSION['customer_phone'] = $customer['SoDienThoai'] ?? '';
-                
-                // Đồng bộ giỏ hàng session vào database cho tài khoản mới
-                $sessionCartModel = new SessionCartModel();
-                $sessionCart = $sessionCartModel->getCart();
-                
-                if (!empty($sessionCart)) {
-                    $cartModel = new CartModel();
-                    // Sử dụng method merge để đảm bảo tính nhất quán
-                    $cartModel->mergeSessionCart($customer['MaKH'], $sessionCart);
-                    $sessionCartModel->clearCart();
-                }
+            } else {
+                // Nếu tạo tài khoản thất bại
+                $error = "Có lỗi xảy ra khi tạo tài khoản. Vui lòng thử lại.";
+                require_once __DIR__ . '/../views/pages/register.php';
+                exit();
             }
-            header('Location: /websitePS/public/');
-            exit();
         }
     }
 

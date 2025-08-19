@@ -45,7 +45,6 @@ function getProductImage($product) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/websitePS/assets/css/style.css">
     <style>
         :root {
             --primary-color: #009688;
@@ -55,6 +54,190 @@ function getProductImage($product) {
             --body-font: 'Roboto', sans-serif;
         }
         
+        /* Navbar styles to match homepage */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        
+        .navbar-brand {
+            font-family: var(--heading-font);
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+        
+        /* Product detail page specific styles */
+        body {
+            font-family: var(--body-font);
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+        }
+        
+        /* Responsive Design for Product Detail Page */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 0;
+                min-height: auto;
+                overflow: hidden;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .product-content {
+                padding: 2rem 1.5rem;
+                margin: 0 15px;
+            }
+            
+            .product-gallery img {
+                height: 300px;
+                max-width: 100%;
+            }
+            
+            .product-features-section {
+                padding: 2rem 1.5rem;
+                margin: 0 15px;
+            }
+            
+            .product-price {
+                font-size: 2.5rem;
+            }
+            
+            .purchase-section {
+                padding: 2rem 1.5rem;
+                margin: 0 15px;
+            }
+            
+            .quantity-control {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .product-meta {
+                margin: 0 15px 2rem;
+            }
+            
+            .product-description {
+                margin: 0 15px 2rem;
+            }
+            
+            .reviews-section {
+                margin: 0 15px;
+            }
+            
+            .related-products {
+                margin: 0 15px;
+            }
+            
+            .rating-filter {
+                margin-top: 1rem;
+            }
+            
+            .rating-filter .btn-group {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .filter-btn {
+                margin: 2px;
+                border-radius: 20px !important;
+            }
+            
+            .toast-notification {
+                min-width: 280px;
+                max-width: 320px;
+                right: 10px;
+                top: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 3rem 0;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .product-content {
+                padding: 1.5rem 1rem;
+                margin: 0 10px;
+            }
+            
+            .product-gallery img {
+                height: 250px;
+            }
+            
+            .product-features-section {
+                padding: 1.5rem 1rem;
+                margin: 0 10px;
+            }
+            
+            .purchase-section {
+                padding: 1.5rem 1rem;
+                margin: 0 10px;
+            }
+            
+            .product-price {
+                font-size: 2rem;
+            }
+            
+            .quantity-control {
+                max-width: 180px;
+            }
+            
+            .quantity-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .quantity-input {
+                width: 60px;
+                font-size: 1rem;
+            }
+            
+            .product-meta {
+                margin: 0 10px 1.5rem;
+                padding: 1.5rem;
+            }
+            
+            .product-description {
+                margin: 0 10px 1.5rem;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+            
+            .reviews-section {
+                margin: 0 10px;
+            }
+            
+            .related-products {
+                margin: 0 10px;
+            }
+            
+            .rating-filter .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-btn {
+                border-radius: 20px !important;
+                margin: 2px 0;
+            }
+        }
+        
+        /* Product detail page specific styles */
         body {
             font-family: var(--body-font);
             color: var(--text-color);

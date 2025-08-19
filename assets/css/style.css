@@ -22,28 +22,28 @@ body {
     font-family: var(--body-font);
     color: var(--text-color);
     background-color: var(--light-bg);
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--heading-font);
     color: var(--text-color);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 /* Navbar Styles */
 .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     background-color: var(--white) !important;
-    padding: 1rem 0;
+    padding: 0.75rem 0;
 }
 
 .navbar-brand {
     font-family: var(--heading-font);
     font-weight: 700;
     color: var(--primary-color) !important;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     text-decoration: none;
 }
 
@@ -63,10 +63,10 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
     color: var(--white);
-    padding: 12px 30px;
+    padding: 10px 25px;
     font-weight: 500;
     transition: all 0.3s ease;
-    border-radius: 25px;
+    border-radius: 20px;
 }
 
 .btn-primary-custom:hover {
@@ -80,10 +80,10 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--primary-color);
     color: var(--primary-color);
     background-color: transparent;
-    padding: 12px 30px;
+    padding: 10px 25px;
     font-weight: 500;
     transition: all 0.3s ease;
-    border-radius: 25px;
+    border-radius: 20px;
 }
 
 .btn-outline-primary-custom:hover {
@@ -96,28 +96,28 @@ h1, h2, h3, h4, h5, h6 {
 /* Card Styles */
 .card {
     border: 1px solid #eee;
-    border-radius: 15px;
+    border-radius: 12px;
     transition: all 0.3s ease;
     background-color: var(--white);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
 }
 
 .card-header {
     background-color: var(--white);
     border-bottom: 1px solid #eee;
-    border-radius: 15px 15px 0 0 !important;
+    border-radius: 12px 12px 0 0 !important;
 }
 
 /* Form Styles */
 .form-control {
     border: 2px solid #e9ecef;
-    border-radius: 10px;
-    padding: 12px 15px;
+    border-radius: 8px;
+    padding: 10px 12px;
     transition: all 0.3s ease;
     font-family: var(--body-font);
 }
@@ -130,14 +130,14 @@ h1, h2, h3, h4, h5, h6 {
 .form-label {
     font-weight: 500;
     color: var(--text-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
 /* Alert Styles */
 .alert {
-    border-radius: 10px;
+    border-radius: 8px;
     border: none;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1rem;
 }
 
 .alert-danger {
@@ -163,59 +163,59 @@ h1, h2, h3, h4, h5, h6 {
 /* Table Styles */
 .table {
     background-color: var(--white);
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .table thead th {
     background-color: var(--primary-color);
     color: var(--white);
     border: none;
-    padding: 1rem;
+    padding: 0.75rem;
     font-weight: 600;
 }
 
 .table tbody td {
-    padding: 1rem;
+    padding: 0.75rem;
     border-bottom: 1px solid #eee;
     vertical-align: middle;
 }
 
 /* Auth Container Styles */
 .auth-container {
-    max-width: 450px;
+    max-width: 400px;
     margin: 0 auto;
 }
 
 .auth-brand {
     font-family: var(--heading-font);
     color: var(--primary-color) !important;
-    font-size: 2.5rem;
+    font-size: 2rem;
     text-decoration: none;
     display: block;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .auth-card {
     background-color: var(--white);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    padding: 2rem;
 }
 
 /* Product Styles */
 .product-card {
     border: 1px solid #eee;
-    border-radius: 15px;
+    border-radius: 12px;
     transition: all 0.3s ease;
     background-color: var(--white);
     overflow: hidden;
 }
 
 .product-card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
 }
 
 .product-card img {
@@ -223,15 +223,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-card:hover img {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 /* Footer Styles */
 .footer {
     background-color: var(--text-color);
     color: var(--secondary-color);
-    padding: 3rem 0 2rem;
-    margin-top: 4rem;
+    padding: 2rem 0 1.5rem;
+    margin-top: 3rem;
 }
 
 .footer a {
@@ -247,14 +247,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer h6 {
     color: var(--secondary-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 /* Breadcrumb Styles */
 .breadcrumb {
     background-color: transparent;
     padding: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .breadcrumb-item a {
@@ -287,21 +287,94 @@ h1, h2, h3, h4, h5, h6 {
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar-brand {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
+    }
+    
+    .navbar-nav {
+        text-align: center;
+        margin-top: 0.75rem;
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 0.4rem 0;
     }
     
     .auth-container {
         max-width: 100%;
-        padding: 0 1rem;
+        padding: 0 0.75rem;
     }
     
     .auth-card {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1rem;
     }
     
     .btn-primary-custom,
     .btn-outline-primary-custom {
-        padding: 10px 20px;
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+    
+    .card {
+        margin-bottom: 0.75rem;
+    }
+    
+    .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    /* Prevent zoom on iOS for input fields */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .btn-primary-custom,
+    .btn-outline-primary-custom {
+        padding: 7px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .auth-card {
+        padding: 1.25rem 0.75rem;
+    }
+    
+    .container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+    
+    h3 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Tablet specific styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 95%;
+    }
+    
+    .navbar-brand {
+        font-size: 1.5rem;
     }
 }
 
@@ -323,10 +396,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Loading Spinner */
 .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--primary-color);
+    width: 35px;
+    height: 35px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }

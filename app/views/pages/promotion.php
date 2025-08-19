@@ -64,7 +64,7 @@
             background-size: cover;
             background-attachment: fixed;
             color: white;
-            padding: 8rem 0;
+            padding: 6rem 0;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -87,14 +87,14 @@
         }
         .hero-title {
             font-family: var(--heading-font);
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+            font-size: 3.2rem;
+            margin-bottom: 1.25rem;
             animation: fadeInUp 1s ease-out;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .hero-subtitle {
-            font-size: 1.3rem;
-            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
             opacity: 0.95;
             animation: fadeInUp 1s ease-out 0.2s both;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -106,11 +106,11 @@
             display: inline-block;
             background: rgba(255,255,255,0.9);
             color: var(--primary-color);
-            padding: 1rem 2rem;
-            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 40px;
             font-weight: 600;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
             animation: fadeInUp 1s ease-out 0.4s both;
             transition: all 0.3s ease;
         }
@@ -129,7 +129,7 @@
         
         .hero-image-container {
             position: relative;
-            height: 500px;
+            height: 400px;
             overflow: hidden;
         }
         
@@ -158,16 +158,16 @@
         
         .hero-image-title {
             font-family: var(--heading-font);
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
             animation: fadeInLeft 1s ease-out;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
         
         .hero-image-description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
             opacity: 0.9;
             animation: fadeInLeft 1s ease-out 0.2s both;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
@@ -193,7 +193,7 @@
         
         .hero-image-visual {
             position: relative;
-            height: 400px;
+            height: 350px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -202,9 +202,9 @@
         .floating-card {
             position: absolute;
             background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             backdrop-filter: blur(10px);
             animation: float 3s ease-in-out infinite;
             border: 2px solid rgba(255,255,255,0.3);
@@ -223,20 +223,20 @@
         }
         
         .card-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 12px rgba(255,107,107,0.3);
         }
         
         .card-icon i {
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
         
         .card-content h4 {
@@ -272,29 +272,29 @@
         
         /* Featured Promotions */
         .featured-section {
-            padding: 4rem 0;
+            padding: 3rem 0;
             background-color: #f8f9fa;
         }
         .section-title {
             font-family: var(--heading-font);
             color: var(--text-color);
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
         
         /* Promotion Hero Sections */
         .promotion-hero-section {
             position: relative;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
         
         .promotion-hero-container {
             position: relative;
-            height: 400px;
+            height: 350px;
             overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         .promotion-hero-image {
@@ -322,16 +322,16 @@
         
         .promotion-hero-title {
             font-family: var(--heading-font);
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
             animation: fadeInLeft 1s ease-out;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
         
         .promotion-hero-description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
             opacity: 0.9;
             animation: fadeInLeft 1s ease-out 0.2s both;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
@@ -356,7 +356,7 @@
         
         .promotion-hero-visual {
             position: relative;
-            height: 300px;
+            height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -365,29 +365,29 @@
         .floating-promo-card {
             position: absolute;
             background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             backdrop-filter: blur(10px);
             animation: float 3s ease-in-out infinite;
             border: 2px solid rgba(255,255,255,0.3);
         }
         
         .floating-promo-card .card-icon {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 12px rgba(255,107,107,0.3);
         }
         
         .floating-promo-card .card-icon i {
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
         }
         
         .floating-promo-card .card-content h4 {
@@ -402,10 +402,10 @@
         }
         .promotion-card {
             background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
+            border-radius: 15px;
+            padding: 2rem;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             height: 100%;
             position: relative;
@@ -425,14 +425,14 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
         .promotion-icon {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 2rem;
+            margin: 0 auto 1.25rem;
+            font-size: 1.8rem;
             color: white;
             position: relative;
         }
@@ -448,19 +448,19 @@
         }
         .promotion-title {
             color: var(--text-color);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
         .promotion-description {
             color: #6c757d;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            line-height: 1.5;
         }
         .promotion-features {
             list-style: none;
             padding: 0;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         .promotion-features li {
             display: flex;
@@ -488,22 +488,22 @@
         
         /* Ongoing Deals */
         .ongoing-section {
-            padding: 4rem 0;
+            padding: 3rem 0;
             background: white;
         }
         
         /* Deal Hero Sections */
         .deal-hero-section {
             position: relative;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
         }
         
         .deal-hero-container {
             position: relative;
-            height: 350px;
+            height: 300px;
             overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         .deal-hero-image {
@@ -543,16 +543,16 @@
         
         .deal-hero-title {
             font-family: var(--heading-font);
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
+            font-size: 1.8rem;
+            margin-bottom: 0.6rem;
             animation: fadeInLeft 1s ease-out;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
         
         .deal-hero-description {
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0.8rem;
             opacity: 0.9;
             animation: fadeInLeft 1s ease-out 0.2s both;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
@@ -587,7 +587,7 @@
         
         .deal-hero-visual {
             position: relative;
-            height: 250px;
+            height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -596,29 +596,29 @@
         .floating-deal-card {
             position: absolute;
             background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 0.8rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
             backdrop-filter: blur(10px);
             animation: float 3s ease-in-out infinite;
             border: 2px solid rgba(255,255,255,0.3);
         }
         
         .floating-deal-card .card-icon {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 0.8rem;
-            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+            margin-bottom: 0.6rem;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
         }
         
         .floating-deal-card .card-icon i {
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
         .floating-deal-card .card-content h4 {
@@ -646,7 +646,7 @@
         
         /* Special Offers - New Card Design */
         .special-section {
-            padding: 4rem 0;
+            padding: 3rem 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             position: relative;
@@ -685,13 +685,13 @@
         
         .special-title {
             font-family: var(--heading-font);
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         
         .special-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
@@ -699,9 +699,9 @@
         
         .special-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
             position: relative;
             z-index: 2;
             align-items: stretch;
@@ -710,13 +710,13 @@
         .special-card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 2rem;
+            border-radius: 20px;
+            padding: 1.5rem;
             border: 1px solid rgba(255,255,255,0.2);
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            height: 550px;
+            height: 500px;
             display: flex;
             flex-direction: column;
         }
@@ -750,13 +750,13 @@
         }
         
         .card-icon-wrapper {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: white;
             position: relative;
         }
@@ -800,31 +800,31 @@
         
         .card-title {
             font-family: var(--heading-font);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
             color: white;
             flex-shrink: 0;
         }
         
         .card-description {
             color: rgba(255,255,255,0.9);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            min-height: 80px;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+            min-height: 70px;
         }
         
         .card-benefits {
-            margin-bottom: 2rem;
-            min-height: 140px;
+            margin-bottom: 1.5rem;
+            min-height: 120px;
         }
         
         .benefit-item {
             display: flex;
             align-items: center;
-            margin-bottom: 0.8rem;
-            padding: 0.5rem;
+            margin-bottom: 0.6rem;
+            padding: 0.4rem;
             background: rgba(255,255,255,0.1);
-            border-radius: 10px;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
         
@@ -835,15 +835,15 @@
         
         .benefit-item i {
             color: #ffd700;
-            margin-right: 0.8rem;
-            font-size: 1rem;
-            width: 20px;
+            margin-right: 0.6rem;
+            font-size: 0.9rem;
+            width: 18px;
             text-align: center;
         }
         
         .benefit-item span {
             color: white;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         
         .card-footer {
@@ -857,15 +857,15 @@
             justify-content: center;
             background: rgba(255,255,255,0.2);
             color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
+            padding: 0.7rem 1.25rem;
+            border-radius: 20px;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.3);
-            min-width: 140px;
-            min-height: 45px;
+            min-width: 130px;
+            min-height: 40px;
         }
         
         .card-button:hover {
@@ -906,52 +906,365 @@
         }
         
         @media (max-width: 768px) {
+            .hero-section {
+                padding: 4rem 0;
+            }
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
+                margin-bottom: 1rem;
             }
-            .section-title {
-                font-size: 2rem;
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
             }
-            .promotion-card {
-                padding: 2rem;
-            }
-            .deal-hero-container {
-                height: 300px;
-            }
-            .deal-hero-title {
-                font-size: 1.5rem;
-            }
-            .deal-hero-description {
+            .hero-badge {
+                padding: 0.6rem 1.25rem;
                 font-size: 0.9rem;
             }
-            .deal-hero-timer .timer-number {
+            .hero-image-container {
+                height: 300px;
+            }
+            .hero-image-title {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            .hero-image-description {
+                font-size: 0.9rem;
+                margin-bottom: 1.25rem;
+            }
+            .hero-image-visual {
+                height: 250px;
+            }
+            .floating-card {
+                padding: 1.25rem;
+            }
+            .card-icon {
+                width: 45px;
+                height: 45px;
+                margin-bottom: 0.6rem;
+            }
+            .card-icon i {
+                font-size: 1.1rem;
+            }
+            .featured-section {
+                padding: 2.5rem 0;
+            }
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 2rem;
+            }
+            .promotion-hero-section {
+                margin-bottom: 2.5rem;
+            }
+            .promotion-hero-container {
+                height: 280px;
+            }
+            .promotion-hero-title {
+                font-size: 1.8rem;
+                margin-bottom: 0.6rem;
+            }
+            .promotion-hero-description {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+            .promotion-hero-visual {
+                height: 200px;
+            }
+            .floating-promo-card {
+                padding: 1rem;
+            }
+            .floating-promo-card .card-icon {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 0.6rem;
+            }
+            .floating-promo-card .card-icon i {
+                font-size: 1rem;
+            }
+            .promotion-card {
+                padding: 1.5rem;
+            }
+            .promotion-icon {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 1rem;
+                font-size: 1.6rem;
+            }
+            .promotion-title {
                 font-size: 1.2rem;
+                margin-bottom: 0.6rem;
+            }
+            .promotion-description {
+                margin-bottom: 1rem;
+            }
+            .promotion-features {
+                margin-bottom: 1.25rem;
+            }
+            .ongoing-section {
+                padding: 2.5rem 0;
+            }
+            .deal-hero-section {
+                margin-bottom: 2.5rem;
+            }
+            .deal-hero-container {
+                height: 250px;
+            }
+            .deal-hero-title {
+                font-size: 1.6rem;
+                margin-bottom: 0.5rem;
+            }
+            .deal-hero-description {
+                font-size: 0.85rem;
+                margin-bottom: 0.6rem;
             }
             .deal-hero-visual {
-                height: 200px;
+                height: 180px;
+            }
+            .floating-deal-card {
+                padding: 0.6rem;
+            }
+            .floating-deal-card .card-icon {
+                width: 30px;
+                height: 30px;
+                margin-bottom: 0.5rem;
+            }
+            .floating-deal-card .card-icon i {
+                font-size: 0.9rem;
+            }
+            .special-section {
+                padding: 2.5rem 0;
             }
             .special-title {
                 font-size: 2rem;
+                margin-bottom: 0.6rem;
             }
             .special-subtitle {
                 font-size: 1rem;
             }
             .special-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
+                gap: 1.25rem;
+                margin-top: 2rem;
             }
             .special-card {
-                padding: 1.5rem;
+                padding: 1.25rem;
                 height: auto;
-                min-height: 450px;
+                min-height: 400px;
             }
             .card-icon-wrapper {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
             }
             .card-title {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
+                margin-bottom: 0.6rem;
+            }
+            .card-description {
+                margin-bottom: 1rem;
+                min-height: 60px;
+            }
+            .card-benefits {
+                margin-bottom: 1.25rem;
+                min-height: 100px;
+            }
+            .benefit-item {
+                margin-bottom: 0.5rem;
+                padding: 0.3rem;
+            }
+            .benefit-item i {
+                margin-right: 0.5rem;
+                font-size: 0.8rem;
+                width: 16px;
+            }
+            .benefit-item span {
+                font-size: 0.8rem;
+            }
+            .card-button {
+                padding: 0.6rem 1rem;
+                min-width: 120px;
+                min-height: 35px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 3rem 0;
+            }
+            .hero-title {
+                font-size: 1.8rem;
+                margin-bottom: 0.8rem;
+            }
+            .hero-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 1.25rem;
+            }
+            .hero-badge {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+            .hero-image-container {
+                height: 250px;
+            }
+            .hero-image-title {
+                font-size: 1.6rem;
+                margin-bottom: 0.8rem;
+            }
+            .hero-image-description {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+            }
+            .hero-image-visual {
+                height: 200px;
+            }
+            .floating-card {
+                padding: 1rem;
+            }
+            .card-icon {
+                width: 40px;
+                height: 40px;
+                margin-bottom: 0.5rem;
+            }
+            .card-icon i {
+                font-size: 1rem;
+            }
+            .featured-section {
+                padding: 2rem 0;
+            }
+            .section-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .promotion-hero-section {
+                margin-bottom: 2rem;
+            }
+            .promotion-hero-container {
+                height: 220px;
+            }
+            .promotion-hero-title {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            .promotion-hero-description {
+                font-size: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+            .promotion-hero-visual {
+                height: 150px;
+            }
+            .floating-promo-card {
+                padding: 0.8rem;
+            }
+            .floating-promo-card .card-icon {
+                width: 35px;
+                height: 35px;
+                margin-bottom: 0.5rem;
+            }
+            .floating-promo-card .card-icon i {
+                font-size: 0.9rem;
+            }
+            .promotion-card {
+                padding: 1.25rem;
+            }
+            .promotion-icon {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 0.8rem;
+                font-size: 1.4rem;
+            }
+            .promotion-title {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+            .promotion-description {
+                margin-bottom: 0.8rem;
+            }
+            .promotion-features {
+                margin-bottom: 1rem;
+            }
+            .ongoing-section {
+                padding: 2rem 0;
+            }
+            .deal-hero-section {
+                margin-bottom: 2rem;
+            }
+            .deal-hero-container {
+                height: 200px;
+            }
+            .deal-hero-title {
+                font-size: 1.4rem;
+                margin-bottom: 0.4rem;
+            }
+            .deal-hero-description {
+                font-size: 0.8rem;
+                margin-bottom: 0.5rem;
+            }
+            .deal-hero-visual {
+                height: 150px;
+            }
+            .floating-deal-card {
+                padding: 0.5rem;
+            }
+            .floating-deal-card .card-icon {
+                width: 25px;
+                height: 25px;
+                margin-bottom: 0.4rem;
+            }
+            .floating-deal-card .card-icon i {
+                font-size: 0.8rem;
+            }
+            .special-section {
+                padding: 2rem 0;
+            }
+            .special-title {
+                font-size: 1.6rem;
+                margin-bottom: 0.5rem;
+            }
+            .special-subtitle {
+                font-size: 0.9rem;
+            }
+            .special-grid {
+                gap: 1rem;
+                margin-top: 1.5rem;
+            }
+            .special-card {
+                padding: 1rem;
+                min-height: 350px;
+            }
+            .card-icon-wrapper {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            .card-title {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+            .card-description {
+                margin-bottom: 0.8rem;
+                min-height: 50px;
+            }
+            .card-benefits {
+                margin-bottom: 1rem;
+                min-height: 80px;
+            }
+            .benefit-item {
+                margin-bottom: 0.4rem;
+                padding: 0.25rem;
+            }
+            .benefit-item i {
+                margin-right: 0.4rem;
+                font-size: 0.75rem;
+                width: 14px;
+            }
+            .benefit-item span {
+                font-size: 0.75rem;
+            }
+            .card-button {
+                padding: 0.5rem 0.8rem;
+                min-width: 110px;
+                min-height: 30px;
+                font-size: 0.85rem;
             }
         }
         
@@ -959,8 +1272,8 @@
         .footer {
             background-color: var(--text-color);
             color: var(--secondary-color);
-            padding: 3rem 0 2rem;
-            margin-top: 4rem;
+            padding: 2rem 0 1.5rem;
+            margin-top: 3rem;
         }
         
         .footer a {
@@ -976,7 +1289,7 @@
         
         .footer h6 {
             color: var(--secondary-color);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
     </style>
 </head>

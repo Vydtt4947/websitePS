@@ -33,7 +33,7 @@
         .hero-section {
             background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80&w=1950&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
-            height: 80vh;
+            height: 65vh;
             color: white;
             display: flex;
             align-items: center;
@@ -42,13 +42,13 @@
         }
         .hero-section h1 {
             font-family: var(--heading-font);
-            font-size: 4rem;
+            font-size: 3.2rem;
         }
         .btn-primary-custom {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: white;
-            padding: 12px 30px;
+            padding: 10px 25px;
             font-weight: 500;
             transition: all 0.3s;
         }
@@ -60,7 +60,7 @@
         .section-title {
             font-family: var(--heading-font);
             color: var(--text-color);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         .product-card {
             border: 1px solid #eee;
@@ -72,7 +72,7 @@
             transform: translateY(-5px);
         }
         .product-card .card-img-top {
-            height: 200px;
+            height: 180px;
             object-fit: cover;
             width: 100%;
         }
@@ -107,6 +107,104 @@
         }
         .user-avatar {
             background: linear-gradient(135deg, var(--primary-color), #00796b);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 50vh;
+                padding: 1.5rem 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.2rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .hero-section .lead {
+                font-size: 0.95rem;
+                margin-bottom: 1.25rem;
+            }
+            
+            .btn-primary-custom {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+            }
+            
+            .section-title {
+                font-size: 1.6rem;
+                margin-bottom: 25px;
+            }
+            
+            .product-card .card-img-top {
+                height: 140px;
+            }
+            
+            .carousel-item .row {
+                margin: 0;
+            }
+            
+            .carousel-item .col-md-4 {
+                padding: 0 0.5rem;
+            }
+            
+            .review-card {
+                margin-bottom: 0.75rem;
+            }
+            
+            .footer {
+                text-align: center;
+            }
+            
+            .footer .col-md-4 {
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-section {
+                height: 45vh;
+            }
+            
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-section .lead {
+                font-size: 0.85rem;
+            }
+            
+            .btn-primary-custom {
+                padding: 7px 18px;
+                font-size: 0.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+            }
+            
+            .product-card .card-img-top {
+                height: 110px;
+            }
+            
+            .carousel-control-prev,
+            .carousel-control-next {
+                width: 35px;
+                height: 35px;
+            }
+        }
+        
+        /* Prevent zoom on iOS for input fields */
+        @media screen and (max-width: 768px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="tel"],
+            select,
+            textarea {
+                font-size: 16px !important;
+            }
         }
     </style>
 </head>

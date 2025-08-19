@@ -117,6 +117,83 @@
             color: #6c757d;
             margin-top: 0.5rem;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-page {
+                padding: 0.75rem 0;
+            }
+            
+            .auth-container {
+                max-width: 100%;
+                padding: 0 0.75rem;
+            }
+            
+            .auth-card {
+                padding: 1.5rem 1rem;
+                border-radius: 12px;
+                margin: 0 0.5rem;
+            }
+            
+            .auth-title {
+                font-size: 1.4rem;
+                margin-bottom: 1.25rem;
+            }
+            
+            .form-floating .form-control {
+                padding: 0.75rem 0.5rem;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            .btn-register {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .auth-footer {
+                margin-top: 1.25rem;
+            }
+            
+            .auth-footer p {
+                font-size: 0.85rem;
+            }
+            
+            .password-requirements {
+                font-size: 0.75rem;
+            }
+
+        }
+        
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 1.25rem 0.75rem;
+            }
+            
+            .auth-title {
+                font-size: 1.2rem;
+            }
+            
+            .form-floating {
+                margin-bottom: 0.75rem;
+            }
+
+        }
+        
+        /* Animation for fadeIn */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
     </style>
 </head>
 <body>
@@ -190,3 +267,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
