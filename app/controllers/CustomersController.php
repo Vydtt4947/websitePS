@@ -9,6 +9,8 @@ class CustomersController extends BaseController {
 
     public function __construct() {
         parent::__construct();
+        // Chỉ admin và staff được truy cập mục Khách hàng
+        $this->requireRole(['admin','staff']);
         $this->activePage = 'customers';
         $this->customerModel = new CustomerModel();
     }
@@ -76,6 +78,10 @@ class CustomersController extends BaseController {
     }
 
     public function delete($id) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /websitePS/public/customers');
+            exit();
+        }
         $this->customerModel->deleteCustomer($id);
         $this->setFlashMessage('danger', 'Đã xóa khách hàng thành công!');
         header('Location: /websitePS/public/customers');

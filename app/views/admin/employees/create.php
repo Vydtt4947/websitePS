@@ -8,14 +8,16 @@ $roles = $roles ?? ['admin','staff','member'];
     <a class="btn btn-outline-secondary" href="/websitePS/public/employees">Quay lại</a>
   </div>
 
+  <div class="alert alert-info">Khi lưu, hệ thống sẽ tự tạo tài khoản người dùng (vai trò: staff) sử dụng email đã nhập.</div>
+
   <form method="post" action="/websitePS/public/employees/store" class="row g-3">
     <div class="col-md-6">
       <label class="form-label">Họ tên</label>
       <input type="text" name="HoTen" class="form-control" required>
     </div>
     <div class="col-md-6">
-      <label class="form-label">Email</label>
-      <input type="email" name="Email" class="form-control">
+      <label class="form-label">Email <span class="text-danger">*</span></label>
+      <input type="email" name="Email" class="form-control" required>
     </div>
 
     <div class="col-md-6">

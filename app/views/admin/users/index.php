@@ -14,7 +14,7 @@
             <button class="btn btn-primary w-100" type="submit">Tìm</button>
         </div>
         <div class="col-12 mt-2">
-            <a href="/websitePS/public/users/create" class="btn btn-success">+ Thêm Người dùng</a>
+            <div class="alert alert-info py-2 mb-0">Tài khoản người dùng được tạo tự động khi thêm Nhân viên (vai trò mặc định: staff).</div>
         </div>
     </form>
 

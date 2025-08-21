@@ -24,6 +24,7 @@
     </style>
 </head>
 <body>
+<?php $role = $_SESSION['role'] ?? null; ?>
 <div class="sidebar">
     <h3 class="text-center mb-3">Parrot Smell</h3>
     <div class="sidebar-nav">
@@ -38,6 +39,10 @@
                 <a class="nav-link <?= ($activePage === 'customers') ? 'active' : '' ?>" href="/websitePS/public/customers"><i class="fa fa-users"></i>Quản lý Khách hàng</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?= ($activePage === 'warehouses') ? 'active' : '' ?>" href="/websitePS/public/warehouses"><i class="fa fa-warehouse"></i>Quản lý Kho</a>
+            </li>
+            <?php if ($role === 'admin'): ?>
+            <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'products') ? 'active' : '' ?>" href="/websitePS/public/products"><i class="fa fa-cake-candles"></i>Quản lý Sản phẩm</a>
             </li>
             <li class="nav-item">
@@ -45,6 +50,11 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'users') ? 'active' : '' ?>" href="/websitePS/public/users"><i class="fa fa-users"></i>Quản lý Tài khoản người dùng</a>
+            </li>
+            <?php endif; ?>
+            <!-- đường vào homepage -->
+            <li class="nav-item">
+                <a class="nav-link" href="/websitePS/public/"><i class="fa fa-home"></i>Trang chủ</a>
             </li>
         </ul>
     </div>
@@ -61,7 +71,7 @@
             unset($_SESSION['flash_message']);
         }
     ?>
-    <?php include $contentView; // Dòng 51: Lỗi xảy ra ở đây vì giá trị của $contentView bị sai ?>
+    <?php include $contentView; ?>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

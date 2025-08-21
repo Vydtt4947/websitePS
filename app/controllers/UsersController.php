@@ -11,6 +11,8 @@ class UsersController extends BaseController {
         parent::__construct();
         $this->activePage = 'users';
         $this->db = (new Database())->getConnection();
+        // Chỉ admin mới được truy cập phần Users
+        $this->requireRole(['admin']);
     }
 
     private function sanitizeRole(string $role): string {
@@ -84,52 +86,18 @@ class UsersController extends BaseController {
         $this->renderView('users/show.php', $data);
     }
 
-    // Form tạo mới
+    // Form tạo mới: tắt chức năng, chuyển hướng sang thêm Nhân viên
     public function create() {
-        $data = [
-            'pageTitle' => 'Thêm Người dùng',
-            'roles'     => ['admin','staff','member'],
-        ];
-        $this->renderView('users/create.php', $data);
+        $this->setFlashMessage('info', 'Tài khoản người dùng được tạo tự động khi thêm Nhân viên.');
+        header('Location: /websitePS/public/employees/create');
+        exit;
     }
 
-    // Lưu tạo mới
+    // Lưu tạo mới: tắt chức năng
     public function store() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /websitePS/public/users'); exit; }
-
-        $username = trim($_POST['username'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $role     = $this->sanitizeRole($_POST['role'] ?? 'member');
-
-        if ($username === '' || $email === '' || $password === '') {
-            $this->setFlashMessage('danger', 'Vui lòng nhập đầy đủ username, email và mật khẩu.');
-            header('Location: /websitePS/public/users/create'); exit;
-        }
-
-        // Kiểm tra trùng
-        $ck1 = $this->db->prepare('SELECT 1 FROM users WHERE username = :u LIMIT 1');
-        $ck1->execute([':u' => $username]);
-        if ($ck1->fetchColumn()) {
-            $this->setFlashMessage('danger', 'Username đã tồn tại.');
-            header('Location: /websitePS/public/users/create'); exit;
-        }
-        $ck2 = $this->db->prepare('SELECT 1 FROM users WHERE email = :e LIMIT 1');
-        $ck2->execute([':e' => $email]);
-        if ($ck2->fetchColumn()) {
-            $this->setFlashMessage('danger', 'Email đã tồn tại.');
-            header('Location: /websitePS/public/users/create'); exit;
-        }
-
-        $hash = password_hash($password, PASSWORD_DEFAULT);
-        $ins = $this->db->prepare('INSERT INTO users (username, email, password, role, created_at) VALUES (:u, :e, :p, :r, NOW(3))');
-        $ok = $ins->execute([':u'=>$username, ':e'=>$email, ':p'=>$hash, ':r'=>$role]);
-        if ($ok) {
-            $this->setFlashMessage('success', 'Đã tạo người dùng mới thành công.');
-            header('Location: /websitePS/public/users'); exit;
-        }
-        $this->setFlashMessage('danger', 'Không thể tạo người dùng, vui lòng thử lại.');
-        header('Location: /websitePS/public/users/create'); exit;
+        $this->setFlashMessage('danger', 'Không hỗ trợ thêm người dùng trực tiếp. Vui lòng thêm qua mục Nhân viên.');
+        header('Location: /websitePS/public/employees/create');
+        exit;
     }
 
     // Form chỉnh sửa
