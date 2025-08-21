@@ -765,9 +765,17 @@
                     </div>
                 </div>
                 
-                                 <div class="col-lg-4">
-                     <?php include __DIR__ . '/cart_summary.php'; ?>
-                 </div>
+                                                 <div class="col-lg-4">
+                    <div class="cart-summary">
+                        <!-- Cart summary sẽ được load bằng AJAX -->
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Đang tải...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải thông tin giỏ hàng...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         <?php endif; ?>
     </div>
@@ -1032,6 +1040,11 @@
                 }
             }, 3000);
         }
+       
+       // Load cart summary khi trang load
+       document.addEventListener('DOMContentLoaded', function() {
+           updateCartSummary();
+       });
        
        // Hàm xóa sản phẩm khỏi giỏ hàng bằng AJAX
        function removeFromCart(productId, productName) {

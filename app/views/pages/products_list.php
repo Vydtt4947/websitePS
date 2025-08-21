@@ -75,56 +75,121 @@
         }
         .search-filter-section {
             background-color: white;
-            padding: 1.5rem;
+            padding: 2rem;
             margin-bottom: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
         }
+        
+        .search-filter-section .row {
+            align-items: end;
+        }
+        
         .search-box {
             position: relative;
             display: flex;
             align-items: center;
-        }
-        .search-box input {
+            background: white;
             border: 2px solid #e9ecef;
-            border-radius: 25px 0 0 25px;
-            padding: 0.75rem 1rem;
-            border-right: none;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
         }
-        .search-box input:focus {
-            outline: none;
+        
+        .search-box:hover {
             border-color: var(--primary-color);
         }
+        
+        .search-box input {
+            border: none;
+            padding: 0.875rem 1rem;
+            width: 100%;
+            font-size: 0.95rem;
+            background: transparent;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: #6c757d;
+            font-weight: 400;
+        }
+        
         .search-btn {
             background-color: var(--primary-color);
-            border: 2px solid var(--primary-color);
+            border: none;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0 25px 25px 0;
-            border-left: none;
+            padding: 0.875rem 1.25rem;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
         }
+        
         .search-btn:hover {
             background-color: #00796b;
-            border-color: #00796b;
         }
+        
         .filter-select {
             border: 2px solid #e9ecef;
-            border-radius: 25px;
-            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
             background-color: white;
             color: var(--text-color);
             min-width: 200px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease;
+            cursor: pointer;
         }
+        
+        .filter-select:hover {
+            border-color: var(--primary-color);
+        }
+        
         .filter-select:focus {
             border-color: var(--primary-color);
             outline: none;
         }
         
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            display: block;
+        }
+        
+        .filter-group {
+            margin-bottom: 0;
+        }
+        
         .filter-info {
             background-color: #f8f9fa;
             border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 1rem;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter-section {
+                padding: 1.5rem;
+            }
+            
+            .search-box {
+                margin-bottom: 1rem;
+            }
+            
+            .filter-select {
+                margin-bottom: 1rem;
+                min-width: 100%;
+            }
+            
+            .filter-group {
+                margin-bottom: 1rem;
+            }
         }
         
         .no-products {
@@ -531,47 +596,56 @@
         
         <!-- Search and Filter Section -->
         <div class="search-filter-section">
-            <div class="row g-3 align-items-center">
+            <div class="row g-4">
                 <div class="col-md-6">
-                    <div class="search-box">
-                        <input type="text" class="form-control" id="searchInput" 
-                               placeholder="Tìm kiếm sản phẩm..." 
-                               value="<?= htmlspecialchars($searchTerm ?? '') ?>">
-                        <button type="button" class="search-btn" onclick="performSearch()">
-                            <i class="fas fa-search"></i>
-                        </button>
+                    <div class="filter-group">
+                        <label class="filter-label">Tìm kiếm sản phẩm</label>
+                        <div class="search-box">
+                            <input type="text" class="form-control" id="searchInput" 
+                                   placeholder="Nhập tên sản phẩm..." 
+                                   value="<?= htmlspecialchars($searchTerm ?? '') ?>">
+                            <button type="button" class="search-btn" onclick="performSearch()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="col-md-3">
-                    <select id="categoryFilter" class="filter-select" onchange="filterProducts()">
-                        <option value="">Tất cả danh mục</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['MaDM'] ?>" 
-                                    <?= (isset($_GET['category']) && $_GET['category'] == $category['MaDM']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($category['TenDanhMuc']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="filter-group">
+                        <label class="filter-label">Danh mục</label>
+                        <select id="categoryFilter" class="filter-select" onchange="filterProducts()">
+                            <option value="">Tất cả danh mục</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?= $category['MaDM'] ?>" 
+                                        <?= (isset($_GET['category']) && $_GET['category'] == $category['MaDM']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($category['TenDanhMuc']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="col-md-3">
-                    <select id="sortFilter" class="filter-select" onchange="filterProducts()">
-                        <option value="name" <?= (isset($_GET['sort']) && $_GET['sort'] == 'name') ? 'selected' : '' ?>>Tên A-Z</option>
-                        <option value="name_desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'name_desc') ? 'selected' : '' ?>>Tên Z-A</option>
-                        <option value="price_asc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price_asc') ? 'selected' : '' ?>>Giá tăng dần</option>
-                        <option value="price_desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price_desc') ? 'selected' : '' ?>>Giá giảm dần</option>
-                    </select>
+                    <div class="filter-group">
+                        <label class="filter-label">Sắp xếp</label>
+                        <select id="sortFilter" class="filter-select" onchange="filterProducts()">
+                            <option value="name" <?= (isset($_GET['sort']) && $_GET['sort'] == 'name') ? 'selected' : '' ?>>Tên A-Z</option>
+                            <option value="name_desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'name_desc') ? 'selected' : '' ?>>Tên Z-A</option>
+                            <option value="price_asc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price_asc') ? 'selected' : '' ?>>Giá tăng dần</option>
+                            <option value="price_desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'price_desc') ? 'selected' : '' ?>>Giá giảm dần</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
             <!-- Filter Results Info -->
-            <div class="filter-info mt-3" id="filterInfo" style="display: none;">
+            <div class="filter-info mt-4" id="filterInfo" style="display: none;">
                 <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-muted">
-                        <i class="fas fa-filter me-2"></i>
-                        <span id="filterText">Đang lọc sản phẩm...</span>
-                    </span>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-filter me-2 text-primary"></i>
+                        <span class="text-muted" id="filterText">Đang lọc sản phẩm...</span>
+                    </div>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearFilters()">
                         <i class="fas fa-times me-1"></i>
                         Xóa bộ lọc
