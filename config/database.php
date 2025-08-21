@@ -8,7 +8,6 @@ class Database {
     private $username = "root";
     private $password = ""; // Mật khẩu của bạn, nếu có
     private $conn;
-
     /**
      * Phương thức này sẽ tạo và trả về một đối tượng kết nối PDO
      * @return PDO|null Đối tượng kết nối hoặc null nếu thất bại

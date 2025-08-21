@@ -6,6 +6,14 @@
 </div>
 <div class="card shadow-sm">
     <div class="card-body">
+        <?php
+        // Helper hiển thị giá trị hoặc fallback khi chưa có thông tin
+        $showInfo = function ($val) {
+            if ($val === null) return 'Khách hàng chưa cung cấp thông tin';
+            $str = is_string($val) ? trim($val) : trim((string)$val);
+            return $str !== '' ? htmlspecialchars($str, ENT_QUOTES, 'UTF-8') : 'Khách hàng chưa cung cấp thông tin';
+        };
+        ?>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead>
@@ -25,13 +33,14 @@
                         <?php foreach ($customers as $customer): ?>
                         <tr>
                             <td><?= htmlspecialchars($customer['MaKH']) ?></td>
-                            <td><?= htmlspecialchars($customer['HoTen']) ?></td>
-                            <td><?= htmlspecialchars($customer['SoDienThoai']) ?></td>
-                            <td><?= htmlspecialchars($customer['Email']) ?></td>
+                            <td><?= $showInfo($customer['HoTen'] ?? null) ?></td>
+                            <td><?= $showInfo($customer['SoDienThoai'] ?? null) ?></td>
+                            <td><?= $showInfo($customer['Email'] ?? null) ?></td>
                             <td>
                                 <?php
                                     $statusClass = '';
-                                    switch ($customer['TenPK']) {
+                                    $segment = $customer['TenPK'] ?? 'Chưa phân loại';
+                                    switch ($segment) {
                                         case 'Bronze': 
                                             $statusClass = 'bg-warning text-dark'; 
                                             break;
@@ -48,7 +57,7 @@
                                             $statusClass = 'bg-info text-dark';
                                     }
                                 ?>
-                                <span class="badge <?= $statusClass ?>"><?= htmlspecialchars($customer['TenPK']) ?></span>
+                                <span class="badge <?= $statusClass ?>"><?= htmlspecialchars($segment, ENT_QUOTES, 'UTF-8') ?></span>
                             </td>
                             <td class="text-center">
                                 <a href="/websitePS/public/customers/show/<?= $customer['MaKH'] ?>" class="btn btn-sm btn-info" title="Xem chi tiết">

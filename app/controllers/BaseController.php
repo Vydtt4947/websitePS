@@ -8,7 +8,9 @@ class BaseController {
             session_start();
         }
         if (get_class($this) !== 'AuthController' && !isset($_SESSION['user_id'])) {
-            header('Location: /websitePS/public/auth');
+            // Tính base động theo script hiện tại, rồi chuyển về admin auth
+            $base = rtrim(str_replace('\\','/', dirname($_SERVER['PHP_SELF'])), '/');
+            header('Location: ' . $base . '/admin.php?controller=auth');
             exit();
         }
     }
@@ -27,5 +29,22 @@ class BaseController {
             'type' => $type,
             'message' => $message
         ];
+    }
+
+    // --- Role helpers for admin area ---
+    protected function requireRole(array $roles) {
+        $role = $_SESSION['role'] ?? null;
+        if (!$role || !in_array($role, $roles, true)) {
+            http_response_code(403);
+            exit('Bạn không có quyền truy cập trang này.');
+        }
+    }
+
+    protected function isAdmin(): bool {
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+    }
+
+    protected function isStaff(): bool {
+        return isset($_SESSION['role']) && $_SESSION['role'] === 'staff';
     }
 }

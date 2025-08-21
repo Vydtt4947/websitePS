@@ -8,6 +8,8 @@ class OrdersController extends BaseController {
 
     public function __construct() {
         parent::__construct();
+        // Chỉ cho phép admin và staff
+        $this->requireRole(['admin','staff']);
         $this->orderModel = new OrderModel();
         $this->activePage = 'orders';
     }

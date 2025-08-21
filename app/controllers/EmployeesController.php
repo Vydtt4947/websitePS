@@ -15,6 +15,8 @@ class EmployeesController extends BaseController {
         $this->db = (new Database())->getConnection();
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        // Chỉ admin mới được truy cập phần Nhân viên
+        $this->requireRole(['admin']);
     }
 
     private function sanitizeRole(string $role): string {
@@ -71,16 +73,20 @@ class EmployeesController extends BaseController {
         $this->renderView('employees/create.php', $data);
     }
 
-    /** Lưu nhân viên mới */
+    /** Lưu nhân viên mới: tự tạo users role=staff và liên kết */
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: /websitePS/public/employees'); exit;
         }
-        $ok = $this->employeeModel->create($_POST);
-        if ($ok) {
-            $this->setFlashMessage('success', 'Đã thêm nhân viên mới.');
+        $res = $this->employeeModel->createWithUser($_POST);
+        if ($res['success']) {
+            $msg = 'Đã thêm nhân viên và tạo tài khoản: '
+                 . ($res['username'] ?? '')
+                 . ' | mật khẩu tạm thời: ' . ($res['temp_password'] ?? '')
+                 . ' | vai trò: staff';
+            $this->setFlashMessage('success', $msg);
         } else {
-            $this->setFlashMessage('danger', 'Thêm nhân viên thất bại.');
+            $this->setFlashMessage('danger', $res['message'] ?: 'Thêm nhân viên thất bại.');
         }
         header('Location: /websitePS/public/employees'); exit;
     }

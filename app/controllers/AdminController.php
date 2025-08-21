@@ -8,6 +8,8 @@ require_once __DIR__ . '/../models/ProductModel.php';
 class AdminController extends BaseController {
     public function __construct() {
         parent::__construct();
+        // Cho phép cả admin và staff truy cập dashboard
+        $this->requireRole(['admin','staff']);
         $this->activePage = 'admin';
     }
 

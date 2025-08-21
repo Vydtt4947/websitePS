@@ -17,6 +17,8 @@ class ProductsController extends BaseController {
     public function index() {
         // Gọi parent constructor để kiểm tra đăng nhập admin
         parent::__construct();
+        // Chỉ admin mới được truy cập quản lý sản phẩm
+        $this->requireRole(['admin']);
         
         $searchTerm = $_GET['search'] ?? '';
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -36,12 +38,14 @@ class ProductsController extends BaseController {
 
     public function create() {
         parent::__construct();
+        $this->requireRole(['admin']);
         $categories = $this->productModel->getAllCategories();
         require_once __DIR__ . '/../views/admin/products/create.php';
     }
 
     public function store() {
         parent::__construct();
+        $this->requireRole(['admin']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hinhAnh = null;
             
@@ -58,6 +62,7 @@ class ProductsController extends BaseController {
 
     public function edit($id) {
         parent::__construct();
+        $this->requireRole(['admin']);
         $product = $this->productModel->getProductById($id);
         $categories = $this->productModel->getAllCategories();
         require_once __DIR__ . '/../views/admin/products/edit.php';
@@ -65,6 +70,7 @@ class ProductsController extends BaseController {
 
     public function update($id) {
         parent::__construct();
+        $this->requireRole(['admin']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hinhAnh = null;
             
@@ -81,6 +87,7 @@ class ProductsController extends BaseController {
 
     public function delete($id) {
         parent::__construct();
+        $this->requireRole(['admin']);
         $this->productModel->deleteProduct($id);
         header('Location: /websitePS/public/products');
         exit();

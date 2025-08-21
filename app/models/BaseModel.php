@@ -6,7 +6,7 @@ class BaseModel {
     public function __construct() {
         // Thay đổi thông tin kết nối cho phù hợp với cấu hình của bạn
         $host = '127.0.0.1';
-        $dbname = 'test1'; // Tên CSDL bạn đã cung cấp
+        $dbname = 'cake_shop_remake'; // Tên CSDL bạn đã cung cấp
         $user = 'root';
         $password = ''; // Mật khẩu của bạn
 
