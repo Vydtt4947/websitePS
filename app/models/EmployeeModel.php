@@ -95,6 +95,10 @@ class EmployeeModel {
             return $result;
         }
 
+        // Lấy role yêu cầu (chỉ cho phép admin hoặc staff)
+        $requestedRole = strtolower(trim($data['__role'] ?? 'staff'));
+        $role = in_array($requestedRole, ['admin','staff'], true) ? $requestedRole : 'staff';
+
         try {
             $this->db->beginTransaction();
 
@@ -117,11 +121,12 @@ class EmployeeModel {
             $cccdRaw = trim($data['CCCD'] ?? '');
             $digits = preg_replace('/\D/', '', $cccdRaw);
             $last4 = substr(str_pad($digits, 4, '0', STR_PAD_LEFT), -4);
-            $tempPassword = 'staff' . $last4;
+            $prefix = ($role === 'admin') ? 'admin' : 'staff';
+            $tempPassword = $prefix . $last4;
             $hash = password_hash($tempPassword, PASSWORD_DEFAULT);
 
             $insUser = $this->db->prepare('INSERT INTO users (username, email, password, role, created_at) VALUES (:u,:e,:p,:r,NOW(3))');
-            $insUser->execute([':u' => $username, ':e' => $email, ':p' => $hash, ':r' => 'staff']);
+            $insUser->execute([':u' => $username, ':e' => $email, ':p' => $hash, ':r' => $role]);
             $newUserId = (int)$this->db->lastInsertId();
 
             // 4) Tạo bản ghi nhân viên và gắn user_id
@@ -214,11 +219,18 @@ class EmployeeModel {
         return $u->execute([':r' => $role, ':uid' => $userId]);
     }
 
-    // Xóa nhân viên theo MaNV
+    // Xóa nhân viên theo MaNV (chặn nếu user liên kết là admin)
     public function delete(int $maNV): bool {
+        // Lấy role user liên kết
+        $st = $this->db->prepare('SELECT u.role FROM nhanvien n LEFT JOIN users u ON u.user_id = n.user_id WHERE n.MaNV = :id LIMIT 1');
+        $st->execute([':id' => $maNV]);
+        $role = $st->fetchColumn();
+        if ($role === 'admin') {
+            return false; // chặn xóa nhân viên thuộc admin
+        }
         $sql = 'DELETE FROM nhanvien WHERE MaNV = :id';
-        $st = $this->db->prepare($sql);
-        return $st->execute([':id' => $maNV]);
+        $del = $this->db->prepare($sql);
+        return $del->execute([':id' => $maNV]);
     }
 
     private function makeBaseUsername(string $email, string $fullName): string {

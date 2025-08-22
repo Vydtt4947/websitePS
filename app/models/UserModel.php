@@ -149,13 +149,14 @@ class UserModel {
         return $st->execute($params);
     }
 
-    // Xóa user, tự gỡ liên kết trong nhanvien nếu có; chặn xóa admin cuối cùng
+    // Xóa user, chặn xóa mọi tài khoản admin
     public function delete(int $userId): bool {
         $u = $this->find($userId);
         if (!$u) return false;
 
-        if (($u['role'] ?? '') === 'admin' && $this->adminsCountExcluding($userId) === 0) {
-            return false; // chặn xóa admin cuối
+        // Chặn tuyệt đối xóa admin (kể cả còn nhiều admin)
+        if (($u['role'] ?? '') === 'admin') {
+            return false;
         }
 
         try {

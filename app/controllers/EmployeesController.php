@@ -73,17 +73,17 @@ class EmployeesController extends BaseController {
         $this->renderView('employees/create.php', $data);
     }
 
-    /** Lưu nhân viên mới: tự tạo users role=staff và liên kết */
+    /** Lưu nhân viên mới: tạo users với role được chọn (admin hoặc staff) */
     public function store() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /websitePS/public/employees'); exit;
-        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: /websitePS/public/employees'); exit; }
+        $role = isset($_POST['role']) ? $this->sanitizeRole($_POST['role']) : 'staff';
+        if (!in_array($role, ['admin','staff'], true)) { $role = 'staff'; }
+        $_POST['__role'] = $role; // đính kèm để model đọc
         $res = $this->employeeModel->createWithUser($_POST);
         if ($res['success']) {
-            $msg = 'Đã thêm nhân viên và tạo tài khoản: '
-                 . ($res['username'] ?? '')
+            $msg = 'Đã thêm nhân viên và tạo tài khoản: ' . ($res['username'] ?? '')
                  . ' | mật khẩu tạm thời: ' . ($res['temp_password'] ?? '')
-                 . ' | vai trò: staff';
+                 . ' | vai trò: ' . $role;
             $this->setFlashMessage('success', $msg);
         } else {
             $this->setFlashMessage('danger', $res['message'] ?: 'Thêm nhân viên thất bại.');

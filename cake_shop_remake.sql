@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 14, 2025 lúc 08:42 AM
--- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.0.30
+-- Host: 127.0.0.1
+-- Generation Time: Aug 22, 2025 at 08:24 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `cake_shop_remake`
+-- Database: `cake_shop_remake`
 --
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `baocao`
+-- Table structure for table `baocao`
 --
 
 CREATE TABLE `baocao` (
@@ -41,7 +41,7 @@ CREATE TABLE `baocao` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `chitietdonhang`
+-- Table structure for table `chitietdonhang`
 --
 
 CREATE TABLE `chitietdonhang` (
@@ -52,30 +52,46 @@ CREATE TABLE `chitietdonhang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `chitietdonhang`
+-- Dumping data for table `chitietdonhang`
 --
 
 INSERT INTO `chitietdonhang` (`MaDH`, `MaSP`, `SoLuong`, `DonGia`) VALUES
-(1, 3, 1, 120000.00),
-(11, 4, 1, 35000.00),
-(12, 3, 1, 120000.00),
-(12, 4, 1, 35000.00),
-(13, 4, 1, 35000.00),
-(14, 2, 1, 45000.00),
-(15, 4, 1, 35000.00),
-(16, 4, 1, 35000.00),
-(17, 2, 1, 45000.00),
-(18, 4, 1, 35000.00),
-(19, 1, 1, 85000.00),
-(19, 4, 1, 35000.00),
-(20, 3, 1, 120000.00),
-(21, 2, 1, 45000.00),
-(22, 2, 1, 45000.00);
+(44, 3, 1, 120000.00),
+(46, 2, 2, 45000.00),
+(46, 3, 2, 120000.00),
+(46, 6, 2, 750000.00),
+(47, 4, 1, 35000.00),
+(48, 3, 1, 120000.00),
+(49, 3, 1, 120000.00),
+(50, 3, 2, 120000.00),
+(51, 3, 1, 120000.00),
+(52, 3, 1, 120000.00),
+(53, 1, 1, 85000.00),
+(53, 2, 1, 45000.00),
+(53, 3, 1, 120000.00),
+(53, 4, 1, 35000.00),
+(53, 5, 1, 500000.00),
+(53, 6, 1, 750000.00),
+(54, 5, 1, 500000.00),
+(54, 6, 1, 750000.00),
+(55, 4, 1, 35000.00),
+(56, 2, 1, 45000.00),
+(57, 3, 1, 120000.00),
+(57, 4, 1, 35000.00),
+(57, 8, 1, 500000.00),
+(58, 3, 1, 120000.00),
+(58, 4, 2, 35000.00),
+(59, 6, 1, 750000.00),
+(60, 3, 1, 120000.00),
+(60, 4, 1, 35000.00),
+(60, 8, 1, 500000.00),
+(61, 5, 1, 500000.00),
+(61, 6, 1, 750000.00);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `danhgia`
+-- Table structure for table `danhgia`
 --
 
 CREATE TABLE `danhgia` (
@@ -92,7 +108,7 @@ CREATE TABLE `danhgia` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `danhmuc`
+-- Table structure for table `danhmuc`
 --
 
 CREATE TABLE `danhmuc` (
@@ -102,7 +118,7 @@ CREATE TABLE `danhmuc` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `danhmuc`
+-- Dumping data for table `danhmuc`
 --
 
 INSERT INTO `danhmuc` (`MaDM`, `TenDanhMuc`, `MoTa`) VALUES
@@ -113,7 +129,7 @@ INSERT INTO `danhmuc` (`MaDM`, `TenDanhMuc`, `MoTa`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `diachi`
+-- Table structure for table `diachi`
 --
 
 CREATE TABLE `diachi` (
@@ -126,7 +142,7 @@ CREATE TABLE `diachi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `diachi`
+-- Dumping data for table `diachi`
 --
 
 INSERT INTO `diachi` (`MaDC`, `SoNha`, `Phuong`, `Quan`, `ThanhPho`, `MaKH`) VALUES
@@ -137,7 +153,7 @@ INSERT INTO `diachi` (`MaDC`, `SoNha`, `Phuong`, `Quan`, `ThanhPho`, `MaKH`) VAL
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `donhang`
+-- Table structure for table `donhang`
 --
 
 CREATE TABLE `donhang` (
@@ -145,36 +161,41 @@ CREATE TABLE `donhang` (
   `MaKH` int(11) DEFAULT NULL,
   `MaNV` int(11) DEFAULT NULL,
   `NgayDatHang` datetime(3) NOT NULL,
-  `TrangThai` enum('Pending','Processing','Completed','Cancelled') NOT NULL DEFAULT 'Pending',
-  `PhuongThucThanhToan` varchar(50) DEFAULT 'cod',
+  `TrangThai` enum('Pending','Processing','Shipping','Delivered','Cancelled') NOT NULL DEFAULT 'Pending',
+  `PhuongThucThanhToan` varchar(50) NOT NULL DEFAULT 'cod',
   `MaKhuyenMai` int(11) DEFAULT NULL,
   `MaDC` int(11) DEFAULT NULL,
-  `TongTien` decimal(12,2) DEFAULT NULL
+  `TongTien` decimal(12,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `donhang`
+-- Dumping data for table `donhang`
 --
 
 INSERT INTO `donhang` (`MaDH`, `MaKH`, `MaNV`, `NgayDatHang`, `TrangThai`, `PhuongThucThanhToan`, `MaKhuyenMai`, `MaDC`, `TongTien`) VALUES
-(1, NULL, NULL, '2025-08-13 14:27:39.000', 'Processing', 'cod', NULL, 2, 120000.00),
-(11, NULL, NULL, '2025-08-14 00:41:50.000', 'Pending', 'cod', NULL, NULL, 35000.00),
-(12, NULL, NULL, '2025-08-14 12:02:19.000', 'Pending', 'cod', NULL, NULL, 155000.00),
-(13, 79, NULL, '2025-08-14 12:06:41.000', 'Cancelled', 'cod', NULL, NULL, 35000.00),
-(14, 79, NULL, '2025-08-14 12:50:45.000', 'Cancelled', 'cod', NULL, NULL, 45000.00),
-(15, 79, NULL, '2025-08-14 13:06:33.000', 'Cancelled', 'cod', NULL, NULL, 35000.00),
-(16, 79, NULL, '2025-08-14 13:14:29.000', 'Cancelled', 'cod', NULL, NULL, 50000.00),
-(17, 79, NULL, '2025-08-14 13:15:36.000', 'Cancelled', 'cod', NULL, NULL, 60000.00),
-(18, 79, NULL, '2025-08-14 13:26:51.000', 'Cancelled', 'cod', NULL, NULL, 50000.00),
-(19, 79, NULL, '2025-08-14 13:27:30.000', 'Cancelled', 'cod', NULL, NULL, 120000.00),
-(20, 79, NULL, '2025-08-14 13:33:11.000', 'Cancelled', 'bank', NULL, NULL, 120000.00),
-(21, 79, NULL, '2025-08-14 13:39:03.000', 'Cancelled', 'bank', NULL, NULL, 60000.00),
-(22, 79, NULL, '2025-08-14 13:41:04.000', 'Cancelled', 'bank', NULL, NULL, 60000.00);
+(44, NULL, NULL, '2025-08-15 22:36:45.000', 'Delivered', 'cod', NULL, NULL, 120000.00),
+(45, NULL, NULL, '2025-08-15 23:06:14.000', 'Cancelled', 'cod', NULL, NULL, 237500.00),
+(46, NULL, NULL, '2025-08-15 23:41:55.000', 'Cancelled', 'bank', NULL, NULL, 1098000.00),
+(47, NULL, NULL, '2025-08-15 23:55:51.000', 'Cancelled', 'cod', NULL, NULL, 270750.00),
+(48, NULL, NULL, '2025-08-16 13:54:43.000', 'Delivered', 'bank', NULL, NULL, 120000.00),
+(49, NULL, NULL, '2025-08-16 16:40:40.000', 'Delivered', 'cod', NULL, NULL, 120000.00),
+(50, NULL, NULL, '2025-08-16 17:14:59.000', 'Delivered', 'bank', NULL, NULL, 180000.00),
+(51, NULL, NULL, '2025-08-16 17:22:26.000', 'Delivered', 'cod', NULL, NULL, 120000.00),
+(52, NULL, NULL, '2025-08-16 17:29:28.000', 'Delivered', 'cod', NULL, NULL, 90000.00),
+(53, NULL, NULL, '2025-08-16 18:25:28.000', 'Delivered', 'bank', NULL, NULL, 1071000.00),
+(54, NULL, NULL, '2025-08-16 18:44:32.000', 'Cancelled', 'cod', NULL, NULL, 750000.00),
+(55, NULL, NULL, '2025-08-16 18:53:00.000', 'Cancelled', 'cod', NULL, NULL, 50000.00),
+(56, NULL, NULL, '2025-08-16 19:13:02.000', 'Pending', 'cod', NULL, NULL, 60000.00),
+(57, NULL, NULL, '2025-08-20 06:44:05.000', 'Pending', 'bank', NULL, NULL, 393000.00),
+(58, 95, NULL, '2025-08-22 21:53:00.000', 'Delivered', 'cod', NULL, NULL, 142500.00),
+(59, 95, NULL, '2025-08-22 21:54:28.000', 'Delivered', 'bank', NULL, NULL, 450000.00),
+(60, 99, NULL, '2025-08-22 22:04:50.000', 'Delivered', 'cod', NULL, NULL, 655000.00),
+(61, 100, NULL, '2025-08-23 01:22:59.000', 'Delivered', 'cod', NULL, NULL, 750000.00);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `giohang`
+-- Table structure for table `giohang`
 --
 
 CREATE TABLE `giohang` (
@@ -185,17 +206,23 @@ CREATE TABLE `giohang` (
   `NgayThem` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `giohang`
+--
+
+INSERT INTO `giohang` (`MaGH`, `MaKH`, `MaSP`, `SoLuong`, `NgayThem`) VALUES
+(90, 95, 3, 1, '2025-08-22 14:56:35');
+
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `khachhang`
+-- Table structure for table `khachhang`
 --
 
 CREATE TABLE `khachhang` (
   `MaKH` int(11) NOT NULL,
   `HoTen` varchar(100) NOT NULL,
   `SoDienThoai` varchar(15) DEFAULT NULL,
-  `CCCD` varchar(12) DEFAULT NULL,
   `Email` varchar(100) DEFAULT NULL,
   `NgaySinh` date DEFAULT NULL,
   `DiemTichLuy` int(11) NOT NULL DEFAULT 0,
@@ -210,24 +237,38 @@ CREATE TABLE `khachhang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `khachhang`
+-- Dumping data for table `khachhang`
 --
 
-INSERT INTO `khachhang` (`MaKH`, `HoTen`, `SoDienThoai`, `CCCD`, `Email`, `NgaySinh`, `DiemTichLuy`, `MaPK`, `user_id`, `created_at`, `MatKhau`, `DiaChiGiaoHang`, `TinhThanh`, `QuanHuyen`, `GhiChuGiaoHang`) VALUES
-(78, 'Phương Nguyễn Hoàng', NULL, NULL, 'cucxac.fuong227@gmail.com', NULL, 0, NULL, NULL, '2025-08-14 00:23:42.840', NULL, NULL, NULL, NULL, NULL),
-(79, 'phuongnh0954', '0856473291', NULL, 'phuongnh0954@ut.edu.vn', '0000-00-00', 0, NULL, 4, '2025-08-14 00:30:26.246', NULL, '02 Võ Oanh', 'TP. Hồ Chí Minh', 'Bình Thạnh', 'Trường Đại Học GTVT TPHCM');
+INSERT INTO `khachhang` (`MaKH`, `HoTen`, `SoDienThoai`, `Email`, `NgaySinh`, `DiemTichLuy`, `MaPK`, `user_id`, `created_at`, `MatKhau`, `DiaChiGiaoHang`, `TinhThanh`, `QuanHuyen`, `GhiChuGiaoHang`) VALUES
+(95, 'Nguyen Hoang Phuong', '0325093767', 'boyvncraft2272000@gmail.com', NULL, 0, 1, 15, '2025-08-22 21:51:00.730', '$2y$10$wtQbWAJV//839KS.MFLaruKSMzP4CZoIyoGIbdySaeAgJPjUeLsX6', NULL, NULL, NULL, NULL),
+(98, 'phuong', '', 'netherjosep@hotmail.com', NULL, 0, NULL, 18, '2025-08-22 22:02:03.189', '$2y$10$XMNbsfPByc9OhtbXoi1Ui.dd2w7CY4DGhGRuJe4n0uoOEWpFpMyaG', NULL, NULL, NULL, NULL),
+(99, 'Phương Nguyễn Hoàng', '0325093757', 'cucxacdufong@gmail.com', NULL, 0, 1, NULL, '2025-08-22 22:04:50.227', NULL, NULL, NULL, NULL, NULL),
+(100, 'Đinh Thúy Vy', '0348675235', 'dinhvy789@gmail.com', '2025-08-20', 0, 1, 20, '2025-08-23 00:37:04.068', '$2y$10$q9vtwhAGyA0g1tDWyte92eUzXVLNC6Gc.rI7eBLYaapqUF2y7wRGa', '123 Đường A', 'TP. Hồ Chí Minh', 'Quận 1', '');
+
+--
+-- Triggers `khachhang`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_khachhang_delete_user` AFTER DELETE ON `khachhang` FOR EACH ROW BEGIN
+  IF OLD.user_id IS NOT NULL THEN
+    DELETE FROM users WHERE user_id = OLD.user_id;
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `kho`
+-- Table structure for table `kho`
 --
 
 CREATE TABLE `kho` (
   `MaKho` int(11) NOT NULL,
-  `MaSP` int(11) DEFAULT NULL,
-  `MaNV` int(11) DEFAULT NULL,
-  `MaNL` int(11) DEFAULT NULL,
+  `MaSP` int(11) NOT NULL,
+  `MaNV` int(11) NOT NULL,
+  `MaNL` int(11) NOT NULL,
   `NgayGiaoDich` datetime(3) NOT NULL,
   `LoaiGiaoDich` enum('Nhap','Xuat') NOT NULL,
   `SoLuong` int(11) NOT NULL CHECK (`SoLuong` >= 0)
@@ -236,7 +277,7 @@ CREATE TABLE `kho` (
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `khuyenmai`
+-- Table structure for table `khuyenmai`
 --
 
 CREATE TABLE `khuyenmai` (
@@ -250,17 +291,18 @@ CREATE TABLE `khuyenmai` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `khuyenmai`
+-- Dumping data for table `khuyenmai`
 --
 
 INSERT INTO `khuyenmai` (`MaKM`, `TenKM`, `MoTa`, `PhanTramGiamGia`, `SoTienGiamGia`, `NgayBatDau`, `NgayKetThuc`) VALUES
 (1, 'WELCOME10', 'Giảm 10% cho khách hàng mới', 10.00, NULL, '2025-08-09', '2025-09-08'),
-(2, 'FREESHIP', 'Miễn phí vận chuyển cho đơn hàng trên 500k', NULL, 30000.00, '2025-08-09', '2025-10-08');
+(2, 'FREESHIP', 'Miễn phí vận chuyển cho đơn hàng trên 500k', NULL, 30000.00, '2025-08-09', '2025-10-08'),
+(3, 'LEQUOCKHANH', 'Nhân dịp Quốc Khánh 2/9, cửa hàng giảm giá đặc biệt cho tất cả các loại bánh ngọt và bánh kem.', 20.00, NULL, '2025-08-30', '2025-09-03');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `lichsu_donhang`
+-- Table structure for table `lichsu_donhang`
 --
 
 CREATE TABLE `lichsu_donhang` (
@@ -268,50 +310,79 @@ CREATE TABLE `lichsu_donhang` (
   `MaDH` int(11) NOT NULL,
   `NgayThayDoi` datetime(3) NOT NULL DEFAULT current_timestamp(3),
   `GhiChu` text DEFAULT NULL,
-  `MaNV` int(11) DEFAULT NULL
+  `MaNV` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `nguyenlieu`
+-- Table structure for table `nguyenlieu`
 --
 
 CREATE TABLE `nguyenlieu` (
   `MaNL` int(11) NOT NULL,
   `TenNL` varchar(100) NOT NULL,
   `MoTa` text DEFAULT NULL,
-  `DonViTinh` varchar(20) DEFAULT NULL,
+  `DonViTinh` varchar(20) NOT NULL,
   `SoLuong` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `nguyenlieu`
+--
+
+INSERT INTO `nguyenlieu` (`MaNL`, `TenNL`, `MoTa`, `DonViTinh`, `SoLuong`) VALUES
+(1, 'Bột mì số 11', 'Dùng làm bánh mì, bánh ngọt, có độ protein cao', 'kg', 50),
+(2, 'Bơ lạt Anchor', 'Bơ nhạt nhập khẩu, dùng làm bánh', 'kg', 20),
+(3, 'Đường cát trắng', 'Nguyên liệu cơ bản cho các loại bánh', 'kg', 100),
+(4, 'Trứng gà', 'Trứng gà tươi, size M', 'quả', 300),
+(5, 'Sữa tươi không đường', 'Dùng để làm bánh flan, gato, tiramisu', 'lít', 30),
+(6, 'Sô cô la đen', 'Chocolate nguyên chất 70%', 'kg', 10),
+(7, 'Kem whipping cream', 'Kem béo động vật', 'ml', 5000),
+(8, 'Bột cacao nguyên chất', 'Bột cacao dùng để làm bánh, pha chế', 'kg', 15),
+(9, 'Men nở instant', 'Men khô dùng trong làm bánh mì', 'gói', 40),
+(10, 'Bột nở (baking powder)', 'Dùng trong các loại bánh nở nhanh', 'gói', 25);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `nhanvien`
+-- Table structure for table `nhanvien`
 --
 
 CREATE TABLE `nhanvien` (
   `MaNV` int(11) NOT NULL,
   `HoTen` varchar(100) NOT NULL,
   `SoDienThoai` varchar(15) DEFAULT NULL,
-  `CCCD` varchar(20) DEFAULT NULL,
-  `Email` varchar(100) DEFAULT NULL,
-  `NgaySinh` date DEFAULT NULL,
+  `CCCD` varchar(20) NOT NULL,
+  `Email` varchar(100) NOT NULL,
+  `NgaySinh` date NOT NULL,
   `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `nhanvien`
+-- Dumping data for table `nhanvien`
 --
 
 INSERT INTO `nhanvien` (`MaNV`, `HoTen`, `SoDienThoai`, `CCCD`, `Email`, `NgaySinh`, `user_id`) VALUES
-(1, 'Nguyen Van A', '0909123456', NULL, 'employee@parrotsmell.com', NULL, 1);
+(7, 'Lương Tú Linh', '0909123456', '087305014946', 'tulinhkhung123@gmail.com', '1999-06-15', 23),
+(8, 'Admin', '0909123456', '083234821234', 'admin@parrotsmell.com', '2002-05-23', 24);
+
+--
+-- Triggers `nhanvien`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_nhanvien_delete_user` AFTER DELETE ON `nhanvien` FOR EACH ROW BEGIN
+  IF OLD.user_id IS NOT NULL THEN
+    DELETE FROM users WHERE user_id = OLD.user_id;
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `phankhuckh`
+-- Table structure for table `phankhuckh`
 --
 
 CREATE TABLE `phankhuckh` (
@@ -321,18 +392,21 @@ CREATE TABLE `phankhuckh` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `phankhuckh`
+-- Dumping data for table `phankhuckh`
 --
 
 INSERT INTO `phankhuckh` (`MaPK`, `TenPK`, `MoTa`) VALUES
-(1, 'Bronze', 'Khách hàng mới'),
-(2, 'Silver', 'Khách hàng thân thiết'),
-(3, 'Gold', 'Khách hàng VIP');
+(1, 'Bronze', 'Khách hàng Bronze - Chi tiêu từ 500,000đ'),
+(2, 'Silver', 'Khách hàng Silver - Chi tiêu từ 1,000,000đ'),
+(3, 'Gold', 'Khách hàng Gold - Chi tiêu từ 2,000,000đ'),
+(4, 'Platinum', 'Khách hàng Platinum - Chi tiêu từ 5,000,000đ'),
+(5, 'Diamond', 'Khách hàng Diamond - Chi tiêu từ 10,000,000đ'),
+(6, 'VIP', 'Khách hàng VIP - Chi tiêu từ 20,000,000đ');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sanpham`
+-- Table structure for table `sanpham`
 --
 
 CREATE TABLE `sanpham` (
@@ -348,42 +422,38 @@ CREATE TABLE `sanpham` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `sanpham`
+-- Dumping data for table `sanpham`
 --
 
 INSERT INTO `sanpham` (`MaSP`, `TenSP`, `MoTa`, `DonGia`, `MaDM`, `SoLuong`, `HinhAnh`, `TrangThai`, `NgayThem`) VALUES
 (1, 'Bánh Tiramisu', 'Bánh tiramisu truyền thống Ý với hương vị cà phê đậm đà', 85000.00, 1, 50, 'https://images.unsplash.com/photo-1714385905983-6f8e06fffae1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
 (2, 'Bánh Mì Sourdough', 'Bánh mì sourdough với vỏ giòn và ruột mềm', 45000.00, 2, 100, 'https://plus.unsplash.com/premium_photo-1664640733898-d5c3f71f44e1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
 (3, 'Bánh Chocolate Cake', 'Bánh chocolate đen với kem tươi', 120000.00, 3, 29, 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2hvY29sYXRlJTIwY2FrZXxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
-(4, 'Bánh Croissant', 'Bánh croissant Pháp với lớp vỏ xốp giòn', 35000.00, 2, 80, 'https://images.unsplash.com/photo-1600521853186-93b88b3a07b0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGNyb2lzc2FudHxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-09 13:05:54.645');
+(4, 'Bánh Croissant', 'Bánh croissant Pháp với lớp vỏ xốp giòn', 35000.00, 2, 86, 'https://images.unsplash.com/photo-1600521853186-93b88b3a07b0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGNyb2lzc2FudHxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
+(5, 'Bánh Kem Mây Hồng', 'Bánh kem 2 tầng phủ sốt dâu hồng, xen kẽ lớp kem tươi mịn, trang trí mâm xôi tươi bắt mắt – lựa chọn hoàn hảo cho mọi bữa tiệc ngọt ngào!', 500000.00, 3, 0, 'https://plus.unsplash.com/premium_photo-1713447395823-2e0b40b75a89?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2FrZXxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-15 12:17:51.378'),
+(6, 'Bánh Kem Trái Tim Anh Đào', 'Bánh kem hình trái tim với lớp kem phủ màu trắng ngà tinh tế, viền quanh bằng những chấm kem nhỏ xinh, tạo cảm giác mềm mại và sang trọng. Trên mặt bánh nổi bật với một quả anh đào đỏ tươi đặt trên lớp kem tươi cuộn tròn, làm điểm nhấn ngọt ngào và lãng mạn. Thiết kế đơn giản nhưng rất thanh lịch, phù hợp để tặng người thương, sinh nhật, kỷ niệm tình yêu hoặc các dịp đặc biệt.', 750000.00, 3, 0, 'https://plus.unsplash.com/premium_photo-1679047666503-28884e055869?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGNha2V8ZW58MHx8MHx8fDA%3D', 'Available', '2025-08-15 12:25:00.371'),
+(8, 'Bánh Cam Mọng Nước', 'Bánh gồm nhiều lớp bông lan mềm mịn, xen kẽ các lớp kem cam tươi mát, phủ trên cùng là lớp thạch cam óng ánh và trang trí thêm một lát cam cùng trái việt quất tươi nổi bật. Hương vị bánh thơm ngọt, chua nhẹ, kết hợp vị tươi mát của cam và sự mềm mại của bông lan, tạo cảm giác thanh nhẹ, sảng khoái. Phù hợp làm món tráng miệng, dùng kèm trà chiều hoặc trong các buổi tiệc nhẹ.', 500000.00, 3, 0, 'https://images.unsplash.com/photo-1642069251474-5cc71cfdf49b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FrZSUyMHN3ZWV0fGVufDB8fDB8fHww', 'Available', '2025-08-16 20:56:52.518');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `thanhtoan`
+-- Table structure for table `thanhtoan`
 --
 
 CREATE TABLE `thanhtoan` (
   `MaTT` int(11) NOT NULL,
   `MaDH` int(11) NOT NULL,
   `MaNV` int(11) DEFAULT NULL,
-  `PTTT` varchar(100) DEFAULT NULL,
+  `PTTT` varchar(100) NOT NULL,
   `SoTien` decimal(12,2) NOT NULL,
   `NgayThanhToan` datetime(3) NOT NULL,
   `TrangThai` enum('Pending','Completed','Failed') NOT NULL DEFAULT 'Pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
---
--- Đang đổ dữ liệu cho bảng `thanhtoan`
---
-
-INSERT INTO `thanhtoan` (`MaTT`, `MaDH`, `MaNV`, `PTTT`, `SoTien`, `NgayThanhToan`, `TrangThai`) VALUES
-(1, 1, NULL, 'Tiền mặt', 120000.00, '2025-08-13 14:27:39.000', 'Completed');
-
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -396,23 +466,26 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Đang đổ dữ liệu cho bảng `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `role`) VALUES
-(1, 'admin', 'admin@parrotsmell.com', '$2a$12$fBFdn7JgFcUO/HtCQfJGFu3KQdB4Bp7YhAR0RRgmV.D8EeKJFBZ0O', '2025-08-09 13:05:54.583', 'admin'),
-(4, 'phuongnh0954', 'phuongnh0954@ut.edu.vn', '$2y$10$mVSuZiC63dOMRTGzrbEAJOM18d3zZ9QLDMHRb/8U.je33LN71G3hy', '2025-08-13 22:02:33.456', 'member');
+(15, 'boyvncraft2272000', 'boyvncraft2272000@gmail.com', '$2y$10$wtQbWAJV//839KS.MFLaruKSMzP4CZoIyoGIbdySaeAgJPjUeLsX6', '2025-08-22 21:51:00.728', 'member'),
+(18, 'netherjosep', 'netherjosep@hotmail.com', '$2y$10$XMNbsfPByc9OhtbXoi1Ui.dd2w7CY4DGhGRuJe4n0uoOEWpFpMyaG', '2025-08-22 22:02:03.186', 'member'),
+(20, 'dinhvy789', 'dinhvy789@gmail.com', '$2y$10$q9vtwhAGyA0g1tDWyte92eUzXVLNC6Gc.rI7eBLYaapqUF2y7wRGa', '2025-08-23 00:37:04.067', 'member'),
+(23, 'tulinhkhung123', 'tulinhkhung123@gmail.com', '$2y$10$6Dh0nv5GMSCiEDdNBeDDY.HN63pyfm05YiE9mkYf8f6d6FP2L6OF.', '2025-08-23 01:04:16.667', 'staff'),
+(24, 'admin', 'admin@parrotsmell.com', '$2y$10$8FtcO3K1aXNOvFxhAR2T/OQq2LMmWpXNckhYaRTqvdji0l9IAVveq', '2025-08-23 01:06:09.701', 'admin');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `vanchuyen`
+-- Table structure for table `vanchuyen`
 --
 
 CREATE TABLE `vanchuyen` (
   `MaGH` int(11) NOT NULL,
   `MaDH` int(11) NOT NULL,
-  `DVVC` varchar(100) DEFAULT NULL,
+  `DVVC` varchar(100) NOT NULL,
   `MaVanDon` varchar(50) DEFAULT NULL,
   `PhiShip` decimal(10,2) NOT NULL DEFAULT 0.00,
   `NgayGiaoHang` date DEFAULT NULL,
@@ -420,25 +493,25 @@ CREATE TABLE `vanchuyen` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Chỉ mục cho các bảng đã đổ
+-- Indexes for dumped tables
 --
 
 --
--- Chỉ mục cho bảng `baocao`
+-- Indexes for table `baocao`
 --
 ALTER TABLE `baocao`
   ADD PRIMARY KEY (`MaBC`),
   ADD KEY `MaNV` (`MaNV`);
 
 --
--- Chỉ mục cho bảng `chitietdonhang`
+-- Indexes for table `chitietdonhang`
 --
 ALTER TABLE `chitietdonhang`
   ADD PRIMARY KEY (`MaDH`,`MaSP`),
   ADD KEY `MaSP` (`MaSP`);
 
 --
--- Chỉ mục cho bảng `danhgia`
+-- Indexes for table `danhgia`
 --
 ALTER TABLE `danhgia`
   ADD PRIMARY KEY (`MaDG`),
@@ -447,20 +520,20 @@ ALTER TABLE `danhgia`
   ADD KEY `danhgia_MaSP_fkey` (`MaSP`);
 
 --
--- Chỉ mục cho bảng `danhmuc`
+-- Indexes for table `danhmuc`
 --
 ALTER TABLE `danhmuc`
   ADD PRIMARY KEY (`MaDM`);
 
 --
--- Chỉ mục cho bảng `diachi`
+-- Indexes for table `diachi`
 --
 ALTER TABLE `diachi`
   ADD PRIMARY KEY (`MaDC`),
   ADD KEY `MaKH` (`MaKH`);
 
 --
--- Chỉ mục cho bảng `donhang`
+-- Indexes for table `donhang`
 --
 ALTER TABLE `donhang`
   ADD PRIMARY KEY (`MaDH`),
@@ -470,7 +543,7 @@ ALTER TABLE `donhang`
   ADD KEY `MaKhuyenMai` (`MaKhuyenMai`);
 
 --
--- Chỉ mục cho bảng `giohang`
+-- Indexes for table `giohang`
 --
 ALTER TABLE `giohang`
   ADD PRIMARY KEY (`MaGH`),
@@ -479,7 +552,7 @@ ALTER TABLE `giohang`
   ADD KEY `fk_giohang_sanpham` (`MaSP`);
 
 --
--- Chỉ mục cho bảng `khachhang`
+-- Indexes for table `khachhang`
 --
 ALTER TABLE `khachhang`
   ADD PRIMARY KEY (`MaKH`),
@@ -489,7 +562,7 @@ ALTER TABLE `khachhang`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Chỉ mục cho bảng `kho`
+-- Indexes for table `kho`
 --
 ALTER TABLE `kho`
   ADD PRIMARY KEY (`MaKho`),
@@ -498,13 +571,13 @@ ALTER TABLE `kho`
   ADD KEY `MaNV` (`MaNV`);
 
 --
--- Chỉ mục cho bảng `khuyenmai`
+-- Indexes for table `khuyenmai`
 --
 ALTER TABLE `khuyenmai`
   ADD PRIMARY KEY (`MaKM`);
 
 --
--- Chỉ mục cho bảng `lichsu_donhang`
+-- Indexes for table `lichsu_donhang`
 --
 ALTER TABLE `lichsu_donhang`
   ADD PRIMARY KEY (`MaLS`),
@@ -512,13 +585,13 @@ ALTER TABLE `lichsu_donhang`
   ADD KEY `MaNV` (`MaNV`);
 
 --
--- Chỉ mục cho bảng `nguyenlieu`
+-- Indexes for table `nguyenlieu`
 --
 ALTER TABLE `nguyenlieu`
   ADD PRIMARY KEY (`MaNL`);
 
 --
--- Chỉ mục cho bảng `nhanvien`
+-- Indexes for table `nhanvien`
 --
 ALTER TABLE `nhanvien`
   ADD PRIMARY KEY (`MaNV`),
@@ -527,20 +600,20 @@ ALTER TABLE `nhanvien`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Chỉ mục cho bảng `phankhuckh`
+-- Indexes for table `phankhuckh`
 --
 ALTER TABLE `phankhuckh`
   ADD PRIMARY KEY (`MaPK`);
 
 --
--- Chỉ mục cho bảng `sanpham`
+-- Indexes for table `sanpham`
 --
 ALTER TABLE `sanpham`
   ADD PRIMARY KEY (`MaSP`),
   ADD KEY `MaDM` (`MaDM`);
 
 --
--- Chỉ mục cho bảng `thanhtoan`
+-- Indexes for table `thanhtoan`
 --
 ALTER TABLE `thanhtoan`
   ADD PRIMARY KEY (`MaTT`),
@@ -548,7 +621,7 @@ ALTER TABLE `thanhtoan`
   ADD KEY `MaNV` (`MaNV`);
 
 --
--- Chỉ mục cho bảng `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
@@ -556,137 +629,137 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_username_key` (`username`);
 
 --
--- Chỉ mục cho bảng `vanchuyen`
+-- Indexes for table `vanchuyen`
 --
 ALTER TABLE `vanchuyen`
   ADD PRIMARY KEY (`MaGH`),
   ADD KEY `MaDonHang` (`MaDH`);
 
 --
--- AUTO_INCREMENT cho các bảng đã đổ
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT cho bảng `baocao`
+-- AUTO_INCREMENT for table `baocao`
 --
 ALTER TABLE `baocao`
   MODIFY `MaBC` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `danhgia`
+-- AUTO_INCREMENT for table `danhgia`
 --
 ALTER TABLE `danhgia`
-  MODIFY `MaDG` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `MaDG` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT cho bảng `danhmuc`
+-- AUTO_INCREMENT for table `danhmuc`
 --
 ALTER TABLE `danhmuc`
   MODIFY `MaDM` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT cho bảng `diachi`
+-- AUTO_INCREMENT for table `diachi`
 --
 ALTER TABLE `diachi`
   MODIFY `MaDC` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT cho bảng `donhang`
+-- AUTO_INCREMENT for table `donhang`
 --
 ALTER TABLE `donhang`
-  MODIFY `MaDH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `MaDH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
--- AUTO_INCREMENT cho bảng `giohang`
+-- AUTO_INCREMENT for table `giohang`
 --
 ALTER TABLE `giohang`
-  MODIFY `MaGH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `MaGH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
--- AUTO_INCREMENT cho bảng `khachhang`
+-- AUTO_INCREMENT for table `khachhang`
 --
 ALTER TABLE `khachhang`
-  MODIFY `MaKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `MaKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 
 --
--- AUTO_INCREMENT cho bảng `kho`
+-- AUTO_INCREMENT for table `kho`
 --
 ALTER TABLE `kho`
-  MODIFY `MaKho` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `MaKho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT cho bảng `khuyenmai`
+-- AUTO_INCREMENT for table `khuyenmai`
 --
 ALTER TABLE `khuyenmai`
-  MODIFY `MaKM` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `MaKM` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT cho bảng `lichsu_donhang`
+-- AUTO_INCREMENT for table `lichsu_donhang`
 --
 ALTER TABLE `lichsu_donhang`
   MODIFY `MaLS` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT cho bảng `nguyenlieu`
+-- AUTO_INCREMENT for table `nguyenlieu`
 --
 ALTER TABLE `nguyenlieu`
-  MODIFY `MaNL` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `MaNL` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT cho bảng `nhanvien`
+-- AUTO_INCREMENT for table `nhanvien`
 --
 ALTER TABLE `nhanvien`
-  MODIFY `MaNV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `MaNV` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT cho bảng `phankhuckh`
+-- AUTO_INCREMENT for table `phankhuckh`
 --
 ALTER TABLE `phankhuckh`
-  MODIFY `MaPK` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `MaPK` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT cho bảng `sanpham`
+-- AUTO_INCREMENT for table `sanpham`
 --
 ALTER TABLE `sanpham`
-  MODIFY `MaSP` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `MaSP` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT cho bảng `thanhtoan`
+-- AUTO_INCREMENT for table `thanhtoan`
 --
 ALTER TABLE `thanhtoan`
   MODIFY `MaTT` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT cho bảng `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT cho bảng `vanchuyen`
+-- AUTO_INCREMENT for table `vanchuyen`
 --
 ALTER TABLE `vanchuyen`
   MODIFY `MaGH` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- Các ràng buộc cho các bảng đã đổ
+-- Constraints for dumped tables
 --
 
 --
--- Các ràng buộc cho bảng `baocao`
+-- Constraints for table `baocao`
 --
 ALTER TABLE `baocao`
   ADD CONSTRAINT `baocao_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `chitietdonhang`
+-- Constraints for table `chitietdonhang`
 --
 ALTER TABLE `chitietdonhang`
   ADD CONSTRAINT `chitietdonhang_MaDH_fkey` FOREIGN KEY (`MaDH`) REFERENCES `donhang` (`MaDH`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `chitietdonhang_MaSP_fkey` FOREIGN KEY (`MaSP`) REFERENCES `sanpham` (`MaSP`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `danhgia`
+-- Constraints for table `danhgia`
 --
 ALTER TABLE `danhgia`
   ADD CONSTRAINT `danhgia_MaDH_fkey` FOREIGN KEY (`MaDH`) REFERENCES `donhang` (`MaDH`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -694,13 +767,13 @@ ALTER TABLE `danhgia`
   ADD CONSTRAINT `danhgia_MaSP_fkey` FOREIGN KEY (`MaSP`) REFERENCES `sanpham` (`MaSP`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `diachi`
+-- Constraints for table `diachi`
 --
 ALTER TABLE `diachi`
   ADD CONSTRAINT `diachi_MaKH_fkey` FOREIGN KEY (`MaKH`) REFERENCES `khachhang` (`MaKH`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `donhang`
+-- Constraints for table `donhang`
 --
 ALTER TABLE `donhang`
   ADD CONSTRAINT `donhang_MaDC_fkey` FOREIGN KEY (`MaDC`) REFERENCES `diachi` (`MaDC`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -709,55 +782,47 @@ ALTER TABLE `donhang`
   ADD CONSTRAINT `donhang_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `giohang`
+-- Constraints for table `giohang`
 --
 ALTER TABLE `giohang`
   ADD CONSTRAINT `fk_giohang_khachhang` FOREIGN KEY (`MaKH`) REFERENCES `khachhang` (`MaKH`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_giohang_sanpham` FOREIGN KEY (`MaSP`) REFERENCES `sanpham` (`MaSP`) ON DELETE CASCADE;
 
 --
--- Các ràng buộc cho bảng `khachhang`
+-- Constraints for table `khachhang`
 --
 ALTER TABLE `khachhang`
   ADD CONSTRAINT `khachhang_MaPK_fkey` FOREIGN KEY (`MaPK`) REFERENCES `phankhuckh` (`MaPK`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `khachhang_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `kho`
---
-ALTER TABLE `kho`
-  ADD CONSTRAINT `kho_MaNL_fkey` FOREIGN KEY (`MaNL`) REFERENCES `nguyenlieu` (`MaNL`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `kho_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `kho_MaSP_fkey` FOREIGN KEY (`MaSP`) REFERENCES `sanpham` (`MaSP`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Các ràng buộc cho bảng `lichsu_donhang`
+-- Constraints for table `lichsu_donhang`
 --
 ALTER TABLE `lichsu_donhang`
   ADD CONSTRAINT `lichsu_donhang_MaDH_fkey` FOREIGN KEY (`MaDH`) REFERENCES `donhang` (`MaDH`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `lichsu_donhang_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `lichsu_donhang_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `nhanvien`
+-- Constraints for table `nhanvien`
 --
 ALTER TABLE `nhanvien`
   ADD CONSTRAINT `nhanvien_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `sanpham`
+-- Constraints for table `sanpham`
 --
 ALTER TABLE `sanpham`
   ADD CONSTRAINT `sanpham_MaDM_fkey` FOREIGN KEY (`MaDM`) REFERENCES `danhmuc` (`MaDM`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `thanhtoan`
+-- Constraints for table `thanhtoan`
 --
 ALTER TABLE `thanhtoan`
   ADD CONSTRAINT `thanhtoan_MaDH_fkey` FOREIGN KEY (`MaDH`) REFERENCES `donhang` (`MaDH`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `thanhtoan_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Các ràng buộc cho bảng `vanchuyen`
+-- Constraints for table `vanchuyen`
 --
 ALTER TABLE `vanchuyen`
   ADD CONSTRAINT `vanchuyen_MaDH_fkey` FOREIGN KEY (`MaDH`) REFERENCES `donhang` (`MaDH`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -103,9 +103,15 @@ class CustomerModel {
             
             // 3. Xóa user tương ứng
             if ($userId) {
-                $deleteUserStmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
-                $deleteUserStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-                $deleteUserStmt->execute();
+                $roleStmt = $this->db->prepare("SELECT role FROM users WHERE user_id = :uid LIMIT 1");
+                $roleStmt->bindParam(':uid', $userId, PDO::PARAM_INT);
+                $roleStmt->execute();
+                $role = $roleStmt->fetchColumn();
+                if ($role && $role !== 'admin') {
+                    $deleteUserStmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
+                    $deleteUserStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                    $deleteUserStmt->execute();
+                }
             }
             
             $this->db->commit();

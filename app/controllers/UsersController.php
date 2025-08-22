@@ -185,12 +185,10 @@ class UsersController extends BaseController {
         $row = $st->fetch(PDO::FETCH_ASSOC);
         if (!$row) { $this->setFlashMessage('danger','Người dùng không tồn tại.'); header('Location: /websitePS/public/users'); exit; }
 
+        // Chặn tuyệt đối xóa admin
         if (($row['role'] ?? '') === 'admin') {
-            $cnt = $this->db->query("SELECT COUNT(*) FROM users WHERE role='admin' AND user_id <> " . $id)->fetchColumn();
-            if ((int)$cnt === 0) {
-                $this->setFlashMessage('danger', 'Không thể xóa admin cuối cùng.');
-                header('Location: /websitePS/public/users'); exit;
-            }
+            $this->setFlashMessage('danger', 'Không thể xóa tài khoản admin.');
+            header('Location: /websitePS/public/users'); exit;
         }
 
         // Xóa: lưu ý có thể có khóa ngoại từ nhanvien, khachhang...

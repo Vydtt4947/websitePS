@@ -46,10 +46,16 @@
                 <a class="nav-link <?= ($activePage === 'products') ? 'active' : '' ?>" href="/websitePS/public/products"><i class="fa fa-cake-candles"></i>Quản lý Sản phẩm</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?= ($activePage === 'ingredients') ? 'active' : '' ?>" href="/websitePS/public/ingredients"><i class="fa fa-seedling"></i>Quản lý Nguyên liệu</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'employees') ? 'active' : '' ?>" href="/websitePS/public/employees"><i class="fa fa-user"></i>Quản lý Nhân viên</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'users') ? 'active' : '' ?>" href="/websitePS/public/users"><i class="fa fa-users"></i>Quản lý Tài khoản người dùng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= ($activePage === 'promotions') ? 'active' : '' ?>" href="/websitePS/public/promotions"><i class="fa fa-tags"></i>Quản lý Khuyến mãi</a>
             </li>
             <?php endif; ?>
             <!-- đường vào homepage -->
