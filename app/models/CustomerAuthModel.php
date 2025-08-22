@@ -15,11 +15,28 @@ class CustomerAuthModel {
      * @return bool True nếu email đã tồn tại.
      */
     public function checkEmailExists($email) {
-        $query = "SELECT user_id FROM users WHERE email = :email";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        try {
+            // Kiểm tra trong bảng khachhang trước
+            $query = "SELECT MaKH FROM khachhang WHERE Email = :email";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            
+            if ($stmt->rowCount() > 0) {
+                return true;
+            }
+            
+            // Kiểm tra trong bảng users để đảm bảo không trùng
+            $query = "SELECT user_id FROM users WHERE email = :email";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            error_log("Error checking email exists: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -28,9 +45,15 @@ class CustomerAuthModel {
      * @return bool True nếu tạo thành công.
      */
     public function createCustomer($data) {
-        $hashedPassword = password_hash($data['MatKhau'], PASSWORD_DEFAULT);
-        
         try {
+            // Kiểm tra dữ liệu đầu vào
+            if (empty($data['HoTen']) || empty($data['Email']) || empty($data['MatKhau'])) {
+                error_log("Missing required data for customer creation");
+                return false;
+            }
+            
+            $hashedPassword = password_hash($data['MatKhau'], PASSWORD_DEFAULT);
+            
             $this->db->beginTransaction();
             
             // 1. Tạo record trong bảng users
@@ -56,18 +79,22 @@ class CustomerAuthModel {
             
             try {
                 $userStmt->execute();
+                error_log("User created successfully with username: " . $username);
             } catch (PDOException $e) {
                 // Nếu vẫn lỗi username trùng, thử thêm số khác
                 if ($e->getCode() == 23000 && strpos($e->getMessage(), 'username') !== false) {
                     $username = $username . '_' . substr(uniqid('', true), -4);
                     $userStmt->bindParam(':username', $username);
                     $userStmt->execute();
+                    error_log("User created with alternative username: " . $username);
                 } else {
+                    error_log("Error creating user: " . $e->getMessage());
                     throw $e;
                 }
             }
             
             $userId = $this->db->lastInsertId();
+            error_log("User ID created: " . $userId);
             
             // 2. Tạo record trong bảng khachhang
             $customerQuery = "INSERT INTO khachhang (HoTen, Email, SoDienThoai, user_id, MatKhau) 
@@ -78,7 +105,10 @@ class CustomerAuthModel {
             $customerStmt->bindParam(':soDienThoai', $data['SoDienThoai']);
             $customerStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $customerStmt->bindParam(':matKhau', $hashedPassword);
+            
             $customerStmt->execute();
+            $customerId = $this->db->lastInsertId();
+            error_log("Customer created successfully with ID: " . $customerId);
             
             $this->db->commit();
             return true;
@@ -86,6 +116,7 @@ class CustomerAuthModel {
         } catch (Exception $e) {
             $this->db->rollBack();
             error_log("Error creating customer: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
             return false;
         }
     }

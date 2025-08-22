@@ -200,11 +200,16 @@ class CartController {
             exit();
         }
 
+        // Khai báo các model trước
+        $cartModel = null;
+        $sessionCartModel = null;
+        
         // Xử lý giỏ hàng dựa trên trạng thái đăng nhập
         if (isset($_SESSION['customer_id'])) {
             // Khách hàng đã đăng nhập - lưu vào database
             $cartModel = new CartModel();
-            $result = $cartModel->addCartItem($_SESSION['customer_id'], $productId, $quantity);
+            // Sử dụng strategy 'replace' để tránh cộng dồn số lượng
+            $result = $cartModel->addCartItem($_SESSION['customer_id'], $productId, $quantity, 'replace');
         } else {
             // Khách vãng lai - lưu vào session
             $sessionCartModel = new SessionCartModel();
@@ -218,10 +223,12 @@ class CartController {
             if ($result) {
                 // Tính toán số lượng sản phẩm trong giỏ hàng
                 $cartCount = 0;
-                if (isset($_SESSION['customer_id'])) {
+                if (isset($_SESSION['customer_id']) && $cartModel) {
                     $cart = $cartModel->getCart($_SESSION['customer_id']);
-                } else {
+                } else if ($sessionCartModel) {
                     $cart = $sessionCartModel->getCart();
+                } else {
+                    $cart = [];
                 }
                 
                 foreach ($cart as $item) {
@@ -318,6 +325,10 @@ class CartController {
             exit();
         }
 
+        // Khai báo các model trước
+        $cartModel = null;
+        $sessionCartModel = null;
+        
         // Xóa sản phẩm dựa trên trạng thái đăng nhập
         if (isset($_SESSION['customer_id'])) {
             $cartModel = new CartModel();
@@ -334,7 +345,7 @@ class CartController {
             if ($isAjax) {
                 // Lấy cart count mới
                 $cartCount = 0;
-                if (isset($_SESSION['customer_id'])) {
+                if (isset($_SESSION['customer_id']) && $cartModel) {
                     $cart = $cartModel->getCart($_SESSION['customer_id']);
                     if (!empty($cart)) {
                         foreach ($cart as $item) {
@@ -351,7 +362,7 @@ class CartController {
                 
                 // Tính tổng tiền mới
                 $cartTotal = 0;
-                if (isset($_SESSION['customer_id'])) {
+                if (isset($_SESSION['customer_id']) && $cartModel) {
                     $cart = $cartModel->getCart($_SESSION['customer_id']);
                     if (!empty($cart)) {
                         foreach ($cart as $item) {
@@ -361,7 +372,7 @@ class CartController {
                 } else {
                     if (isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
                         foreach ($_SESSION['guest_cart'] as $item) {
-                            $cartTotal += $item['price'] * $item['quantity'];
+                            $cartCount += $item['quantity'];
                         }
                     }
                 }

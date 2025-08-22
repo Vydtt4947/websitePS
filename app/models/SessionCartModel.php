@@ -79,28 +79,184 @@ class SessionCartModel {
 
     // Xóa toàn bộ giỏ hàng session
     public function clearCart() {
-        unset($_SESSION['guest_cart']);
-        return true;
+        try {
+            // Xóa biến session
+            unset($_SESSION['guest_cart']);
+            
+            // Đảm bảo session được lưu
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+                session_start();
+            }
+            
+            // Kiểm tra xem đã xóa thành công chưa
+            $remainingCart = $this->getCart();
+            if (!empty($remainingCart)) {
+                error_log("WARNING: Session cart still contains items after clear: " . json_encode($remainingCart));
+                // Force clear bằng cách unset trực tiếp
+                unset($_SESSION['guest_cart']);
+                return false;
+            }
+            
+            error_log("Session cart cleared successfully");
+            return true;
+        } catch (Exception $e) {
+            error_log("Error clearing session cart: " . $e->getMessage());
+            return false;
+        }
     }
 
-    // Lưu giỏ hàng session vào database (khi khách hàng đăng nhập)
-    public function saveToDatabase($customerId) {
+    // Force xóa giỏ hàng session (dùng khi clearCart() thất bại)
+    public function forceClearCart() {
+        try {
+            // Xóa tất cả các biến session liên quan đến giỏ hàng
+            unset($_SESSION['guest_cart']);
+            unset($_SESSION['cart_count']);
+            unset($_SESSION['cart_total']);
+            
+            // Xóa các biến session khác có thể liên quan
+            $sessionKeys = array_keys($_SESSION);
+            foreach ($sessionKeys as $key) {
+                if (strpos($key, 'cart') !== false || strpos($key, 'guest') !== false) {
+                    unset($_SESSION[$key]);
+                }
+            }
+            
+            // Đảm bảo session được lưu
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+                session_start();
+            }
+            
+            // Kiểm tra kết quả
+            $remainingCart = $this->getCart();
+            if (empty($remainingCart)) {
+                error_log("Session cart force cleared successfully");
+                return true;
+            } else {
+                error_log("ERROR: Session cart still contains items after force clear: " . json_encode($remainingCart));
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Error force clearing session cart: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Xóa hoàn toàn session cart (nuclear option)
+    public function nuclearClearCart() {
+        try {
+            // Xóa tất cả session
+            session_destroy();
+            
+            // Khởi tạo session mới
+            session_start();
+            
+            // Đảm bảo không có session cart
+            if (!isset($_SESSION['guest_cart'])) {
+                error_log("Session cart nuclear cleared successfully");
+                return true;
+            } else {
+                error_log("ERROR: Session cart still exists after nuclear clear");
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Error nuclear clearing session cart: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    // Kiểm tra và xóa session cart một cách triệt để
+    public function ensureCartCleared() {
+        $attempts = 0;
+        $maxAttempts = 3;
+        
+        while ($attempts < $maxAttempts) {
+            $attempts++;
+            error_log("Attempt $attempts to clear session cart");
+            
+            // Thử clear thường
+            if ($this->clearCart()) {
+                error_log("Session cart cleared successfully on attempt $attempts");
+                return true;
+            }
+            
+            // Thử force clear
+            if ($this->forceClearCart()) {
+                error_log("Session cart force cleared successfully on attempt $attempts");
+                return true;
+            }
+            
+            // Nếu vẫn còn, đợi một chút rồi thử lại
+            if ($attempts < $maxAttempts) {
+                usleep(100000); // 0.1 giây
+                error_log("Waiting before retry...");
+            }
+        }
+        
+        // Nếu tất cả đều thất bại, dùng nuclear option
+        error_log("All clear attempts failed, using nuclear option");
+        return $this->nuclearClearCart();
+    }
+
+    // Lưu giỏ hàng session vào database (khi khách hàng đăng nhập) - ĐÃ CẢI THIỆN
+    public function saveToDatabase($customerId, $mergeStrategy = 'smart') {
         if (!isset($_SESSION['guest_cart']) || empty($_SESSION['guest_cart'])) {
+            error_log("No session cart to save for customer ID: $customerId");
             return true;
         }
 
         try {
+            error_log("Saving session cart to database for customer ID: $customerId with strategy: $mergeStrategy");
+            error_log("Session cart items: " . json_encode($_SESSION['guest_cart']));
+            
             $cartModel = new CartModel();
-            $result = $cartModel->saveCart($customerId, $_SESSION['guest_cart']);
+            
+            // Sử dụng strategy phù hợp để tránh conflict
+            $result = $cartModel->saveCart($customerId, $_SESSION['guest_cart'], $mergeStrategy);
             
             if ($result) {
+                error_log("Session cart saved to database successfully");
                 // Xóa giỏ hàng session sau khi lưu thành công
-                unset($_SESSION['guest_cart']);
+                $this->ensureCartCleared();
+            } else {
+                error_log("ERROR: Failed to save session cart to database");
             }
             
             return $result;
         } catch (Exception $e) {
             error_log("Error saving session cart to database: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    // Method mới: Lưu giỏ hàng session với logic thông minh
+    public function saveToDatabaseSmart($customerId) {
+        if (!isset($_SESSION['guest_cart']) || empty($_SESSION['guest_cart'])) {
+            error_log("No session cart to save for customer ID: $customerId");
+            return true;
+        }
+
+        try {
+            error_log("Smart saving session cart to database for customer ID: $customerId");
+            error_log("Session cart items: " . json_encode($_SESSION['guest_cart']));
+            
+            $cartModel = new CartModel();
+            
+            // Sử dụng method thông minh để tự động chọn strategy phù hợp
+            $result = $cartModel->smartMergeSessionCart($customerId, $_SESSION['guest_cart']);
+            
+            if ($result) {
+                error_log("Session cart smart saved to database successfully");
+                // Xóa giỏ hàng session sau khi lưu thành công
+                $this->ensureCartCleared();
+            } else {
+                error_log("ERROR: Failed to smart save session cart to database");
+            }
+            
+            return $result;
+        } catch (Exception $e) {
+            error_log("Error smart saving session cart to database: " . $e->getMessage());
             return false;
         }
     }

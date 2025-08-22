@@ -66,11 +66,11 @@
                                 <a href="/websitePS/public/customers/edit/<?= $customer['MaKH'] ?>" class="btn btn-sm btn-warning" title="Sửa">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="/websitePS/public/customers/delete/<?= $customer['MaKH'] ?>" class="btn btn-sm btn-danger" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
+                                <form action="/websitePS/public/customers/delete/<?= $customer['MaKH'] ?>" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa khách hàng này?');">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>

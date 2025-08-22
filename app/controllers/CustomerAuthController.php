@@ -41,12 +41,24 @@ class CustomerAuthController {
                 $sessionCart = $sessionCartModel->getCart();
                 
                 if (!empty($sessionCart)) {
-                    $cartModel = new CartModel();
-                    // Sử dụng method merge để tránh duplicate
-                    $cartModel->mergeSessionCart($customer['MaKH'], $sessionCart);
+                    // Log trước khi merge
+                    error_log("Processing session cart for customer ID: " . $customer['MaKH']);
+                    error_log("Session cart items: " . json_encode($sessionCart));
                     
-                    // Xóa giỏ hàng session sau khi đã đồng bộ
-                    $sessionCartModel->clearCart();
+                    // Sử dụng method mới để xử lý logic merge hoàn hảo
+                    $mergeResult = $sessionCartModel->saveToDatabaseSmart($customer['MaKH']);
+                    
+                    if ($mergeResult) {
+                        // Kiểm tra và xử lý trùng lặp sau khi merge (nếu có)
+                        $cartModel = new CartModel();
+                        $cartModel->checkAndFixDuplicates($customer['MaKH']);
+                        
+                        error_log("Session cart processing completed successfully");
+                    } else {
+                        error_log("ERROR: Failed to process session cart for customer ID: " . $customer['MaKH']);
+                    }
+                } else {
+                    error_log("No session cart to process for customer ID: " . $customer['MaKH']);
                 }
                 
                 header('Location: /websitePS/public/');
@@ -87,6 +99,7 @@ class CustomerAuthController {
 
             $customerAuthModel = new CustomerAuthModel();
             
+            // Kiểm tra email đã tồn tại chưa
             $existingCustomer = $customerAuthModel->checkEmailExists($_POST['email']);
             if ($existingCustomer) {
                 $error = "Email này đã được sử dụng. Vui lòng chọn email khác.";
@@ -103,7 +116,9 @@ class CustomerAuthController {
             ];
 
             // Tạo tài khoản mới
-            if ($customerAuthModel->createCustomer($customerData)) {
+            $result = $customerAuthModel->createCustomer($customerData);
+            
+            if ($result) {
                 // Tự động đăng nhập sau khi tạo tài khoản thành công
                 $customer = $customerAuthModel->attemptLogin($_POST['email'], $_POST['password']);
                 if ($customer) {
@@ -120,10 +135,24 @@ class CustomerAuthController {
                     $sessionCart = $sessionCartModel->getCart();
                     
                     if (!empty($sessionCart)) {
-                        $cartModel = new CartModel();
-                        // Sử dụng method merge để đảm bảo tính nhất quán
-                        $cartModel->mergeSessionCart($customer['MaKH'], $sessionCart);
-                        $sessionCartModel->clearCart();
+                        // Log trước khi merge
+                        error_log("Processing session cart for new customer ID: " . $customer['MaKH']);
+                        error_log("Session cart items: " . json_encode($sessionCart));
+                        
+                        // Sử dụng method mới để xử lý logic merge hoàn hảo
+                        $mergeResult = $sessionCartModel->saveToDatabaseSmart($customer['MaKH']);
+                        
+                        if ($mergeResult) {
+                            // Kiểm tra và xử lý trùng lặp sau khi merge (nếu có)
+                            $cartModel = new CartModel();
+                            $cartModel->checkAndFixDuplicates($customer['MaKH']);
+                            
+                            error_log("Session cart processing completed successfully for new customer");
+                        } else {
+                            error_log("ERROR: Failed to process session cart for new customer ID: " . $customer['MaKH']);
+                        }
+                    } else {
+                        error_log("No session cart to process for new customer ID: " . $customer['MaKH']);
                     }
                     
                     // Thông báo thành công và chuyển hướng
@@ -138,7 +167,8 @@ class CustomerAuthController {
                 }
             } else {
                 // Nếu tạo tài khoản thất bại
-                $error = "Có lỗi xảy ra khi tạo tài khoản. Vui lòng thử lại.";
+                error_log("Failed to create customer account for email: " . $_POST['email']);
+                $error = "Có lỗi xảy ra khi tạo tài khoản. Vui lòng thử lại hoặc liên hệ hỗ trợ.";
                 require_once __DIR__ . '/../views/pages/register.php';
                 exit();
             }
@@ -149,13 +179,32 @@ class CustomerAuthController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        
+        // Xóa thông tin khách hàng
         unset($_SESSION['customer_id']);
         unset($_SESSION['customer_name']);
         unset($_SESSION['customer_email']);
         unset($_SESSION['customer_phone']);
+        
         // Xóa giỏ hàng session khi logout
         $sessionCartModel = new SessionCartModel();
-        $sessionCartModel->clearCart();
+        
+        // Kiểm tra xem có session cart không
+        $sessionCart = $sessionCartModel->getCart();
+        if (!empty($sessionCart)) {
+            error_log("Logout: Found session cart, clearing it");
+            // Sử dụng ensureCartCleared để xóa triệt để
+            $clearResult = $sessionCartModel->ensureCartCleared();
+            if ($clearResult) {
+                error_log("Logout: Session cart cleared successfully");
+            } else {
+                error_log("Logout: Failed to clear session cart, using direct unset");
+                unset($_SESSION['guest_cart']);
+            }
+        } else {
+            error_log("Logout: No session cart to clear");
+        }
+        
         header('Location: /websitePS/public/');
         exit();
     }

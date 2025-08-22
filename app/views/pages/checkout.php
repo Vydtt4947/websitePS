@@ -155,6 +155,13 @@
             margin-top: 2rem;
         }
         
+        /* Đảm bảo button có hover effect đúng màu teal */
+        .btn-place-order:hover {
+            background-color: #00796b !important;
+            border-color: #00796b !important;
+            transform: translateY(-2px);
+        }
+        
         .payment-methods {
             display: flex;
             gap: 1rem;
@@ -186,125 +193,125 @@
             margin-bottom: 0.5rem;
         }
         
-                 .breadcrumb-nav {
-             margin-bottom: 2rem;
-         }
-         
-         /* QR Code Modal Styles */
-         .qr-code-container {
-             max-width: 400px;
-             margin: 0 auto;
-         }
-         
-         .qr-code-card {
-             background: white;
-             border-radius: 15px;
-             padding: 1.5rem;
-             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-             border: 1px solid #e9ecef;
-         }
-         
-         .qr-header {
-             display: flex;
-             align-items: center;
-             margin-bottom: 1rem;
-             padding-bottom: 1rem;
-             border-bottom: 1px solid #e9ecef;
-         }
-         
-         .bank-logo {
-             margin-right: 1rem;
-         }
-         
-         .bank-logo i {
-             font-size: 2rem;
-         }
-         
-         .account-info {
-             flex: 1;
-         }
-         
-         .account-name {
-             font-weight: 600;
-             color: #007bff;
-             font-size: 0.9rem;
-         }
-         
-         .account-number {
-             font-size: 0.8rem;
-             color: #6c757d;
-         }
-         
-         .qr-code-image {
-             margin: 1.5rem 0;
-             text-align: center;
-         }
-         
-         .qr-code-image img {
-             max-width: 200px;
-             border: 1px solid #e9ecef;
-             border-radius: 10px;
-         }
-         
-         .qr-footer {
-             margin-top: 1rem;
-             padding-top: 1rem;
-             border-top: 1px solid #e9ecef;
-         }
-         
-         .payment-info {
-             margin-bottom: 1rem;
-         }
-         
-         .amount, .order-id {
-             margin-bottom: 0.5rem;
-             font-size: 0.9rem;
-         }
-         
-         .qr-logos {
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-         }
-         
-         .qr-logo {
-             padding: 0.25rem 0.5rem;
-             border-radius: 5px;
-             font-size: 0.7rem;
-             font-weight: 600;
-         }
-         
-         .qr-logo.vietqr {
-             background-color: #dc3545;
-             color: white;
-         }
-         
-         .qr-logo.napas {
-             background-color: #28a745;
-             color: white;
-         }
-         
-         .payment-instructions {
-             background-color: #f8f9fa;
-             border-radius: 10px;
-             padding: 1rem;
-             margin-top: 1rem;
-         }
-         
-         .payment-instructions h6 {
-             color: var(--primary-color);
-             margin-bottom: 0.5rem;
-         }
-         
-         .payment-instructions ol {
-             margin-bottom: 0;
-             padding-left: 1.2rem;
-         }
-         
-         .payment-instructions li {
-             margin-bottom: 0.25rem;
-             font-size: 0.9rem;
-         }
+        .breadcrumb-nav {
+            margin-bottom: 2rem;
+        }
+        
+        /* QR Code Modal Styles */
+        .qr-code-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .qr-code-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .qr-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .bank-logo {
+            margin-right: 1rem;
+        }
+        
+        .bank-logo i {
+            font-size: 2rem;
+        }
+        
+        .account-info {
+            flex: 1;
+        }
+        
+        .account-name {
+            font-weight: 600;
+            color: #007bff;
+            font-size: 0.9rem;
+        }
+        
+        .account-number {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .qr-code-image {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        .qr-code-image img {
+            max-width: 200px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+        }
+        
+        .qr-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .payment-info {
+            margin-bottom: 1rem;
+        }
+        
+        .amount, .order-id {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .qr-logos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .qr-logo {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .qr-logo.vietqr {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .qr-logo.napas {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .payment-instructions {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .payment-instructions h6 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-instructions ol {
+            margin-bottom: 0;
+            padding-left: 1.2rem;
+        }
+        
+        .payment-instructions li {
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -350,14 +357,14 @@
         <?php endif; ?>
         
         <div class="breadcrumb-nav">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/websitePS/public/">Trang chủ</a></li>
-                        <li class="breadcrumb-item"><a href="/websitePS/public/cart">Giỏ hàng</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
-                    </ol>
-                </nav>
-            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/websitePS/public/">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="/websitePS/public/cart">Giỏ hàng</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
+                </ol>
+            </nav>
+        </div>
         
         <?php
         // Sử dụng các biến đã được tính toán từ CheckoutController
@@ -380,28 +387,26 @@
         if (!isset($finalTotal)) {
             $finalTotal = $total + $shippingFee;
         }
-        
-        // Debug logs removed for production
         ?>
         
         <div class="row g-5">
             <div class="col-lg-8">
                 <div class="checkout-container">
                     <!-- Thông tin khách hàng -->
-                                         <?php if (isset($_SESSION['error_message'])): ?>
-                         <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                             <i class="fas fa-exclamation-triangle me-2"></i>
-                             <?= htmlspecialchars($_SESSION['error_message']) ?>
-                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                         </div>
-                         <?php unset($_SESSION['error_message']); ?>
-                     <?php endif; ?>
-                     
-                     <div class="form-section mb-4">
-                         <h4>
-                             <i class="fas fa-user me-2"></i>
-                             Thông tin khách hàng
-                         </h4>
+                    <?php if (isset($_SESSION['error_message'])): ?>
+                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <?= htmlspecialchars($_SESSION['error_message']) ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <?php unset($_SESSION['error_message']); ?>
+                    <?php endif; ?>
+                    
+                    <div class="form-section mb-4">
+                        <h4>
+                            <i class="fas fa-user me-2"></i>
+                            Thông tin khách hàng
+                        </h4>
                         <div class="alert alert-info">
                             <div class="row">
                                 <div class="col-md-6">
@@ -528,71 +533,71 @@
                                 <input type="hidden" name="payment_method" id="payment_method" value="cod">
                             </div>
                             
-                                                         <button type="submit" class="btn btn-primary-custom btn-place-order" id="submitOrderBtn">
-                                 <i class="fas fa-check me-2"></i>
-                                 <span id="submitBtnText">Hoàn tất đơn hàng</span>
-                             </button>
-                         </form>
-                         
-                         <!-- QR Code Modal for Bank Transfer -->
-                         <div class="modal fade" id="qrCodeModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
-                             <div class="modal-dialog modal-dialog-centered">
-                                 <div class="modal-content">
-                                     <div class="modal-header">
-                                         <h5 class="modal-title" id="qrCodeModalLabel">
-                                             <i class="fas fa-qrcode me-2"></i>Thanh toán qua MBBank
-                                         </h5>
-                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                     </div>
-                                     <div class="modal-body text-center">
-                                         <div class="qr-code-container">
-                                             <div class="qr-code-card">
-                                                 <div class="qr-header">
-                                                     <div class="bank-logo">
-                                                         <i class="fas fa-university text-danger"></i>
-                                                     </div>
-                                                     <div class="account-info">
-                                                         <div class="account-name">NGUYEN HOANG PHUONG</div>
-                                                         <div class="account-number">44331515001531</div>
-                                                     </div>
-                                                 </div>
-                                                                                                                                                     <div class="qr-code-image">
-                                                       <img src="https://i.ibb.co/VqKJ8M1/mbbank-qr.png" alt="MBBank QR Code" class="img-fluid" style="max-width: 200px; border: 1px solid #e9ecef; border-radius: 10px;">
-                                                   </div>
-                                                 <div class="qr-footer">
-                                                     <div class="payment-info">
-                                                         <div class="amount">Số tiền: <strong><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</strong></div>
-                                                         <div class="order-id">Mã đơn hàng: <strong>#<?= uniqid('PS') ?></strong></div>
-                                                     </div>
-                                                     <div class="qr-logos">
-                                                         <span class="qr-logo vietqr">VIETQR</span>
-                                                         <span class="qr-logo napas">napas 247</span>
-                                                     </div>
-                                                 </div>
-                                             </div>
-                                         </div>
-                                         <div class="payment-instructions mt-3">
-                                             <h6><i class="fas fa-info-circle me-2"></i>Hướng dẫn thanh toán:</h6>
-                                             <ol class="text-start">
-                                                 <li>Mở ứng dụng ngân hàng của bạn</li>
-                                                 <li>Chọn tính năng quét mã QR</li>
-                                                 <li>Quét mã QR bên trên</li>
-                                                 <li>Kiểm tra thông tin và xác nhận thanh toán</li>
-                                                 <li>Lưu lại biên lai thanh toán</li>
-                                             </ol>
-                                         </div>
-                                     </div>
-                                     <div class="modal-footer">
-                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                             <i class="fas fa-times me-2"></i>Đóng
-                                         </button>
-                                         <button type="button" class="btn btn-success" onclick="confirmPayment()">
-                                             <i class="fas fa-check me-2"></i>Đã thanh toán
-                                         </button>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
+                            <button type="submit" class="btn btn-primary-custom btn-place-order" id="submitOrderBtn">
+                                <i class="fas fa-check me-2"></i>
+                                <span id="submitBtnText">Hoàn tất đơn hàng</span>
+                            </button>
+                        </form>
+                        
+                        <!-- QR Code Modal for Bank Transfer -->
+                        <div class="modal fade" id="qrCodeModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="qrCodeModalLabel">
+                                            <i class="fas fa-qrcode me-2"></i>Thanh toán qua MBBank
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <div class="qr-code-container">
+                                            <div class="qr-code-card">
+                                                <div class="qr-header">
+                                                    <div class="bank-logo">
+                                                        <i class="fas fa-university text-danger"></i>
+                                                    </div>
+                                                    <div class="account-info">
+                                                        <div class="account-name">NGUYEN HOANG PHUONG</div>
+                                                        <div class="account-number">44331515001531</div>
+                                                    </div>
+                                                </div>
+                                                <div class="qr-code-image">
+                                                    <img src="https://i.ibb.co/VqKJ8M1/mbbank-qr.png" alt="MBBank QR Code" class="img-fluid" style="max-width: 200px; border: 1px solid #e9ecef; border-radius: 10px;">
+                                                </div>
+                                                <div class="qr-footer">
+                                                    <div class="payment-info">
+                                                        <div class="amount">Số tiền: <strong><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</strong></div>
+                                                        <div class="order-id">Mã đơn hàng: <strong>#<?= uniqid('PS') ?></strong></div>
+                                                    </div>
+                                                    <div class="qr-logos">
+                                                        <span class="qr-logo vietqr">VIETQR</span>
+                                                        <span class="qr-logo napas">napas 247</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="payment-instructions mt-3">
+                                            <h6><i class="fas fa-info-circle me-2"></i>Hướng dẫn thanh toán:</h6>
+                                            <ol class="text-start">
+                                                <li>Mở ứng dụng ngân hàng của bạn</li>
+                                                <li>Chọn tính năng quét mã QR</li>
+                                                <li>Quét mã QR bên trên</li>
+                                                <li>Kiểm tra thông tin và xác nhận thanh toán</li>
+                                                <li>Lưu lại biên lai thanh toán</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-2"></i>Đóng
+                                        </button>
+                                        <button type="button" class="btn btn-success" onclick="confirmPayment()">
+                                            <i class="fas fa-check me-2"></i>Đã thanh toán
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -765,125 +770,125 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-         if (checkoutForm) {
-         checkoutForm.addEventListener('submit', function(e) {
-             e.preventDefault();
-             
-             try {
-                 // Get payment method
-                 const paymentMethod = document.getElementById('payment_method').value;
-                 
-                 // Validate form
-                 const useSavedAddressValue = document.getElementById('useSavedAddress').value;
-                 
-                 if (useSavedAddressValue === '0') {
-                     // Validate required fields for new address
-                     const fullname = document.getElementById('fullname').value.trim();
-                     const phone = document.getElementById('phone').value.trim();
-                     const email = document.getElementById('email').value.trim();
-                     const address = document.getElementById('address').value.trim();
-                     
-                     if (!fullname || !phone || !email || !address) {
-                         alert('Vui lòng điền đầy đủ thông tin giao hàng!');
-                         return;
-                     }
-                 }
-                 
-                                   // If bank transfer, show QR code modal
-                  if (paymentMethod === 'bank') {
-                      // Update order ID in modal with a more realistic format
-                      const orderId = 'PS' + Date.now();
-                      const orderIdElement = document.querySelector('.order-id strong');
-                      if (orderIdElement) {
-                          orderIdElement.textContent = '#' + orderId;
-                      }
-                     
-                     // Show QR code modal
-                     const qrModalElement = document.getElementById('qrCodeModal');
-                     if (qrModalElement) {
-                         const qrModal = new bootstrap.Modal(qrModalElement);
-                         qrModal.show();
-                     } else {
-                         console.error('QR modal element not found');
-                         alert('Có lỗi xảy ra khi hiển thị QR code!');
-                     }
-                     return;
-                 }
-                 
-                 // If COD, proceed with normal submission
-                 // Disable button to prevent double submission
-                 if (submitBtn) {
-                     submitBtn.disabled = true;
-                     const submitBtnText = document.getElementById('submitBtnText');
-                     if (submitBtnText) {
-                         submitBtnText.textContent = 'Đang xử lý...';
-                     }
-                 }
-                 
-                 // Submit the form
-                 console.log('Submitting order...');
-                 checkoutForm.submit();
-             } catch (error) {
-                 console.error('Error in form submission:', error);
-                 alert('Có lỗi xảy ra: ' + error.message);
-                 
-                 // Re-enable button if there's an error
-                 if (submitBtn) {
-                     submitBtn.disabled = false;
-                     const submitBtnText = document.getElementById('submitBtnText');
-                     if (submitBtnText) {
-                         const paymentMethod = document.getElementById('payment_method').value;
-                         submitBtnText.textContent = paymentMethod === 'bank' ? 'Hiển thị QR Code' : 'Hoàn tất đơn hàng';
-                     }
-                 }
-             }
-         });
-     }
+    if (checkoutForm) {
+        checkoutForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                // Get payment method
+                const paymentMethod = document.getElementById('payment_method').value;
+                
+                // Validate form
+                const useSavedAddressValue = document.getElementById('useSavedAddress').value;
+                
+                if (useSavedAddressValue === '0') {
+                    // Validate required fields for new address
+                    const fullname = document.getElementById('fullname').value.trim();
+                    const phone = document.getElementById('phone').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const address = document.getElementById('address').value.trim();
+                    
+                    if (!fullname || !phone || !email || !address) {
+                        alert('Vui lòng điền đầy đủ thông tin giao hàng!');
+                        return;
+                    }
+                }
+                
+                // If bank transfer, show QR code modal
+                if (paymentMethod === 'bank') {
+                    // Update order ID in modal with a more realistic format
+                    const orderId = 'PS' + Date.now();
+                    const orderIdElement = document.querySelector('.order-id strong');
+                    if (orderIdElement) {
+                        orderIdElement.textContent = '#' + orderId;
+                    }
+                    
+                    // Show QR code modal
+                    const qrModalElement = document.getElementById('qrCodeModal');
+                    if (qrModalElement) {
+                        const qrModal = new bootstrap.Modal(qrModalElement);
+                        qrModal.show();
+                    } else {
+                        console.error('QR modal element not found');
+                        alert('Có lỗi xảy ra khi hiển thị QR code!');
+                    }
+                    return;
+                }
+                
+                // If COD, proceed with normal submission
+                // Disable button to prevent double submission
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    const submitBtnText = document.getElementById('submitBtnText');
+                    if (submitBtnText) {
+                        submitBtnText.textContent = 'Đang xử lý...';
+                    }
+                }
+                
+                // Submit the form
+                console.log('Submitting order...');
+                checkoutForm.submit();
+            } catch (error) {
+                console.error('Error in form submission:', error);
+                alert('Có lỗi xảy ra: ' + error.message);
+                
+                // Re-enable button if there's an error
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    const submitBtnText = document.getElementById('submitBtnText');
+                    if (submitBtnText) {
+                        const paymentMethod = document.getElementById('payment_method').value;
+                        submitBtnText.textContent = paymentMethod === 'bank' ? 'Hiển thị QR Code' : 'Hoàn tất đơn hàng';
+                    }
+                }
+            }
+        });
+    }
     
-         // Add click handler for submit button as backup
-     if (submitBtn) {
-         submitBtn.addEventListener('click', function(e) {
-             console.log('Submit button clicked');
-         });
-     }
- });
- 
- // Function to handle payment confirmation
- function confirmPayment() {
-     // Close QR modal
-     const qrModal = bootstrap.Modal.getInstance(document.getElementById('qrCodeModal'));
-     if (qrModal) {
-         qrModal.hide();
-     }
-     
-     // Show confirmation dialog
-     if (confirm('Bạn đã hoàn tất thanh toán chưa? Chúng tôi sẽ xác nhận đơn hàng sau khi kiểm tra.')) {
-         try {
-             // Disable button to prevent double submission
-             const submitBtn = document.getElementById('submitOrderBtn');
-             if (submitBtn) {
-                 submitBtn.disabled = true;
-                 const submitBtnText = document.getElementById('submitBtnText');
-                 if (submitBtnText) {
-                     submitBtnText.textContent = 'Đang xử lý...';
-                 }
-             }
-             
-             // Submit the form
-             console.log('Submitting order with bank transfer...');
-             const checkoutForm = document.getElementById('checkoutForm');
-             if (checkoutForm) {
-                 checkoutForm.submit();
-             } else {
-                 console.error('Checkout form not found');
-                 alert('Có lỗi xảy ra, vui lòng thử lại!');
-             }
-         } catch (error) {
-             console.error('Error submitting form:', error);
-             alert('Có lỗi xảy ra khi xử lý đơn hàng: ' + error.message);
-         }
-     }
- }
+    // Add click handler for submit button as backup
+    if (submitBtn) {
+        submitBtn.addEventListener('click', function(e) {
+            console.log('Submit button clicked');
+        });
+    }
+});
+
+// Function to handle payment confirmation
+function confirmPayment() {
+    // Close QR modal
+    const qrModal = bootstrap.Modal.getInstance(document.getElementById('qrCodeModal'));
+    if (qrModal) {
+        qrModal.hide();
+    }
+    
+    // Show confirmation dialog
+    if (confirm('Bạn đã hoàn tất thanh toán chưa? Chúng tôi sẽ xác nhận đơn hàng sau khi kiểm tra.')) {
+        try {
+            // Disable button to prevent double submission
+            const submitBtn = document.getElementById('submitOrderBtn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                const submitBtnText = document.getElementById('submitBtnText');
+                if (submitBtnText) {
+                    submitBtnText.textContent = 'Đang xử lý...';
+                }
+            }
+            
+            // Submit the form
+            console.log('Submitting order with bank transfer...');
+            const checkoutForm = document.getElementById('checkoutForm');
+            if (checkoutForm) {
+                checkoutForm.submit();
+            } else {
+                console.error('Checkout form not found');
+                alert('Có lỗi xảy ra, vui lòng thử lại!');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Có lỗi xảy ra khi xử lý đơn hàng: ' + error.message);
+        }
+    }
+}
 </script>
 </body>
 </html>
