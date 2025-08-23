@@ -677,6 +677,11 @@ function getProductImage($product) {
             box-shadow: 0 4px 15px rgba(40,167,69,0.3);
         }
         
+        .product-tag.out-of-stock {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            box-shadow: 0 4px 15px rgba(220,53,69,0.3);
+        }
+        
         .product-price {
             font-size: 3rem;
             font-weight: 700;
@@ -713,6 +718,25 @@ function getProductImage($product) {
         .meta-value {
             color: var(--primary-color);
             font-weight: 500;
+        }
+        
+        /* Stock refresh button styling */
+        .meta-item .btn-outline-primary {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .meta-item .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .meta-item .btn-outline-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         
         .product-description {
@@ -1285,16 +1309,29 @@ function getProductImage($product) {
                                     <i class="fas fa-tag"></i>
                                     <?= htmlspecialchars($product['TenDanhMuc'] ?? 'Chưa phân loại') ?>
                                 </span>
-                                <span class="product-tag stock">
-                                    <i class="fas fa-check"></i>
-                                    Còn hàng
-                                </span>
+                                <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                    <span class="product-tag stock">
+                                        <i class="fas fa-check"></i>
+                                        Còn hàng
+                                    </span>
+                                <?php else: ?>
+                                    <span class="product-tag out-of-stock">
+                                        <i class="fas fa-times"></i>
+                                        Hết hàng
+                                    </span>
+                                <?php endif; ?>
                             </div>
                             
                                                          <!-- Product Price -->
-                             <div class="product-price">
-                                 <?= number_format($product['DonGia'], 0, ',', '.') ?> ₫
-                             </div>
+                             <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                 <div class="product-price">
+                                     <?= number_format($product['DonGia'], 0, ',', '.') ?> ₫
+                                 </div>
+                             <?php else: ?>
+                                 <div class="product-price text-muted">
+                                     <i class="fas fa-info-circle me-2"></i>Liên hệ để biết giá
+                                 </div>
+                             <?php endif; ?>
                             
                             <!-- Product Meta Information -->
                             <div class="product-meta">
@@ -1304,7 +1341,16 @@ function getProductImage($product) {
                                 </div>
                                 <div class="meta-item">
                                     <span class="meta-label">Số lượng còn lại:</span>
-                                    <span class="meta-value">29 sản phẩm</span>
+                                    <span class="meta-value" id="stockQuantity">
+                                        <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                            <?= $product['SoLuong'] ?> sản phẩm
+                                        <?php else: ?>
+                                            <span class="text-danger fw-bold">Hết hàng</span>
+                                        <?php endif; ?>
+                                    </span>
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" onclick="refreshStockQuantity()" title="Làm mới số lượng">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
                                 </div>
                                 <div class="meta-item">
                                     <span class="meta-label">Danh mục:</span>
@@ -1316,56 +1362,79 @@ function getProductImage($product) {
                             <div class="product-description">
                                 <strong>Mô tả sản phẩm:</strong><br>
                                 <?= htmlspecialchars($product['MoTa']) ?>
-                            </div>
-
-                                                         <!-- Purchase Section -->
-                             <div class="purchase-section">
-                                 <form id="addToCartForm" onsubmit="addToCart(event)">
-                                     <input type="hidden" name="productId" value="<?= $product['MaSP'] ?>">
-                                     
-                                     
-                                     
-                                     <div class="quantity-section">
-                                         <label for="quantity" class="form-label fw-bold" style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;">
-                                             <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
-                                         </label>
-                                         <div class="quantity-control">
-                                             <button type="button" class="quantity-btn" onclick="changeQuantity(-1)" title="Giảm số lượng">
-                                                 <i class="fas fa-minus"></i>
-                                             </button>
-                                             <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="999" title="Nhập số lượng">
-                                             <button type="button" class="quantity-btn" onclick="changeQuantity(1)" title="Tăng số lượng">
-                                                 <i class="fas fa-plus"></i>
-                                             </button>
-                                         </div>
-                                         <small class="text-muted mt-2 d-block">
-                                             <i class="fas fa-info-circle me-1"></i>
-                                             Số lượng tối thiểu: 1, tối đa: 999
-                                         </small>
-                                     </div>
-
-                                     <button type="submit" class="btn btn-primary-custom add-to-cart-btn" id="addToCartBtn">
-                                         <i class="fas fa-shopping-cart me-2"></i>
-                                         <span id="addToCartText">Thêm vào giỏ hàng</span>
-                                         <span id="addToCartLoading" style="display: none;">
-                                             <i class="fas fa-spinner fa-spin me-2"></i>Đang thêm...
-                                         </span>
-                                     </button>
-                                 </form>
-                                
-                                <?php if (!isset($_SESSION['customer_id'])): ?>
-                                    <div class="text-center mt-3">
-                                        <small class="text-muted">
-                                            <i class="fas fa-info-circle me-1"></i>
-                                            Bạn đang mua hàng với tư cách khách vãng lai. 
-                                            <a href="/websitePS/public/customerauth/login" class="text-decoration-none">Đăng nhập</a> 
-                                            để có thêm nhiều lợi ích và ưu đãi khuyến mãi! 
-                                            Sau khi đặt hàng, bạn có thể tra cứu tại 
-                                            <a href="/websitePS/public/ordertracking" class="text-decoration-none">trang tra cứu đơn hàng</a>.
-                                        </small>
+                                <?php if (($product['SoLuong'] ?? 0) <= 0): ?>
+                                    <div class="alert alert-warning mt-3 mb-0">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Sản phẩm hiện tại hết hàng!</strong> 
+                                        Bạn có thể liên hệ với chúng tôi để đặt hàng trước hoặc chờ sản phẩm có hàng trở lại.
                                     </div>
-                                                                 <?php endif; ?>
+                                <?php endif; ?>
                             </div>
+
+                             <!-- Purchase Section -->
+                             <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                 <div class="purchase-section">
+                                     <form id="addToCartForm" onsubmit="addToCart(event)">
+                                         <input type="hidden" name="productId" value="<?= $product['MaSP'] ?>">
+                                         
+                                         <div class="quantity-section">
+                                             <label for="quantity" class="form-label fw-bold" style="color: var(--primary-color); font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                                 <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
+                                             </label>
+                                             <div class="quantity-control">
+                                                 <button type="button" class="quantity-btn" onclick="changeQuantity(-1)" title="Giảm số lượng">
+                                                     <i class="fas fa-minus"></i>
+                                                 </button>
+                                                 <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="<?= $product['SoLuong'] ?>" title="Nhập số lượng">
+                                                 <button type="button" class="quantity-btn" onclick="changeQuantity(1)" title="Tăng số lượng">
+                                                     <i class="fas fa-plus"></i>
+                                                 </button>
+                                             </div>
+                                             <small class="text-muted mt-2 d-block">
+                                                 <i class="fas fa-info-circle me-1"></i>
+                                                 Số lượng tối thiểu: 1, tối đa: <?= $product['SoLuong'] ?>
+                                             </small>
+                                         </div>
+
+                                         <button type="submit" class="btn btn-primary-custom add-to-cart-btn" id="addToCartBtn">
+                                             <i class="fas fa-shopping-cart me-2"></i>
+                                             <span id="addToCartText">Thêm vào giỏ hàng</span>
+                                             <span id="addToCartLoading" style="display: none;">
+                                                 <i class="fas fa-spinner fa-spin me-2"></i>Đang thêm...
+                                             </span>
+                                         </button>
+                                     </form>
+                                    
+                                    <?php if (!isset($_SESSION['customer_id'])): ?>
+                                        <div class="text-center mt-3">
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Bạn đang mua hàng với tư cách khách vãng lai. 
+                                                <a href="/websitePS/public/customerauth/login" class="text-decoration-none">Đăng nhập</a> 
+                                                để có thêm nhiều lợi ích và ưu đãi khuyến mãi! 
+                                                Sau khi đặt hàng, bạn có thể tra cứu tại 
+                                                <a href="/websitePS/public/ordertracking" class="text-decoration-none">trang tra cứu đơn hàng</a>.
+                                            </small>
+                                        </div>
+                                    <?php endif; ?>
+                                 </div>
+                             <?php else: ?>
+                                 <div class="purchase-section bg-light">
+                                     <div class="text-center py-4">
+                                         <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                         <h4 class="text-warning">Sản phẩm hết hàng</h4>
+                                         <p class="text-muted mb-3">Sản phẩm này hiện tại không có sẵn để mua.</p>
+                                         <div class="d-flex justify-content-center gap-3">
+                                             <button type="button" class="btn btn-outline-primary" onclick="refreshStockQuantity()">
+                                                 <i class="fas fa-sync-alt me-2"></i>Kiểm tra lại
+                                             </button>
+                                             <a href="/websitePS/public/products/list" class="btn btn-primary">
+                                                 <i class="fas fa-arrow-left me-2"></i>Xem sản phẩm khác
+                                             </a>
+                                         </div>
+                                     </div>
+                                 </div>
+                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -1940,6 +2009,130 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // ===== STOCK QUANTITY REFRESH FUNCTIONALITY =====
+    
+    // Lấy product ID từ URL
+    const productId = <?= $product['MaSP'] ?>;
+    
+    /**
+     * Refresh số lượng sản phẩm real-time
+     */
+    function refreshStockQuantity() {
+        const stockElement = document.getElementById('stockQuantity');
+        const refreshButton = stockElement.nextElementSibling;
+        const originalText = refreshButton.innerHTML;
+        
+        // Hiển thị loading
+        refreshButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        refreshButton.disabled = true;
+        
+        // Gọi API để lấy số lượng mới
+        fetch(`/websitePS/public/products/getStockInfo/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Cập nhật hiển thị số lượng
+                    if (data.stock > 0) {
+                        stockElement.innerHTML = `${data.stock} sản phẩm`;
+                        stockElement.className = 'meta-value';
+                    } else {
+                        stockElement.innerHTML = '<span class="text-danger fw-bold">Hết hàng</span>';
+                        stockElement.className = 'meta-value';
+                    }
+                    
+                    // Cập nhật max attribute của input quantity
+                    const quantityInput = document.getElementById('quantity');
+                    if (quantityInput) {
+                        quantityInput.max = data.stock;
+                    }
+                    
+                    // Cập nhật trạng thái nút "Thêm vào giỏ hàng"
+                    const addToCartBtn = document.getElementById('addToCartBtn');
+                    if (data.stock <= 0) {
+                        addToCartBtn.disabled = true;
+                        addToCartBtn.innerHTML = '<i class="fas fa-times me-2"></i><span id="addToCartText">Hết hàng</span>';
+                        addToCartBtn.className = 'btn btn-secondary add-to-cart-btn';
+                    } else {
+                        addToCartBtn.disabled = false;
+                        addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i><span id="addToCartText">Thêm vào giỏ hàng</span>';
+                        addToCartBtn.className = 'btn btn-primary-custom add-to-cart-btn';
+                    }
+                    
+                    // Hiển thị thông báo thành công
+                    showToast(`Đã cập nhật số lượng: ${data.stock} sản phẩm`, 'success');
+                    
+                    console.log(`Stock refreshed: ${data.stock} products`);
+                } else {
+                    console.error('Failed to refresh stock:', data.message);
+                    showToast('Không thể cập nhật số lượng sản phẩm', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error refreshing stock:', error);
+                showToast('Có lỗi xảy ra khi cập nhật số lượng', 'error');
+            })
+            .finally(() => {
+                // Khôi phục trạng thái nút
+                refreshButton.innerHTML = originalText;
+                refreshButton.disabled = false;
+            });
+    }
+    
+    /**
+     * Auto-refresh số lượng mỗi 5 phút
+     */
+    function startStockAutoRefresh() {
+        setInterval(() => {
+            console.log('Auto-refreshing stock quantity...');
+            refreshStockQuantity();
+        }, 5 * 60 * 1000); // 5 phút
+    }
+    
+    /**
+     * Refresh số lượng khi user tương tác với trang
+     */
+    function setupStockRefreshTriggers() {
+        // Refresh khi user focus vào tab
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                console.log('Tab focused, refreshing stock...');
+                refreshStockQuantity();
+            }
+        });
+        
+        // Refresh khi user click vào các phần tử quan trọng
+        const importantElements = [
+            document.getElementById('addToCartForm'),
+            document.querySelector('.quantity-control'),
+            document.querySelector('.product-meta')
+        ];
+        
+        importantElements.forEach(element => {
+            if (element) {
+                element.addEventListener('click', () => {
+                    // Debounce để tránh refresh quá nhiều
+                    clearTimeout(window.stockRefreshTimeout);
+                    window.stockRefreshTimeout = setTimeout(() => {
+                        refreshStockQuantity();
+                    }, 1000);
+                });
+            }
+        });
+    }
+    
+    // Khởi tạo auto-refresh và triggers
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bắt đầu auto-refresh sau 10 giây
+        setTimeout(() => {
+            startStockAutoRefresh();
+            setupStockRefreshTriggers();
+        }, 10000);
+        
+        // Refresh lần đầu sau 2 giây
+        setTimeout(() => {
+            refreshStockQuantity();
+        }, 2000);
+    });
     
 });
 </script>

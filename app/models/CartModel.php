@@ -46,7 +46,7 @@ class CartModel {
                             break;
                             
                         case 'add':
-                            // Cộng dồn (không khuyến khích)
+                            // Cộng dồn số lượng
                             $finalQuantity = $existingQuantity + $newQuantity;
                             $this->updateCartItem($customerId, $productId, $finalQuantity);
                             error_log("Added quantities: $existingQuantity + $newQuantity = $finalQuantity");
@@ -246,14 +246,14 @@ class CartModel {
                 
                 switch ($mergeStrategy) {
                     case 'add':
-                        // Cộng dồn số lượng (hành vi cũ - không khuyến khích)
+                        // Cộng dồn số lượng (hành vi mong muốn cho "Add to Cart")
                         $newQuantity = $existingQuantity + $quantity;
                         error_log("Adding quantities: $existingQuantity + $quantity = $newQuantity");
                         return $this->updateCartItem($customerId, $productId, $newQuantity);
                         
                     case 'replace':
                     default:
-                        // Thay thế số lượng (hành vi mới - khuyến khích)
+                        // Thay thế số lượng (hành vi cho các trường hợp đặc biệt)
                         error_log("Replacing quantity: $existingQuantity -> $quantity");
                         return $this->updateCartItem($customerId, $productId, $quantity);
                         
@@ -367,7 +367,7 @@ class CartModel {
                             break;
                             
                         case 'add':
-                            // Cộng dồn số lượng (hành vi cũ - KHÔNG KHUYẾN KHÍCH)
+                            // Cộng dồn số lượng
                             $newQuantity = $dbQuantity + $sessionQuantity;
                             $this->updateCartItem($customerId, $productId, $newQuantity);
                             error_log("Added quantities: $dbQuantity + $sessionQuantity = $newQuantity");

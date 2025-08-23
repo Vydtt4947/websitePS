@@ -92,6 +92,39 @@ class ProductsController extends BaseController {
         header('Location: /websitePS/public/products');
         exit();
     }
+    
+    /**
+     * API endpoint để lấy số lượng sản phẩm real-time (cho admin)
+     */
+    public function getStock($id) {
+        parent::__construct();
+        $this->requireRole(['admin']);
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $product = $this->productModel->getProductById($id);
+            
+            if ($product) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'productId' => $id,
+                    'stock' => $product['SoLuong'] ?? 0,
+                    'productName' => $product['TenSP'] ?? '',
+                    'lastUpdated' => date('Y-m-d H:i:s')
+                ]);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Sản phẩm không tồn tại!'
+                ]);
+            }
+        } else {
+            header('HTTP/1.1 405 Method Not Allowed');
+            echo 'Method not allowed';
+        }
+        exit();
+    }
 
     // === PHƯƠNG THỨC DÀNH CHO KHÁCH HÀNG (không cần đăng nhập) ===
     public function list() {
@@ -145,8 +178,42 @@ class ProductsController extends BaseController {
             $canReview = $reviewModel->canCustomerReview($_SESSION['customer_id'], $id);
         }
 
-
-
         require_once __DIR__ . '/../views/pages/product_detail.php';
+    }
+    
+    /**
+     * API endpoint để lấy số lượng sản phẩm real-time (cho khách hàng)
+     */
+    public function getStockInfo($id) {
+        // Không cần kiểm tra đăng nhập - cho phép khách vãng lai truy cập
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $product = $this->productModel->getProductById($id);
+            
+            if ($product) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'productId' => $id,
+                    'stock' => $product['SoLuong'] ?? 0,
+                    'productName' => $product['TenSP'] ?? '',
+                    'isOutOfStock' => ($product['SoLuong'] ?? 0) <= 0,
+                    'lastUpdated' => date('Y-m-d H:i:s')
+                ]);
+            } else {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Sản phẩm không tồn tại!'
+                ]);
+            }
+        } else {
+            header('HTTP/1.1 405 Method Not Allowed');
+            echo 'Method not allowed';
+        }
+        exit();
     }
 }
