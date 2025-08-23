@@ -481,6 +481,21 @@ function getProductImage($product) {
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
         
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+            color: #999;
+            transform: none !important;
+            box-shadow: none;
+        }
+        
+        .quantity-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+            color: #999;
+        }
+        
         .quantity-input {
             width: 80px;
             text-align: center;
@@ -1315,14 +1330,18 @@ function getProductImage($product) {
                                              <i class="fas fa-sort-numeric-up me-2"></i>Số lượng:
                                          </label>
                                          <div class="quantity-control">
-                                             <button type="button" class="quantity-btn" onclick="changeQuantity(-1)">
+                                             <button type="button" class="quantity-btn" onclick="changeQuantity(-1)" title="Giảm số lượng">
                                                  <i class="fas fa-minus"></i>
                                              </button>
-                                             <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1">
-                                             <button type="button" class="quantity-btn" onclick="changeQuantity(1)">
+                                             <input type="number" id="quantity" name="quantity" class="quantity-input" value="1" min="1" max="999" title="Nhập số lượng">
+                                             <button type="button" class="quantity-btn" onclick="changeQuantity(1)" title="Tăng số lượng">
                                                  <i class="fas fa-plus"></i>
                                              </button>
                                          </div>
+                                         <small class="text-muted mt-2 d-block">
+                                             <i class="fas fa-info-circle me-1"></i>
+                                             Số lượng tối thiểu: 1, tối đa: 999
+                                         </small>
                                      </div>
 
                                      <button type="submit" class="btn btn-primary-custom add-to-cart-btn" id="addToCartBtn">
@@ -1633,16 +1652,72 @@ function getProductImage($product) {
 <script>
 function changeQuantity(change) {
     const input = document.getElementById('quantity');
-    const newValue = parseInt(input.value) + change;
+    const currentValue = parseInt(input.value) || 1;
+    const newValue = currentValue + change;
+    
+    // Đảm bảo số lượng không nhỏ hơn 1
     if (newValue >= 1) {
         input.value = newValue;
+        
+        // Thêm hiệu ứng visual feedback
+        const button = event.target;
+        button.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            button.style.transform = 'scale(1)';
+        }, 150);
+        
+        // Cập nhật trạng thái nút
+        updateQuantityButtonStates();
     }
 }
 
-// Prevent manual input of negative numbers
-document.getElementById('quantity').addEventListener('input', function() {
-    if (this.value < 1) {
-        this.value = 1;
+// Cập nhật trạng thái của các nút tăng/giảm
+function updateQuantityButtonStates() {
+    const input = document.getElementById('quantity');
+    const decreaseBtn = document.querySelector('.quantity-btn[onclick*="-1"]');
+    const increaseBtn = document.querySelector('.quantity-btn[onclick*="1"]');
+    
+    const currentValue = parseInt(input.value) || 1;
+    
+    // Disable nút giảm nếu số lượng = 1
+    if (decreaseBtn) {
+        decreaseBtn.disabled = currentValue <= 1;
+        decreaseBtn.style.opacity = currentValue <= 1 ? '0.5' : '1';
+        decreaseBtn.style.cursor = currentValue <= 1 ? 'not-allowed' : 'pointer';
+    }
+    
+    // Enable nút tăng luôn
+    if (increaseBtn) {
+        increaseBtn.disabled = false;
+        increaseBtn.style.opacity = '1';
+        increaseBtn.style.cursor = 'pointer';
+    }
+}
+
+// Prevent manual input of negative numbers and validate input
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInput = document.getElementById('quantity');
+    
+    if (quantityInput) {
+        quantityInput.addEventListener('input', function() {
+            let value = parseInt(this.value) || 1;
+            
+            // Đảm bảo giá trị không nhỏ hơn 1
+            if (value < 1) {
+                value = 1;
+            }
+            
+            // Đảm bảo giá trị không quá lớn (giới hạn 999)
+            if (value > 999) {
+                value = 999;
+            }
+            
+            this.value = value;
+            updateQuantityButtonStates();
+        });
+        
+        // Khởi tạo trạng thái ban đầu
+        updateQuantityButtonStates();
     }
 });
 
@@ -1698,6 +1773,24 @@ function addToCart(event) {
     event.preventDefault();
     
     const form = event.target;
+    const quantityInput = document.getElementById('quantity');
+    const quantity = parseInt(quantityInput.value) || 1;
+    
+    // Validate quantity
+    if (quantity < 1) {
+        showToast('Số lượng phải lớn hơn 0!', 'error');
+        quantityInput.value = 1;
+        updateQuantityButtonStates();
+        return;
+    }
+    
+    if (quantity > 999) {
+        showToast('Số lượng không được vượt quá 999!', 'error');
+        quantityInput.value = 999;
+        updateQuantityButtonStates();
+        return;
+    }
+    
     const formData = new FormData(form);
     const button = document.getElementById('addToCartBtn');
     const textSpan = document.getElementById('addToCartText');
@@ -1722,7 +1815,8 @@ function addToCart(event) {
             showToast(data.message || 'Đã thêm sản phẩm vào giỏ hàng thành công!', 'success');
             
             // Reset form
-            document.getElementById('quantity').value = 1;
+            quantityInput.value = 1;
+            updateQuantityButtonStates();
             
             // Update cart count if available
             const cartCountElement = document.querySelector('.cart-count');
