@@ -41,6 +41,11 @@
             <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'warehouses') ? 'active' : '' ?>" href="/websitePS/public/warehouses"><i class="fa fa-warehouse"></i>Quản lý Kho</a>
             </li>
+            <?php if ($role === 'admin' || $role === 'staff'): ?>
+            <li class="nav-item">
+                <a class="nav-link <?= ($activePage === 'reviews') ? 'active' : '' ?>" href="/websitePS/public/reviews"><i class="fa fa-star"></i>Quản lý Đánh giá</a>
+            </li>
+            <?php endif; ?>
             <?php if ($role === 'admin'): ?>
             <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'products') ? 'active' : '' ?>" href="/websitePS/public/products"><i class="fa fa-cake-candles"></i>Quản lý Sản phẩm</a>

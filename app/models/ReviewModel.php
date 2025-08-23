@@ -495,4 +495,79 @@ class ReviewModel {
             ];
         }
     }
+
+    public function getById($id) {
+        $sql = "SELECT dg.*, kh.HoTen AS TenKhachHang, sp.TenSP AS TenSanPham,
+                       CASE WHEN dg.MaDH IS NOT NULL THEN 1 ELSE 0 END AS IsVerified
+                FROM danhgia dg
+                LEFT JOIN khachhang kh ON dg.MaKH = kh.MaKH
+                LEFT JOIN sanpham sp ON dg.MaSP = sp.MaSP
+                WHERE dg.MaDG = :id LIMIT 1";
+        $st = $this->db->prepare($sql);
+        $st->bindValue(':id', $id, PDO::PARAM_INT);
+        $st->execute();
+        $row = $st->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Admin list reviews with filters & pagination
+     * @param array $opts [q, rating, verified, product_id, page, perPage]
+     * @return array [data,total,page,perPage]
+     */
+    public function adminList(array $opts = []) {
+        $q          = trim($opts['q'] ?? '');
+        $rating     = isset($opts['rating']) && $opts['rating'] !== '' ? (int)$opts['rating'] : null;
+        $verified   = isset($opts['verified']) && $opts['verified'] !== '' ? (int)$opts['verified'] : null; // 1|0
+        $productId  = isset($opts['product_id']) && $opts['product_id'] !== '' ? (int)$opts['product_id'] : null;
+        $page       = max(1, (int)($opts['page'] ?? 1));
+        $perPage    = max(5, min(100, (int)($opts['perPage'] ?? 10)));
+        $offset     = ($page - 1) * $perPage;
+
+        $where  = [];
+        $params = [];
+        if ($q !== '') {
+            $where[] = '(kh.HoTen LIKE :q OR sp.TenSP LIKE :q OR dg.NoiDung LIKE :q)';
+            $params[':q'] = '%'.$q.'%';
+        }
+        if ($rating !== null) { $where[] = 'dg.SoSao = :rating'; $params[':rating'] = $rating; }
+        if ($verified !== null) {
+            if ($verified === 1) $where[] = 'dg.MaDH IS NOT NULL'; else $where[] = 'dg.MaDH IS NULL';
+        }
+        if ($productId !== null) { $where[] = 'dg.MaSP = :pid'; $params[':pid'] = $productId; }
+
+        $whereSql = $where ? ('WHERE '.implode(' AND ',$where)) : '';
+
+        $sql = "SELECT dg.MaDG, dg.SoSao, LEFT(dg.NoiDung,150) AS TomTat, dg.NgayDanhGia, dg.MaSP,
+                       sp.TenSP AS TenSanPham, kh.HoTen AS TenKhachHang,
+                       CASE WHEN dg.MaDH IS NOT NULL THEN 1 ELSE 0 END AS IsVerified
+                FROM danhgia dg
+                LEFT JOIN sanpham sp ON dg.MaSP = sp.MaSP
+                LEFT JOIN khachhang kh ON dg.MaKH = kh.MaKH
+                $whereSql
+                ORDER BY dg.NgayDanhGia DESC
+                LIMIT :limit OFFSET :offset";
+        $st = $this->db->prepare($sql);
+        foreach ($params as $k=>$v) $st->bindValue($k,$v);
+        $st->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $st->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $st->execute();
+        $data = $st->fetchAll(PDO::FETCH_ASSOC);
+
+        $sqlCount = "SELECT COUNT(*) FROM danhgia dg
+                     LEFT JOIN sanpham sp ON dg.MaSP = sp.MaSP
+                     LEFT JOIN khachhang kh ON dg.MaKH = kh.MaKH
+                     $whereSql";
+        $stc = $this->db->prepare($sqlCount);
+        foreach ($params as $k=>$v) $stc->bindValue($k,$v);
+        $stc->execute();
+        $total = (int)$stc->fetchColumn();
+
+        return [
+            'data' => $data,
+            'total' => $total,
+            'page' => $page,
+            'perPage' => $perPage
+        ];
+    }
 }
