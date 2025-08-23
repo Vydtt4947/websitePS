@@ -16,35 +16,7 @@
   </div>
 </div>
 
-<div class="card shadow-sm mb-4">
-  <div class="card-header bg-light">Nhập/Xuất nhanh</div>
-  <div class="card-body">
-    <form class="row g-2" method="POST" action="/websitePS/public/warehouses/importIngredient">
-      <div class="col-6 col-md-5">
-        <select name="ingredientId" class="form-select scroll-select" size="10" required>
-          <option value="" hidden>Chọn nguyên liệu...</option>
-          <?php foreach(($allIngredients ?? []) as $ing): ?>
-            <option value="<?= (int)$ing['MaNL'] ?>">[<?= (int)$ing['MaNL'] ?>] <?= htmlspecialchars($ing['TenNL']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <div class="col-4 col-md-3"><input type="number" min="1" class="form-control" name="quantity" placeholder="Số lượng" required></div>
-      <div class="col-2 col-md-2 d-grid"><button class="btn btn-success" type="submit"><i class="fa fa-arrow-down"></i> Nhập</button></div>
-    </form>
-    <form class="row g-2 mt-2" method="POST" action="/websitePS/public/warehouses/exportIngredient">
-      <div class="col-6 col-md-5">
-        <select name="ingredientId" class="form-select scroll-select" size="10" required>
-          <option value="" hidden>Chọn nguyên liệu...</option>
-          <?php foreach(($allIngredients ?? []) as $ing): ?>
-            <option value="<?= (int)$ing['MaNL'] ?>">[<?= (int)$ing['MaNL'] ?>] <?= htmlspecialchars($ing['TenNL']) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-      <div class="col-4 col-md-3"><input type="number" min="1" class="form-control" name="quantity" placeholder="Số lượng" required></div>
-      <div class="col-2 col-md-2 d-grid"><button class="btn btn-danger" type="submit"><i class="fa fa-arrow-up"></i> Xuất</button></div>
-    </form>
-  </div>
-</div>
+<!-- Đã bỏ ô Nhập/Xuất nhanh cho tồn kho nguyên liệu -->
 
 <div class="card shadow-sm">
   <div class="card-body">
