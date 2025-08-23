@@ -67,10 +67,11 @@
         
         /* Hero Section */
         .hero-section {
-            background: url('https://media.istockphoto.com/id/527613951/vi/anh/v%E1%BB%81-ch%C3%BAng-t%C3%B4i-kh%C3%A1i-ni%E1%BB%87m-v%C3%A0-b%C3%B3ng-t%E1%BB%91i.jpg?b=1&s=612x612&w=0&k=20&c=IECQ-nmt0-8iIHhThPOnYBhDRObpXmrCOC0UZ9fuySU=');
+            background: url('https://img.freepik.com/free-photo/about-us-information-service-sharing-join-concept_53876-124056.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            background-repeat: no-repeat;
             color: white;
             padding: 8rem 0;
             position: relative;
@@ -78,6 +79,8 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
         .hero-section::before {
             content: '';
@@ -86,7 +89,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: transparent;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(1px);
         }
         .hero-content {
             position: relative;
@@ -97,16 +101,18 @@
             font-size: 4rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5);
             animation: fadeInLeft 1s ease-out;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
         }
         .hero-subtitle {
             font-size: 1.4rem;
             margin-bottom: 2.5rem;
-            opacity: 0.9;
+            opacity: 1;
             line-height: 1.6;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.4);
             animation: fadeInLeft 1s ease-out 0.2s both;
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.3));
         }
         .hero-image-container {
             position: relative;
@@ -565,6 +571,7 @@
             .hero-section {
                 padding: 4rem 0;
                 min-height: auto;
+                background-attachment: scroll;
             }
             .hero-title {
                 font-size: 2.5rem;

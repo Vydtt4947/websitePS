@@ -31,11 +31,22 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            background: url('https://img.freepik.com/premium-photo/contact-us-customer-support-hotline-people-connect-businessman-using-laptop-touching-virtual-screen-contact-icons_43780-7478.jpg');
+            background: url('https://img.freepik.com/free-photo/contact-us-communication-support-service-assistance-concept_53876-128103.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            background-repeat: no-repeat;
             overflow: hidden;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
         }
         
         .hero-section::before {
@@ -45,7 +56,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: transparent;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(0.5px);
         }
         
         .hero-content {
@@ -74,17 +86,19 @@
             font-size: 4rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5);
             animation: fadeInLeft 1s ease;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
         }
         
         .hero-subtitle {
             font-size: 1.4rem;
             margin-bottom: 2.5rem;
             line-height: 1.6;
-            opacity: 0.9;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            opacity: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.4);
             animation: fadeInLeft 1s ease 0.2s both;
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.3));
         }
         
         .hero-features {
@@ -463,6 +477,11 @@
             .hero-section {
                 padding: 4rem 0;
                 min-height: 70vh;
+                background-attachment: scroll;
+                background-size: cover;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
             }
             
             .hero-title {
@@ -506,6 +525,16 @@
             
             .map-frame {
                 height: 300px;
+            }
+        }
+        
+        /* High DPI Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .hero-section {
+                background-image: url('https://img.freepik.com/free-photo/contact-us-communication-support-service-assistance-concept_53876-128103.jpg');
+                background-size: cover;
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
             }
         }
         
