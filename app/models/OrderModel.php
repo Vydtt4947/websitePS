@@ -177,6 +177,7 @@ class OrderModel {
     
     /**
      * Cập nhật số lượng sản phẩm khi đơn hàng thay đổi trạng thái
+     * Logic mới: Trừ số lượng ngay từ khi đơn hàng chuyển sang "Processing"
      */
     private function updateProductQuantities($orderId, $oldStatus, $newStatus) {
         try {
@@ -191,20 +192,36 @@ class OrderModel {
                 $productId = $item['MaSP'];
                 $quantity = $item['SoLuong'];
                 
-                // Trường hợp 1: Đơn hàng chuyển thành "Delivered" - giảm số lượng tồn kho
-                if ($oldStatus !== 'Delivered' && $newStatus === 'Delivered') {
+                // Trường hợp 1: Đơn hàng chuyển thành "Processing" - giảm số lượng tồn kho (đã được đặt)
+                if ($oldStatus === 'Pending' && $newStatus === 'Processing') {
                     $this->decreaseProductStock($productId, $quantity);
-                    error_log("Decreased stock for product $productId by $quantity (order delivered)");
+                    error_log("Decreased stock for product $productId by $quantity (order processing - stock reserved)");
                 }
-                // Trường hợp 2: Đơn hàng bị hủy từ "Delivered" - tăng lại số lượng tồn kho
-                else if ($oldStatus === 'Delivered' && $newStatus === 'Cancelled') {
+                // Trường hợp 2: Đơn hàng chuyển thành "Delivering" - số lượng đã được trừ từ trước
+                else if ($oldStatus === 'Processing' && $newStatus === 'Delivering') {
+                    error_log("Order delivering - stock already reserved for product $productId");
+                }
+                // Trường hợp 3: Đơn hàng chuyển thành "Delivered" - số lượng đã được trừ từ trước
+                else if ($oldStatus === 'Delivering' && $newStatus === 'Delivered') {
+                    error_log("Order delivered - stock already reserved for product $productId");
+                }
+                // Trường hợp 4: Đơn hàng bị hủy từ bất kỳ trạng thái nào - tăng lại số lượng tồn kho
+                else if ($newStatus === 'Cancelled' && $oldStatus !== 'Cancelled') {
+                    // Chỉ tăng lại số lượng nếu đơn hàng đã được xử lý (từ Processing trở đi)
+                    if (in_array($oldStatus, ['Processing', 'Delivering', 'Delivered'])) {
+                        $this->increaseProductStock($productId, $quantity);
+                        error_log("Increased stock for product $productId by $quantity (order cancelled from $oldStatus)");
+                    }
+                }
+                // Trường hợp 5: Đơn hàng được khôi phục từ "Cancelled" về "Processing" - giảm lại số lượng tồn kho
+                else if ($oldStatus === 'Cancelled' && $newStatus === 'Processing') {
+                    $this->decreaseProductStock($productId, $quantity);
+                    error_log("Decreased stock for product $productId by $quantity (order restored to processing)");
+                }
+                // Trường hợp 6: Đơn hàng quay về "Pending" từ "Processing" - tăng lại số lượng tồn kho
+                else if ($oldStatus === 'Processing' && $newStatus === 'Pending') {
                     $this->increaseProductStock($productId, $quantity);
-                    error_log("Increased stock for product $productId by $quantity (order cancelled)");
-                }
-                // Trường hợp 3: Đơn hàng được khôi phục từ "Cancelled" về "Delivered" - giảm lại số lượng tồn kho
-                else if ($oldStatus === 'Cancelled' && $newStatus === 'Delivered') {
-                    $this->decreaseProductStock($productId, $quantity);
-                    error_log("Decreased stock for product $productId by $quantity (order restored)");
+                    error_log("Increased stock for product $productId by $quantity (order returned to pending)");
                 }
             }
             
