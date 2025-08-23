@@ -121,43 +121,136 @@ class OrderModel {
     }
 
     public function updateStatus($orderId, $statusId) {
-        // Lấy trạng thái cũ trước khi cập nhật
-        $oldStatusQuery = "SELECT TrangThai, MaKH FROM donhang WHERE MaDH = :orderId";
-        $oldStatusStmt = $this->db->prepare($oldStatusQuery);
-        $oldStatusStmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
-        $oldStatusStmt->execute();
-        $oldStatusResult = $oldStatusStmt->fetch(PDO::FETCH_ASSOC);
-        
-        $oldStatus = $oldStatusResult['TrangThai'] ?? null;
-        $customerId = $oldStatusResult['MaKH'] ?? null;
-        
-        // Cập nhật trạng thái đơn hàng
-        $query = "UPDATE donhang SET TrangThai = :statusId WHERE MaDH = :orderId";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':statusId', $statusId);
-        $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
-        $result = $stmt->execute();
-
-        // Xử lý cập nhật phân loại khách hàng
-        if ($result && $customerId) {
-            require_once __DIR__ . '/CustomerModel.php';
-            $customerModel = new CustomerModel();
+        try {
+            $this->db->beginTransaction();
             
-            // Trường hợp 1: Đơn hàng được chuyển thành "Delivered" (lên cấp)
-            if ($oldStatus !== 'Delivered' && $statusId === 'Delivered') {
-                $customerModel->updateCustomerTier($customerId);
-            }
-            // Trường hợp 2: Đơn hàng bị hủy từ "Delivered" (hạ cấp)
-            else if ($oldStatus === 'Delivered' && $statusId === 'Cancelled') {
-                $customerModel->updateCustomerTier($customerId);
-            }
-            // Trường hợp 3: Đơn hàng được khôi phục từ "Cancelled" về "Delivered" (lên cấp lại)
-            else if ($oldStatus === 'Cancelled' && $statusId === 'Delivered') {
-                $customerModel->updateCustomerTier($customerId);
-            }
-        }
+            // Lấy trạng thái cũ trước khi cập nhật
+            $oldStatusQuery = "SELECT TrangThai, MaKH FROM donhang WHERE MaDH = :orderId";
+            $oldStatusStmt = $this->db->prepare($oldStatusQuery);
+            $oldStatusStmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
+            $oldStatusStmt->execute();
+            $oldStatusResult = $oldStatusStmt->fetch(PDO::FETCH_ASSOC);
+            
+            $oldStatus = $oldStatusResult['TrangThai'] ?? null;
+            $customerId = $oldStatusResult['MaKH'] ?? null;
+            
+            // Cập nhật trạng thái đơn hàng
+            $query = "UPDATE donhang SET TrangThai = :statusId WHERE MaDH = :orderId";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':statusId', $statusId);
+            $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
+            $result = $stmt->execute();
 
-        return $result;
+            if ($result) {
+                // Cập nhật số lượng sản phẩm dựa trên thay đổi trạng thái
+                $this->updateProductQuantities($orderId, $oldStatus, $statusId);
+                
+                // Xử lý cập nhật phân loại khách hàng
+                if ($customerId) {
+                    require_once __DIR__ . '/CustomerModel.php';
+                    $customerModel = new CustomerModel();
+                    
+                    // Trường hợp 1: Đơn hàng được chuyển thành "Delivered" (lên cấp)
+                    if ($oldStatus !== 'Delivered' && $statusId === 'Delivered') {
+                        $customerModel->updateCustomerTier($customerId);
+                    }
+                    // Trường hợp 2: Đơn hàng bị hủy từ "Delivered" (hạ cấp)
+                    else if ($oldStatus === 'Delivered' && $statusId === 'Cancelled') {
+                        $customerModel->updateCustomerTier($customerId);
+                    }
+                    // Trường hợp 3: Đơn hàng được khôi phục từ "Cancelled" về "Delivered" (lên cấp lại)
+                    else if ($oldStatus === 'Cancelled' && $statusId === 'Delivered') {
+                        $customerModel->updateCustomerTier($customerId);
+                    }
+                }
+            }
+            
+            $this->db->commit();
+            return $result;
+            
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Error updating order status: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Cập nhật số lượng sản phẩm khi đơn hàng thay đổi trạng thái
+     * Logic mới: Trừ số lượng ngay từ khi đơn hàng chuyển sang "Processing"
+     */
+    private function updateProductQuantities($orderId, $oldStatus, $newStatus) {
+        try {
+            // Lấy chi tiết đơn hàng
+            $query = "SELECT MaSP, SoLuong FROM chitietdonhang WHERE MaDH = :orderId";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
+            $stmt->execute();
+            $orderItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($orderItems as $item) {
+                $productId = $item['MaSP'];
+                $quantity = $item['SoLuong'];
+                
+                // Trường hợp 1: Đơn hàng chuyển thành "Processing" - giảm số lượng tồn kho (đã được đặt)
+                if ($oldStatus === 'Pending' && $newStatus === 'Processing') {
+                    $this->decreaseProductStock($productId, $quantity);
+                    error_log("Decreased stock for product $productId by $quantity (order processing - stock reserved)");
+                }
+                // Trường hợp 2: Đơn hàng chuyển thành "Delivering" - số lượng đã được trừ từ trước
+                else if ($oldStatus === 'Processing' && $newStatus === 'Delivering') {
+                    error_log("Order delivering - stock already reserved for product $productId");
+                }
+                // Trường hợp 3: Đơn hàng chuyển thành "Delivered" - số lượng đã được trừ từ trước
+                else if ($oldStatus === 'Delivering' && $newStatus === 'Delivered') {
+                    error_log("Order delivered - stock already reserved for product $productId");
+                }
+                // Trường hợp 4: Đơn hàng bị hủy từ bất kỳ trạng thái nào - tăng lại số lượng tồn kho
+                else if ($newStatus === 'Cancelled' && $oldStatus !== 'Cancelled') {
+                    // Chỉ tăng lại số lượng nếu đơn hàng đã được xử lý (từ Processing trở đi)
+                    if (in_array($oldStatus, ['Processing', 'Delivering', 'Delivered'])) {
+                        $this->increaseProductStock($productId, $quantity);
+                        error_log("Increased stock for product $productId by $quantity (order cancelled from $oldStatus)");
+                    }
+                }
+                // Trường hợp 5: Đơn hàng được khôi phục từ "Cancelled" về "Processing" - giảm lại số lượng tồn kho
+                else if ($oldStatus === 'Cancelled' && $newStatus === 'Processing') {
+                    $this->decreaseProductStock($productId, $quantity);
+                    error_log("Decreased stock for product $productId by $quantity (order restored to processing)");
+                }
+                // Trường hợp 6: Đơn hàng quay về "Pending" từ "Processing" - tăng lại số lượng tồn kho
+                else if ($oldStatus === 'Processing' && $newStatus === 'Pending') {
+                    $this->increaseProductStock($productId, $quantity);
+                    error_log("Increased stock for product $productId by $quantity (order returned to pending)");
+                }
+            }
+            
+        } catch (Exception $e) {
+            error_log("Error updating product quantities: " . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    /**
+     * Giảm số lượng tồn kho của sản phẩm
+     */
+    private function decreaseProductStock($productId, $quantity) {
+        $query = "UPDATE sanpham SET SoLuong = GREATEST(SoLuong - :quantity, 0) WHERE MaSP = :productId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+    
+    /**
+     * Tăng số lượng tồn kho của sản phẩm
+     */
+    private function increaseProductStock($productId, $quantity) {
+        $query = "UPDATE sanpham SET SoLuong = SoLuong + :quantity WHERE MaSP = :productId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        $stmt->bindParam(':productId', $productId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     // PHƯƠNG THỨC MỚI ĐỂ TẠO ĐƠN HÀNG

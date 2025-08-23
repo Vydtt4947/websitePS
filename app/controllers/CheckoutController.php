@@ -122,6 +122,34 @@ class CheckoutController {
             header('Location: /websitePS/public/');
             exit();
         }
+        
+        // VALIDATION: Kiểm tra số lượng tồn kho trước khi checkout
+        require_once __DIR__ . '/../models/ProductModel.php';
+        $productModel = new ProductModel();
+        
+        foreach ($cart as $productId => $item) {
+            $product = $productModel->getProductById($productId);
+            if (!$product) {
+                $_SESSION['error_message'] = "Sản phẩm không tồn tại!";
+                header('Location: /websitePS/public/cart');
+                exit();
+            }
+            
+            $availableStock = $product['SoLuong'] ?? 0;
+            $requestedQuantity = $item['quantity'];
+            
+            if ($availableStock <= 0) {
+                $_SESSION['error_message'] = "Sản phẩm '{$product['TenSP']}' hiện đang hết hàng!";
+                header('Location: /websitePS/public/cart');
+                exit();
+            }
+            
+            if ($requestedQuantity > $availableStock) {
+                $_SESSION['error_message'] = "Sản phẩm '{$product['TenSP']}' chỉ còn $availableStock trong kho! Bạn đang yêu cầu $requestedQuantity sản phẩm.";
+                header('Location: /websitePS/public/cart');
+                exit();
+            }
+        }
 
         // Tính toán tổng tiền
         $total = 0;

@@ -199,6 +199,91 @@ class CartController {
             header('Location: /websitePS/public/');
             exit();
         }
+        
+        // VALIDATION: Kiểm tra số lượng tồn kho
+        $productModel = new ProductModel();
+        $product = $productModel->getProductById($productId);
+        
+        if (!$product) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Sản phẩm không tồn tại!'
+                ]);
+                return;
+            }
+            
+            $_SESSION['error_message'] = 'Sản phẩm không tồn tại!';
+            header('Location: /websitePS/public/');
+            exit();
+        }
+        
+        // Kiểm tra số lượng tồn kho
+        $availableStock = $product['SoLuong'] ?? 0;
+        
+        // Kiểm tra tổng số lượng sau khi cộng dồn với giỏ hàng hiện tại
+        $currentCartQuantity = 0;
+        if (isset($_SESSION['customer_id'])) {
+            // Khách hàng đã đăng nhập - kiểm tra giỏ hàng database
+            $tempCartModel = new CartModel();
+            $currentCart = $tempCartModel->getCart($_SESSION['customer_id']);
+            $currentCartQuantity = $currentCart[$productId]['quantity'] ?? 0;
+        } else {
+            // Khách vãng lai - kiểm tra giỏ hàng session
+            $tempSessionCartModel = new SessionCartModel();
+            $currentCart = $tempSessionCartModel->getCart();
+            $currentCartQuantity = $currentCart[$productId]['quantity'] ?? 0;
+        }
+        
+        $totalRequestedQuantity = $currentCartQuantity + $quantity;
+        
+        if ($totalRequestedQuantity > $availableStock) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Chỉ còn $availableStock sản phẩm trong kho! Bạn đã có $currentCartQuantity sản phẩm trong giỏ hàng và đang yêu cầu thêm $quantity sản phẩm nữa (tổng: $totalRequestedQuantity)."
+                ]);
+                return;
+            }
+            
+            $_SESSION['error_message'] = "Chỉ còn $availableStock sản phẩm trong kho! Bạn đã có $currentCartQuantity sản phẩm trong giỏ hàng và đang yêu cầu thêm $quantity sản phẩm nữa (tổng: $totalRequestedQuantity).";
+            header('Location: /websitePS/public/');
+            exit();
+        }
+        
+        // Kiểm tra nếu sản phẩm hết hàng
+        if ($availableStock <= 0) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Sản phẩm này hiện đang hết hàng!'
+                ]);
+                return;
+            }
+            
+            $_SESSION['error_message'] = 'Sản phẩm này hiện đang hết hàng!';
+            header('Location: /websitePS/public/');
+            exit();
+        }
+        
+        // Kiểm tra nếu số lượng yêu cầu vượt quá tồn kho
+        if ($quantity > $availableStock) {
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Chỉ còn $availableStock sản phẩm trong kho! Bạn đang yêu cầu $quantity sản phẩm."
+                ]);
+                return;
+            }
+            
+            $_SESSION['error_message'] = "Chỉ còn $availableStock sản phẩm trong kho! Bạn đang yêu cầu $quantity sản phẩm.";
+            header('Location: /websitePS/public/');
+            exit();
+        }
 
         // Khai báo các model trước
         $cartModel = null;
@@ -208,8 +293,8 @@ class CartController {
         if (isset($_SESSION['customer_id'])) {
             // Khách hàng đã đăng nhập - lưu vào database
             $cartModel = new CartModel();
-            // Sử dụng strategy 'replace' để tránh cộng dồn số lượng
-            $result = $cartModel->addCartItem($_SESSION['customer_id'], $productId, $quantity, 'replace');
+            // Sử dụng strategy 'add' để cộng dồn số lượng khi thêm cùng sản phẩm
+            $result = $cartModel->addCartItem($_SESSION['customer_id'], $productId, $quantity, 'add');
         } else {
             // Khách vãng lai - lưu vào session
             $sessionCartModel = new SessionCartModel();
@@ -286,12 +371,36 @@ class CartController {
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
         }
 
-        if (!$productId) {
+                if (!$productId) {
             $_SESSION['error_message'] = 'Thông tin sản phẩm không hợp lệ!';
             header('Location: /websitePS/public/cart');
             exit();
         }
-
+        
+        // VALIDATION: Kiểm tra số lượng tồn kho
+        $productModel = new ProductModel();
+        $product = $productModel->getProductById($productId);
+        
+        if (!$product) {
+            $_SESSION['error_message'] = 'Sản phẩm không tồn tại!';
+            header('Location: /websitePS/public/cart');
+            exit();
+        }
+        
+        // Kiểm tra nếu sản phẩm hết hàng
+        if ($availableStock <= 0) {
+            $_SESSION['error_message'] = 'Sản phẩm này hiện đang hết hàng!';
+            header('Location: /websitePS/public/cart');
+            exit();
+        }
+        
+        // Kiểm tra số lượng tồn kho
+        if ($quantity > $availableStock) {
+            $_SESSION['error_message'] = "Chỉ còn $availableStock sản phẩm trong kho! Bạn đang yêu cầu $quantity sản phẩm.";
+            header('Location: /websitePS/public/cart');
+            exit();
+        }
+        
         // Cập nhật giỏ hàng dựa trên trạng thái đăng nhập
         if (isset($_SESSION['customer_id'])) {
             $cartModel = new CartModel();
@@ -611,6 +720,33 @@ class CartController {
                   ];
                   
                                      // Debug logs removed for production
+                  echo json_encode($response);
+                  return;
+              }
+              
+              // VALIDATION: Kiểm tra số lượng tồn kho
+              require_once __DIR__ . '/../models/ProductModel.php';
+              $productModel = new ProductModel();
+              $product = $productModel->getProductById($productId);
+              
+              if (!$product) {
+                  $response = ['success' => false, 'message' => 'Sản phẩm không tồn tại!'];
+                  echo json_encode($response);
+                  return;
+              }
+              
+              $availableStock = $product['SoLuong'] ?? 0;
+              
+              // Kiểm tra nếu sản phẩm hết hàng
+              if ($availableStock <= 0) {
+                  $response = ['success' => false, 'message' => 'Sản phẩm này hiện đang hết hàng!'];
+                  echo json_encode($response);
+                  return;
+              }
+              
+              // Kiểm tra số lượng mới không vượt quá tồn kho
+              if ($newQuantity > $availableStock) {
+                  $response = ['success' => false, 'message' => "Chỉ còn $availableStock sản phẩm trong kho! Bạn đang yêu cầu $newQuantity sản phẩm."];
                   echo json_encode($response);
                   return;
               }

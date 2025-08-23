@@ -268,6 +268,10 @@
             font-size: 0.8rem;
             font-weight: 500;
         }
+        
+        .stock-badge.out-of-stock {
+            background-color: #dc3545;
+        }
         .category-badge {
             position: absolute;
             top: 10px;
@@ -336,6 +340,29 @@
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        .btn-add-cart.disabled {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        .btn-add-cart.disabled:hover {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            transform: none;
+        }
+        
+        .product-price.text-muted {
+            color: #6c757d !important;
+            font-size: 1rem;
+        }
+        
+        .product-description .text-danger {
+            color: #dc3545 !important;
+            font-weight: 500;
         }
         .btn-view-details {
             background-color: transparent;
@@ -728,7 +755,11 @@
                             <img src="<?= getProductImage($product) ?>" 
                                  alt="<?= htmlspecialchars($product['TenSP']) ?>" 
                                  class="product-image">
-                            <div class="stock-badge">Còn hàng</div>
+                            <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                <div class="stock-badge">Còn hàng</div>
+                            <?php else: ?>
+                                <div class="stock-badge out-of-stock">Hết hàng</div>
+                            <?php endif; ?>
                             <div class="category-badge"><?= htmlspecialchars($product['TenDanhMuc']) ?></div>
                         </div>
                         
@@ -737,23 +768,37 @@
                             
                             <p class="product-description">
                                 <?= htmlspecialchars(substr($product['MoTa'], 0, 80)) ?>...
+                                <?php if (($product['SoLuong'] ?? 0) <= 0): ?>
+                                    <br><small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>Sản phẩm hết hàng</small>
+                                <?php endif; ?>
                             </p>
                             
-                            <div class="product-price">
-                                <?= number_format($product['DonGia'], 0, ',', '.') ?> ₫
-                            </div>
+                            <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                <div class="product-price"><?= number_format($product['DonGia'], 0, ',', '.') ?> ₫</div>
+                            <?php else: ?>
+                                <div class="product-price text-muted"><i class="fas fa-info-circle me-2"></i>Liên hệ để biết giá</div>
+                            <?php endif; ?>
                             
                             <div class="product-actions">
-                                <button type="button" 
-                                        class="btn-add-cart" 
-                                        onclick="addToCartFromList('<?= $product['MaSP'] ?>', '<?= htmlspecialchars($product['TenSP']) ?>')"
-                                        data-product-id="<?= $product['MaSP'] ?>">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <span class="btn-text">Thêm vào giỏ</span>
-                                    <span class="btn-loading" style="display: none;">
-                                        <i class="fas fa-spinner fa-spin"></i> Đang thêm...
-                                    </span>
-                                </button>
+                                <?php if (($product['SoLuong'] ?? 0) > 0): ?>
+                                    <button type="button" 
+                                            class="btn-add-cart" 
+                                            onclick="addToCartFromList('<?= $product['MaSP'] ?>', '<?= htmlspecialchars($product['TenSP']) ?>')"
+                                            data-product-id="<?= $product['MaSP'] ?>">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span class="btn-text">Thêm vào giỏ</span>
+                                        <span class="btn-loading" style="display: none;">
+                                            <i class="fas fa-spinner fa-spin"></i> Đang thêm...
+                                        </span>
+                                    </button>
+                                <?php else: ?>
+                                    <button type="button" 
+                                            class="btn-add-cart disabled" 
+                                            disabled>
+                                        <i class="fas fa-times"></i>
+                                        <span class="btn-text">Hết hàng</span>
+                                    </button>
+                                <?php endif; ?>
                                 <a href="/websitePS/public/products/show/<?= $product['MaSP'] ?>" class="btn-view-details">
                                     <i class="fas fa-eye"></i>
                                     Xem chi tiết
