@@ -725,6 +725,26 @@
                                     <div class="info-grid-label">Trạng thái hiện tại</div>
                                     <div class="info-grid-value"><?= $orderModel->getOrderStatusText($order['TrangThai']) ?></div>
                                 </div>
+                                <?php if (isset($order) && $order): ?>
+                                <div class="info-grid-item">
+                                    <div class="info-grid-label">Thời gian đã trôi qua</div>
+                                    <div class="info-grid-value" id="timeElapsed">
+                                        <?php
+                                        $orderDate = new DateTime($order['NgayDatHang']);
+                                        $now = new DateTime();
+                                        $interval = $now->diff($orderDate);
+                                        
+                                        if ($interval->days > 0) {
+                                            echo $interval->days . ' ngày ' . $interval->h . ' giờ trước';
+                                        } elseif ($interval->h > 0) {
+                                            echo $interval->h . ' giờ ' . $interval->i . ' phút trước';
+                                        } else {
+                                            echo $interval->i . ' phút trước';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -813,6 +833,48 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+<?php if (isset($order) && $order): ?>
+// Cập nhật thời gian đã trôi qua theo thời gian thực
+function updateTimeElapsed() {
+    const orderDate = new Date('<?= $order['NgayDatHang'] ?>');
+    const now = new Date();
+    const diff = now - orderDate;
+    
+    // Tính toán thời gian đã trôi qua
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    let timeElapsedText = '';
+    if (days > 0) {
+        timeElapsedText = days + ' ngày ' + hours + ' giờ trước';
+    } else if (hours > 0) {
+        timeElapsedText = hours + ' giờ ' + minutes + ' phút trước';
+    } else {
+        timeElapsedText = minutes + ' phút trước';
+    }
+    
+    // Cập nhật DOM
+    const timeElapsedElement = document.getElementById('timeElapsed');
+    if (timeElapsedElement) {
+        timeElapsedElement.textContent = timeElapsedText;
+    }
+}
+
+// Cập nhật thời gian mỗi phút
+setInterval(updateTimeElapsed, 60000); // 60000ms = 1 phút
+
+// Cập nhật ngay lập tức khi trang load
+document.addEventListener('DOMContentLoaded', function() {
+    updateTimeElapsed();
+});
+
+// Cập nhật thêm mỗi giây để hiển thị chính xác hơn
+setInterval(updateTimeElapsed, 1000); // 1000ms = 1 giây
+<?php endif; ?>
+</script>
 
 </body>
 </html>

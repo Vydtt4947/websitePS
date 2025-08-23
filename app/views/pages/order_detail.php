@@ -556,7 +556,7 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
                         </div>
                         <div class="order-info-item">
                             <span class="order-info-label">Thời gian đã trôi qua:</span>
-                            <span class="order-info-value"><?= $timeElapsed ?></span>
+                            <span class="order-info-value" id="timeElapsed"><?= $timeElapsed ?></span>
                         </div>
                         <div class="order-info-item">
                             <span class="order-info-label">Trạng thái:</span>
@@ -1054,6 +1054,44 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
                 cancelBtn.disabled = false;
             });
         }
+        
+        // Cập nhật thời gian đã trôi qua theo thời gian thực
+        function updateTimeElapsed() {
+            const orderDate = new Date('<?= $orderDetails['info']['NgayDatHang'] ?>');
+            const now = new Date();
+            const diff = now - orderDate;
+            
+            // Tính toán thời gian đã trôi qua
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            let timeElapsedText = '';
+            if (days > 0) {
+                timeElapsedText = days + ' ngày ' + hours + ' giờ trước';
+            } else if (hours > 0) {
+                timeElapsedText = hours + ' giờ ' + minutes + ' phút trước';
+            } else {
+                timeElapsedText = minutes + ' phút trước';
+            }
+            
+            // Cập nhật DOM
+            const timeElapsedElement = document.getElementById('timeElapsed');
+            if (timeElapsedElement) {
+                timeElapsedElement.textContent = timeElapsedText;
+            }
+        }
+        
+        // Cập nhật thời gian mỗi phút
+        setInterval(updateTimeElapsed, 60000); // 60000ms = 1 phút
+        
+        // Cập nhật ngay lập tức khi trang load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTimeElapsed();
+        });
+        
+        // Cập nhật thêm mỗi giây để hiển thị chính xác hơn
+        setInterval(updateTimeElapsed, 1000); // 1000ms = 1 giây
     </script>
 </body>
 </html>
