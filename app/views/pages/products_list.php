@@ -223,6 +223,27 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
+        
+        /* Hiệu ứng khi sắp xếp */
+        .product-card.sorting {
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+        
+        .product-card.sorted {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
         .product-image-container {
             position: relative;
             overflow: hidden;
@@ -817,11 +838,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Lưu tất cả sản phẩm ban đầu
     const productCards = document.querySelectorAll('.product-card');
     productCards.forEach(card => {
+        // Xử lý giá để đảm bảo parse được đúng
+        let priceValue = card.dataset.price;
+        // Loại bỏ các ký tự không phải số và dấu chấm
+        priceValue = priceValue.replace(/[^\d.]/g, '');
+        const price = parseFloat(priceValue) || 0;
+        
         allProducts.push({
             element: card,
             name: card.dataset.name,
             category: card.dataset.category,
-            price: parseFloat(card.dataset.price),
+            price: price,
             categoryName: card.dataset.categoryName
         });
     });
@@ -832,6 +859,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Khởi tạo trạng thái ban đầu
     updateFilterInfo();
+    
+    // Debug: log để kiểm tra
+    console.log('All products loaded:', allProducts);
 });
 
 // Debounce function để tránh gọi quá nhiều lần
@@ -858,6 +888,8 @@ function filterProducts() {
     const categoryFilter = document.getElementById('categoryFilter').value;
     const sortFilter = document.getElementById('sortFilter').value;
     
+    console.log('Filtering products with:', {searchTerm, categoryFilter, sortFilter});
+    
     // Lọc sản phẩm
     filteredProducts = allProducts.filter(product => {
         let matchesSearch = true;
@@ -876,6 +908,8 @@ function filterProducts() {
         return matchesSearch && matchesCategory;
     });
     
+    console.log('Filtered products:', filteredProducts.length);
+    
     // Sắp xếp sản phẩm
     sortProducts(sortFilter);
     
@@ -888,22 +922,43 @@ function filterProducts() {
 
 // Hàm sắp xếp sản phẩm
 function sortProducts(sortType) {
+    console.log('Sorting products by:', sortType);
+    console.log('Products before sorting:', filteredProducts.map(p => ({name: p.name, price: p.price})));
+    
     switch(sortType) {
         case 'name':
-            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+            filteredProducts.sort((a, b) => {
+                const result = a.name.localeCompare(b.name, 'vi');
+                console.log(`Comparing "${a.name}" vs "${b.name}": ${result}`);
+                return result;
+            });
             break;
         case 'name_desc':
-            filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+            filteredProducts.sort((a, b) => {
+                const result = b.name.localeCompare(a.name, 'vi');
+                console.log(`Comparing "${b.name}" vs "${a.name}": ${result}`);
+                return result;
+            });
             break;
         case 'price_asc':
-            filteredProducts.sort((a, b) => a.price - b.price);
+            filteredProducts.sort((a, b) => {
+                const result = a.price - b.price;
+                console.log(`Comparing price ${a.price} vs ${b.price}: ${result}`);
+                return result;
+            });
             break;
         case 'price_desc':
-            filteredProducts.sort((a, b) => b.price - a.price);
+            filteredProducts.sort((a, b) => {
+                const result = b.price - a.price;
+                console.log(`Comparing price ${b.price} vs ${a.price}: ${result}`);
+                return result;
+            });
             break;
         default:
-            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+            filteredProducts.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
     }
+    
+    console.log('Products after sorting:', filteredProducts.map(p => ({name: p.name, price: p.price})));
 }
 
 // Hàm hiển thị sản phẩm
@@ -911,14 +966,30 @@ function displayProducts() {
     const productsGrid = document.getElementById('productsGrid');
     const noProductsDiv = document.querySelector('.no-products');
     
-    // Ẩn tất cả sản phẩm
+    console.log('Displaying products:', filteredProducts.length);
+    
+    // Thêm hiệu ứng sorting cho tất cả sản phẩm
     allProducts.forEach(product => {
+        product.element.classList.add('sorting');
         product.element.style.display = 'none';
     });
     
-    // Hiển thị sản phẩm đã lọc
-    filteredProducts.forEach(product => {
+    // Sắp xếp lại DOM theo thứ tự đã sắp xếp
+    filteredProducts.forEach((product, index) => {
         product.element.style.display = 'block';
+        // Đảm bảo thứ tự hiển thị đúng
+        if (index === 0) {
+            productsGrid.insertBefore(product.element, productsGrid.firstChild);
+        } else {
+            const prevProduct = filteredProducts[index - 1];
+            productsGrid.insertBefore(product.element, prevProduct.element.nextSibling);
+        }
+        
+        // Thêm hiệu ứng sorted với delay
+        setTimeout(() => {
+            product.element.classList.remove('sorting');
+            product.element.classList.add('sorted');
+        }, index * 100);
     });
     
     // Hiển thị thông báo nếu không có sản phẩm
