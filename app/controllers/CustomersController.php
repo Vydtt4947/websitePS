@@ -9,8 +9,8 @@ class CustomersController extends BaseController {
 
     public function __construct() {
         parent::__construct();
-        // Chỉ admin và staff được truy cập mục Khách hàng
-        $this->requireRole(['admin','staff']);
+        // Chỉ admin được truy cập mục Khách hàng (loại bỏ staff)
+        $this->requireRole(['admin']);
         $this->activePage = 'customers';
         $this->customerModel = new CustomerModel();
     }

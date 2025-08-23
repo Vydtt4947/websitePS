@@ -10,8 +10,8 @@ class ReviewsController extends BaseController {
         parent::__construct();
         $this->activePage = 'reviews';
         $this->reviewModel = new ReviewModel();
-        // Cho phép cả admin & staff xem; chỉ admin được xóa
-        $this->requireRole(['admin','staff']);
+        // Trước đây cho phép admin và staff; yêu cầu mới: chỉ admin được truy cập
+        $this->requireRole(['admin']);
     }
 
     public function index() {

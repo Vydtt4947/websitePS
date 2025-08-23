@@ -38,17 +38,15 @@
                 <a class="nav-link <?= ($activePage === 'orders') ? 'active' : '' ?>" href="/websitePS/public/orders"><i class="fa fa-file-invoice"></i>Quản lý Đơn hàng</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link <?= ($activePage === 'warehouses') ? 'active' : '' ?>" href="/websitePS/public/warehouses"><i class="fa fa-warehouse"></i>Quản lý Kho</a>
+            </li>
+            <?php if ($role === 'admin'): ?>
+            <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'customers') ? 'active' : '' ?>" href="/websitePS/public/customers"><i class="fa fa-users"></i>Quản lý Khách hàng</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?= ($activePage === 'warehouses') ? 'active' : '' ?>" href="/websitePS/public/warehouses"><i class="fa fa-warehouse"></i>Quản lý Kho</a>
-            </li>
-            <?php if ($role === 'admin' || $role === 'staff'): ?>
-            <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'reviews') ? 'active' : '' ?>" href="/websitePS/public/reviews"><i class="fa fa-star"></i>Quản lý Đánh giá</a>
             </li>
-            <?php endif; ?>
-            <?php if ($role === 'admin'): ?>
             <li class="nav-item">
                 <a class="nav-link <?= ($activePage === 'products') ? 'active' : '' ?>" href="/websitePS/public/products"><i class="fa fa-cake-candles"></i>Quản lý Sản phẩm</a>
             </li>
@@ -65,6 +63,9 @@
                 <a class="nav-link <?= ($activePage === 'promotions') ? 'active' : '' ?>" href="/websitePS/public/promotions"><i class="fa fa-tags"></i>Quản lý Khuyến mãi</a>
             </li>
             <?php endif; ?>
+            <li class="nav-item">
+                <a class="nav-link <?= ($activePage === 'me') ? 'active' : '' ?>" href="/websitePS/public/me"><i class="fa fa-id-badge"></i>Tài khoản của tôi</a>
+            </li>
             <!-- đường vào homepage -->
             <li class="nav-item">
                 <a class="nav-link" href="/websitePS/public/"><i class="fa fa-home"></i>Trang chủ</a>
