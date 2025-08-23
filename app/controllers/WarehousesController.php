@@ -42,6 +42,10 @@ class WarehousesController extends BaseController {
         $lowIngredients = $this->warehouseModel->getLowStockIngredients((int)($_GET['ingredientThreshold'] ?? 10));
         $tx = $this->warehouseModel->getTransactions($filters, $perPage, $offset);
 
+        // Thêm danh sách sản phẩm & nguyên liệu để hiển thị select theo tên
+        $allProducts = $this->db->query("SELECT MaSP, TenSP FROM sanpham ORDER BY TenSP")->fetchAll();
+        $allIngredients = $this->db->query("SELECT MaNL, TenNL FROM nguyenlieu ORDER BY TenNL")->fetchAll();
+
         $data = [
             'pageTitle' => $pageTitle,
             'summary' => $summary,
@@ -52,6 +56,8 @@ class WarehousesController extends BaseController {
             'perPage' => $tx['limit'] ?? $perPage,
             'currentPage' => $page,
             'filters' => $filters,
+            'allProducts' => $allProducts,
+            'allIngredients' => $allIngredients,
         ];
         $this->renderView('warehouses/index.php', $data);
     }
@@ -145,6 +151,10 @@ class WarehousesController extends BaseController {
         $ct->execute();
         $total = (int)$ct->fetchColumn();
 
+        // Danh sách tất cả sản phẩm để hiển thị trong select (chỉ id + tên)
+        $allProductsStmt = $this->db->query("SELECT MaSP, TenSP FROM sanpham ORDER BY TenSP");
+        $allProducts = $allProductsStmt->fetchAll();
+
         $data = [
             'pageTitle' => $pageTitle,
             'items' => $items,
@@ -152,6 +162,7 @@ class WarehousesController extends BaseController {
             'perPage' => $perPage,
             'currentPage' => $page,
             'search' => $search,
+            'allProducts' => $allProducts,
         ];
         $this->renderView('warehouses/products.php', $data);
     }
@@ -185,6 +196,10 @@ class WarehousesController extends BaseController {
         $ct->execute();
         $total = (int)$ct->fetchColumn();
 
+        // Danh sách tất cả nguyên liệu để hiển thị trong select (chỉ id + tên)
+        $allIngredientsStmt = $this->db->query("SELECT MaNL, TenNL FROM nguyenlieu ORDER BY TenNL");
+        $allIngredients = $allIngredientsStmt->fetchAll();
+
         $data = [
             'pageTitle' => $pageTitle,
             'items' => $items,
@@ -192,6 +207,7 @@ class WarehousesController extends BaseController {
             'perPage' => $perPage,
             'currentPage' => $page,
             'search' => $search,
+            'allIngredients' => $allIngredients,
         ];
         $this->renderView('warehouses/ingredients.php', $data);
     }

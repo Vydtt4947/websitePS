@@ -29,25 +29,35 @@
       <div class="card-header bg-light">Nhập/Xuất kho Sản phẩm</div>
       <div class="card-body">
         <form class="row g-2" method="POST" action="/websitePS/public/warehouses/importProduct">
-          <div class="col-5 col-md-4">
-            <input type="number" min="1" class="form-control" name="productId" placeholder="ID SP" required>
+          <div class="col-5 col-md-5">
+            <select name="productId" class="form-select" required>
+              <option value="" hidden>Chọn sản phẩm...</option>
+              <?php foreach(($allProducts ?? []) as $p): ?>
+                <option value="<?= (int)$p['MaSP'] ?>">[<?= (int)$p['MaSP'] ?>] <?= htmlspecialchars($p['TenSP']) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
           <div class="col-5 col-md-4">
             <input type="number" min="1" class="form-control" name="quantity" placeholder="Số lượng" required>
           </div>
-          <div class="col-2 col-md-4 d-grid">
+          <div class="col-2 col-md-3 d-grid">
             <button class="btn btn-success" type="submit"><i class="fa fa-arrow-down"></i> Nhập</button>
           </div>
         </form>
         <hr>
         <form class="row g-2" method="POST" action="/websitePS/public/warehouses/exportProduct">
-          <div class="col-5 col-md-4">
-            <input type="number" min="1" class="form-control" name="productId" placeholder="ID SP" required>
+          <div class="col-5 col-md-5">
+            <select name="productId" class="form-select" required>
+              <option value="" hidden>Chọn sản phẩm...</option>
+              <?php foreach(($allProducts ?? []) as $p): ?>
+                <option value="<?= (int)$p['MaSP'] ?>">[<?= (int)$p['MaSP'] ?>] <?= htmlspecialchars($p['TenSP']) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
           <div class="col-5 col-md-4">
             <input type="number" min="1" class="form-control" name="quantity" placeholder="Số lượng" required>
           </div>
-          <div class="col-2 col-md-4 d-grid">
+          <div class="col-2 col-md-3 d-grid">
             <button class="btn btn-danger" type="submit"><i class="fa fa-arrow-up"></i> Xuất</button>
           </div>
         </form>
@@ -62,25 +72,35 @@
       <div class="card-header bg-light">Nhập/Xuất kho Nguyên liệu</div>
       <div class="card-body">
         <form class="row g-2" method="POST" action="/websitePS/public/warehouses/importIngredient">
-          <div class="col-5 col-md-4">
-            <input type="number" min="1" class="form-control" name="ingredientId" placeholder="ID NL" required>
+          <div class="col-5 col-md-5">
+            <select name="ingredientId" class="form-select" required>
+              <option value="" hidden>Chọn nguyên liệu...</option>
+              <?php foreach(($allIngredients ?? []) as $ing): ?>
+                <option value="<?= (int)$ing['MaNL'] ?>">[<?= (int)$ing['MaNL'] ?>] <?= htmlspecialchars($ing['TenNL']) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
           <div class="col-5 col-md-4">
             <input type="number" min="1" class="form-control" name="quantity" placeholder="Số lượng" required>
           </div>
-          <div class="col-2 col-md-4 d-grid">
+          <div class="col-2 col-md-3 d-grid">
             <button class="btn btn-success" type="submit"><i class="fa fa-arrow-down"></i> Nhập</button>
           </div>
         </form>
         <hr>
         <form class="row g-2" method="POST" action="/websitePS/public/warehouses/exportIngredient">
-          <div class="col-5 col-md-4">
-            <input type="number" min="1" class="form-control" name="ingredientId" placeholder="ID NL" required>
+          <div class="col-5 col-md-5">
+            <select name="ingredientId" class="form-select" required>
+              <option value="" hidden>Chọn nguyên liệu...</option>
+              <?php foreach(($allIngredients ?? []) as $ing): ?>
+                <option value="<?= (int)$ing['MaNL'] ?>">[<?= (int)$ing['MaNL'] ?>] <?= htmlspecialchars($ing['TenNL']) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
           <div class="col-5 col-md-4">
             <input type="number" min="1" class="form-control" name="quantity" placeholder="Số lượng" required>
           </div>
-          <div class="col-2 col-md-4 d-grid">
+          <div class="col-2 col-md-3 d-grid">
             <button class="btn btn-danger" type="submit"><i class="fa fa-arrow-up"></i> Xuất</button>
           </div>
         </form>

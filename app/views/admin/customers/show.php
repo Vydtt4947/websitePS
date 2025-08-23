@@ -14,7 +14,19 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><strong>Email:</strong> <?= htmlspecialchars($customer['Email']) ?></li>
                 <li class="list-group-item"><strong>SĐT:</strong> <?= htmlspecialchars($customer['SoDienThoai']) ?></li>
-                <li class="list-group-item"><strong>Ngày sinh:</strong> <?= date('d/m/Y', strtotime($customer['NgaySinh'])) ?></li>
+                <!-- Ngày sinh: hiển thị thông báo nếu chưa có -->
+                <li class="list-group-item"><strong>Ngày sinh:</strong> <?php
+                    if (!empty($customer['NgaySinh'])) {
+                        $ts = strtotime($customer['NgaySinh']);
+                        if ($ts !== false) {
+                            echo date('d/m/Y', $ts);
+                        } else {
+                            echo 'Khách hàng chưa cung cấp thông tin';
+                        }
+                    } else {
+                        echo 'Khách hàng chưa cung cấp thông tin';
+                    }
+                ?></li>
             </ul>
         </div>
     </div>

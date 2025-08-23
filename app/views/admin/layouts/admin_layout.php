@@ -21,6 +21,8 @@
         @media (max-width: 768px) {
             .main-content { margin-left: 0; }
         }
+        .scroll-select { max-height:260px; }
+        .scroll-select[size] { height:auto; overflow-y:auto; }
     </style>
 </head>
 <body>
