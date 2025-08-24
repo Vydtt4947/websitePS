@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/websitePS/public/assets/css/header-footer.css">
     <style>
         :root {
             --primary-color: #009688;
@@ -20,15 +21,6 @@
         body {
             font-family: var(--body-font);
             color: var(--text-color);
-        }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
-        .navbar-brand {
-            font-family: var(--heading-font);
-            font-weight: 700;
-            color: var(--primary-color) !important;
         }
         .hero-section {
             background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80&w=1950&auto=format&fit=crop') no-repeat center center;
@@ -76,18 +68,6 @@
             object-fit: cover;
             width: 100%;
         }
-        .footer {
-            background-color: var(--text-color);
-            color: var(--secondary-color);
-        }
-        .footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        
         /* Styles cho phần đánh giá */
         .review-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;

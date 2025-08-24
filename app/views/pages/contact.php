@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/websitePS/public/assets/css/style.css">
+    <link rel="stylesheet" href="/websitePS/public/assets/css/header-footer.css">
     <style>
         :root {
             --primary-color: #009688;
@@ -538,30 +539,6 @@
             }
         }
         
-        /* Footer Styles */
-        .footer {
-            background-color: var(--text-color);
-            color: var(--secondary-color);
-            padding: 3rem 0 2rem;
-            margin-top: 4rem;
-        }
-        
-        .footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer a:hover {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .footer h6 {
-            color: var(--secondary-color);
-            margin-bottom: 1.5rem;
-        }
-
         /* === EXTRA COMPACT CONTACT (reduce ~20%) === */
         .hero-section { padding:6.4rem 0 !important; min-height:85vh !important; }
         .hero-title { font-size:3.2rem !important; margin-bottom:1.1rem !important; }
@@ -602,8 +579,6 @@
 
         .footer { padding:2.4rem 0 1.6rem !important; margin-top:3rem !important; }
         .footer h6 { margin-bottom:1.1rem !important; }
-
-        @media (min-width:1200px){ .container { max-width:1080px !important; } }
 
         @media (max-width: 768px){
             .hero-section { padding:3.6rem 0 !important; min-height:65vh !important; }

@@ -1,0 +1,59 @@
+/* Shared Header & Footer Styles (public copy) */
+:root {
+  --primary-color: #009688;
+  --secondary-color: #fdf5e6;
+  --text-color: #5d4037;
+  --heading-font: "Playfair Display", serif;
+  --body-font: "Roboto", sans-serif;
+}
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: #fff;
+}
+.navbar-brand {
+  font-family: var(--heading-font);
+  font-weight: 700;
+  color: var(--primary-color) !important;
+}
+.navbar-nav .nav-link {
+  color: var(--text-color) !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--primary-color) !important;
+}
+.footer {
+  background: var(--text-color);
+  color: var(--secondary-color);
+  padding: 2.5rem 0 1.8rem;
+}
+.footer a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer a:hover {
+  color: var(--primary-color);
+}
+.footer h6 {
+  color: var(--secondary-color);
+  margin-bottom: 1rem;
+}
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.4rem;
+  }
+  .footer {
+    text-align: center;
+  }
+}
+@media (max-width: 480px) {
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+  .footer {
+    padding: 2rem 0 1.2rem;
+  }
+}

@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/websitePS/public/assets/css/style.css">
+    <link rel="stylesheet" href="/websitePS/public/assets/css/header-footer.css">
     <style>
         :root {
             --primary-color: #009688;
@@ -22,15 +23,6 @@
             font-family: var(--body-font);
             color: var(--text-color);
             background-color: #f8f9fa;
-        }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
-        .navbar-brand {
-            font-family: var(--heading-font);
-            font-weight: 700;
-            color: var(--primary-color) !important;
         }
         .btn-primary-custom {
             background-color: var(--primary-color);
@@ -515,30 +507,6 @@
             .cart-products-col{flex:0 0 60%;max-width:60%;}
             .cart-summary-col{flex:0 0 40%;max-width:40%;}
         }
-        /* Footer Styles */
-        .footer {
-            background-color: var(--text-color);
-            color: var(--secondary-color);
-            padding: 3rem 0 2rem;
-            margin-top: 4rem;
-        }
-        
-        .footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer a:hover {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .footer h6 {
-            color: var(--secondary-color);
-            margin-bottom: 1.5rem;
-        }
-
         /* Session Messages */
         .alert {
             border-radius: 15px;

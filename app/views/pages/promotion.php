@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/websitePS/public/assets/css/style.css">
+    <link rel="stylesheet" href="/websitePS/public/assets/css/header-footer.css">
     <style>
         :root {
             --primary-color: #009688;
@@ -21,15 +22,6 @@
         body {
             font-family: var(--body-font);
             color: var(--text-color);
-        }
-        .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            background-color: #fff;
-        }
-        .navbar-brand {
-            font-family: var(--heading-font);
-            font-weight: 700;
-            color: var(--primary-color) !important;
         }
         .btn-primary-custom {
             background-color: var(--primary-color);
@@ -1094,7 +1086,7 @@
             }
         }
         
-                          @media (max-width: 768px) {
+            @media (max-width: 768px) {
               /* Responsive grid adjustments for medium screens */
               .compact-card .card-title {
                   font-size: 1.1rem;
@@ -1306,7 +1298,7 @@
             }
         }
         
-                          @media (max-width: 480px) {
+            @media (max-width: 480px) {
               /* Responsive grid adjustments for small screens */
               .compact-card .card-title {
                   font-size: 1rem;
@@ -1557,30 +1549,6 @@
              }
         }
         
-        /* Footer Styles */
-        .footer {
-            background-color: var(--text-color);
-            color: var(--secondary-color);
-            padding: 2rem 0 1.5rem;
-            margin-top: 3rem;
-        }
-        
-        .footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer a:hover {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .footer h6 {
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
-        }
-
         /* === EXTRA COMPACT OVERRIDES (~10% smaller) === */
         .hero-section { padding: 5.4rem 0 0 !important; }
         .hero-title { font-size: clamp(2.1rem, 5.2vw, 2.9rem) !important; margin-bottom: 1rem !important; }
@@ -1628,9 +1596,6 @@
         .btn.btn-primary-custom.w-100 { padding: .65rem 1rem !important; }
 
         .footer { padding:1.8rem 0 1.2rem !important; margin-top:2.5rem !important; }
-
-        /* Container max width tighten */
-        @media (min-width:1200px){ .container { max-width: 1100px; } }
 
         /* Mobile further tightening */
         @media (max-width: 576px) {
@@ -1933,7 +1898,7 @@
                         <div class="card-badge">NHÓM</div>
                     </div>
                     <div class="card-body">
-                        <h3 class="card-title">Đặt Theo Nhóm</h3>
+                        <h3 class="card-title">Đặt Theo Nhóm</highlight>
                         <p class="card-description">Tổ chức tiệc tùng, sự kiện với chi phí tiết kiệm và chất lượng cao. Lý tưởng cho các buổi họp mặt</p>
                         <div class="card-benefits">
                             <div class="benefit-item">
