@@ -124,7 +124,7 @@ class CartController {
                 // Chỉ tính ưu đãi cho khách hàng đã đăng nhập
                 $availablePromotions = $promotionModel->getAvailablePromotions($_SESSION['customer_id'], $total, implode(',', $productCategories));
                 
-                // Tính toán ưu đãi dựa trên lựa chọn
+                // Tự động áp dụng ưu đãi phân khúc và tính toán ưu đãi dựa trên lựa chọn
                 $discountResult = $promotionModel->calculateAllDiscounts($_SESSION['customer_id'], $total, implode(',', $productCategories), $selectedPromotions);
                 
                 $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {
@@ -667,6 +667,8 @@ class CartController {
              
              if (!empty($cart)) {
                  $availablePromotions = $promotionModel->getAvailablePromotions($_SESSION['customer_id'], $total, implode(',', $productCategories));
+                 
+                 // Tự động áp dụng ưu đãi phân khúc và tính toán ưu đãi dựa trên lựa chọn
                  $discountResult = $promotionModel->calculateAllDiscounts($_SESSION['customer_id'], $total, implode(',', $productCategories), $selectedPromotions);
                  
                  $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {
@@ -902,7 +904,7 @@ class CartController {
               // Lấy ưu đãi được chọn
               $selectedPromotions = $_SESSION['selected_promotions'] ?? [];
               
-              // Tính toán ưu đãi
+              // Tính toán ưu đãi (chỉ cho khách hàng đã đăng nhập)
               $availablePromotions = [];
               $discountResult = [
                   'promotions' => [],
@@ -919,6 +921,8 @@ class CartController {
               
               if (!empty($cart) && isset($_SESSION['customer_id'])) {
                   $availablePromotions = $promotionModel->getAvailablePromotions($_SESSION['customer_id'], $total, implode(',', $productCategories));
+                  
+                  // Tự động áp dụng ưu đãi phân khúc và tính toán ưu đãi dựa trên lựa chọn
                   $discountResult = $promotionModel->calculateAllDiscounts($_SESSION['customer_id'], $total, implode(',', $productCategories), $selectedPromotions);
                   
                   $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {
@@ -1134,6 +1138,8 @@ class CartController {
               
               if ($customerId) {
                   $productCategories = array_unique(array_column($cart, 'category'));
+                  
+                  // Tự động áp dụng ưu đãi phân khúc và tính toán ưu đãi dựa trên lựa chọn
                   $discountResult = $promotionModel->calculateAllDiscounts(
                       $customerId, 
                       $total, 

@@ -109,6 +109,118 @@ class PromotionModel {
         ];
     }
 
+    // PHƯƠNG THỨC TỰ ĐỘNG ÁP DỤNG ƯU ĐÃI PHÂN KHÚC VÀO GIỎ HÀNG
+    public function autoApplyTierDiscount($customerId, $orderTotal) {
+        if (!$customerId) {
+            return [
+                'discount' => 0,
+                'discountType' => 'percentage',
+                'description' => '',
+                'promotionType' => 'tier_discount',
+                'isAutoApplied' => false
+            ];
+        }
+
+        // Lấy thông tin phân khúc khách hàng
+        $query = "SELECT kh.MaPK, pk.TenPK, pk.MoTa,
+                         COALESCE(SUM(CASE WHEN dh.TrangThai = 'Delivered' THEN dh.TongTien ELSE 0 END), 0) as totalSpent
+                  FROM khachhang kh
+                  LEFT JOIN phankhuckh pk ON kh.MaPK = pk.MaPK
+                  LEFT JOIN donhang dh ON kh.MaKH = dh.MaKH
+                  WHERE kh.MaKH = :customerId
+                  GROUP BY kh.MaKH, kh.MaPK, pk.TenPK, pk.MoTa";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':customerId', $customerId);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return [
+                'discount' => 0,
+                'discountType' => 'percentage',
+                'description' => '',
+                'promotionType' => 'tier_discount',
+                'isAutoApplied' => false
+            ];
+        }
+
+        $tierName = $result['TenPK'] ?? 'Chưa phân loại';
+        $totalSpent = $result['totalSpent'];
+
+        // Xác định ưu đãi dựa trên phân khúc
+        $discount = 0;
+        $description = '';
+        $isAutoApplied = false;
+
+        switch ($tierName) {
+            case 'Bronze':
+                if ($orderTotal >= 200000) {
+                    $discount = $orderTotal * 0.05; // 5%
+                    $description = 'Ưu đãi Bronze: Giảm 5% cho đơn hàng từ 200k';
+                    $isAutoApplied = true;
+                }
+                break;
+            
+            case 'Silver':
+                if ($orderTotal >= 150000) {
+                    $discount = $orderTotal * 0.08; // 8%
+                    $description = 'Ưu đãi Silver: Giảm 8% cho đơn hàng từ 150k';
+                    $isAutoApplied = true;
+                }
+                break;
+            
+            case 'Gold':
+                if ($orderTotal >= 100000) {
+                    $discount = $orderTotal * 0.12; // 12%
+                    $description = 'Ưu đãi Gold: Giảm 12% cho đơn hàng từ 100k';
+                    $isAutoApplied = true;
+                }
+                break;
+            
+            case 'Platinum':
+                if ($orderTotal >= 80000) {
+                    $discount = $orderTotal * 0.15; // 15%
+                    $description = 'Ưu đãi Platinum: Giảm 15% cho đơn hàng từ 80k';
+                    $isAutoApplied = true;
+                }
+                break;
+            
+            case 'Diamond':
+                if ($orderTotal >= 50000) {
+                    $discount = $orderTotal * 0.18; // 18%
+                    $description = 'Ưu đãi Diamond: Giảm 18% cho đơn hàng từ 50k';
+                    $isAutoApplied = true;
+                }
+                break;
+            
+            case 'VIP':
+                // VIP luôn được giảm giá
+                $discount = $orderTotal * 0.20; // 20%
+                $description = 'Ưu đãi VIP: Giảm 20% cho mọi đơn hàng';
+                $isAutoApplied = true;
+                break;
+            
+            default:
+                // Chưa phân loại - không có ưu đãi
+                $discount = 0;
+                $description = '';
+                $isAutoApplied = false;
+                break;
+        }
+
+        return [
+            'discount' => $discount,
+            'discountType' => 'percentage',
+            'description' => $description,
+            'promotionType' => 'tier_discount',
+            'tierName' => $tierName,
+            'totalSpent' => $totalSpent,
+            'isAutoApplied' => $isAutoApplied,
+            'isSelected' => $isAutoApplied // Tự động chọn nếu được áp dụng
+        ];
+    }
+
     // PHƯƠNG THỨC TÍNH TOÁN TẤT CẢ ƯU ĐÃI (TIER + MÃ GIẢM GIÁ) - THEO THỨ TỰ VỚI GIỚI HẠN 40%
     public function calculateAllDiscounts($customerId, $orderTotal, $productCategory = null, $selectedPromotions = []) {
         $allPromotions = [];
@@ -118,28 +230,26 @@ class PromotionModel {
         $maxPromotions = 3; // Giới hạn tối đa 3 khuyến mãi được chọn
         $selectedCount = 0;
 
-        // 1. Ưu đãi dựa trên phân khúc khách hàng (chỉ áp dụng khi khách hàng chọn)
-        $tierDiscount = $this->calculateTierDiscount($customerId, $remainingTotal);
-        if ($tierDiscount['discount'] > 0) {
-            $isTierSelected = in_array('tier_discount', $selectedPromotions);
-            if ($isTierSelected && $selectedCount < $maxPromotions) {
-                $actualTierDiscount = min($tierDiscount['discount'], $maxDiscount - $totalDiscount);
-                if ($actualTierDiscount > 0) {
-                    $tierDiscount['discount'] = $actualTierDiscount;
-                    $tierDiscount['originalDiscount'] = $tierDiscount['discount'];
-                    $tierDiscount['isSelected'] = true;
-                    $tierDiscount['isAutoApplied'] = false; // Đánh dấu là khách hàng chọn
-                    $allPromotions[] = $tierDiscount;
-                    $totalDiscount += $actualTierDiscount;
-                    $remainingTotal -= $actualTierDiscount;
-                    $selectedCount++;
-                }
-            } else {
-                // Đánh dấu ưu đãi tier không được chọn
-                $tierDiscount['isSelected'] = false;
-                $tierDiscount['isAutoApplied'] = false;
+        // 1. Ưu đãi dựa trên phân khúc khách hàng (TỰ ĐỘNG ÁP DỤNG)
+        $tierDiscount = $this->autoApplyTierDiscount($customerId, $remainingTotal);
+        if ($tierDiscount['discount'] > 0 && $tierDiscount['isAutoApplied']) {
+            // Tự động áp dụng ưu đãi phân khúc
+            $actualTierDiscount = min($tierDiscount['discount'], $maxDiscount - $totalDiscount);
+            if ($actualTierDiscount > 0) {
+                $tierDiscount['discount'] = $actualTierDiscount;
+                $tierDiscount['originalDiscount'] = $tierDiscount['discount'];
+                $tierDiscount['isSelected'] = true;
+                $tierDiscount['isAutoApplied'] = true; // Đánh dấu là tự động áp dụng
                 $allPromotions[] = $tierDiscount;
+                $totalDiscount += $actualTierDiscount;
+                $remainingTotal -= $actualTierDiscount;
+                $selectedCount++;
             }
+        } else {
+            // Đánh dấu ưu đãi tier không được áp dụng
+            $tierDiscount['isSelected'] = false;
+            $tierDiscount['isAutoApplied'] = false;
+            $allPromotions[] = $tierDiscount;
         }
 
         // 2. Mã giảm giá từ database (theo lựa chọn của khách hàng)
