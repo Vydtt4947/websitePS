@@ -153,14 +153,14 @@ class CartController {
                 $selectablePromotions = $promotionModel->getSelectablePromotions();
             }
             
-            // Tính phí vận chuyển - tính cho TẤT CẢ đơn hàng có sản phẩm
+            // Tính phí vận chuyển - LUÔN tính 30,000₫ cho mọi đơn hàng có sản phẩm
             $shippingFee = 0;
             if (!empty($cart)) {
                 $shippingFee = 30000;
             }
             
-            // Kiểm tra xem có ưu đãi miễn phí vận chuyển không (từ database)
-            // CHỈ khách hàng đã đăng nhập mới được áp dụng FREESHIP
+            // Kiểm tra xem có mã FREESHIP được áp dụng không
+            $hasFreeshipPromotion = false;
             if (isset($_SESSION['customer_id'])) {
                 foreach ($appliedPromotions as $promotion) {
                     if (strpos($promotion['promotionType'], 'db_promo_') === 0) {
@@ -169,30 +169,29 @@ class CartController {
                         if (strpos($promotionName, 'FREESHIP') !== false) {
                             // FREESHIP chỉ áp dụng khi đơn hàng từ 500,000₫ trở lên
                             if ($total >= 500000) {
-                                $shippingFee = 0;
-                                error_log("DEBUG CartController: Free shipping applied from FREESHIP promotion (Total: " . $total . ")");
+                                $hasFreeshipPromotion = true;
+                                error_log("DEBUG CartController: FREESHIP promotion detected (Total: " . $total . ")");
                             } else {
                                 error_log("DEBUG CartController: FREESHIP not applied - order total too low (Total: " . $total . ", Required: 500000)");
                             }
                             break;
-                        } elseif (strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
-                            // Các mã khuyến mãi khác có mô tả "miễn phí vận chuyển" vẫn áp dụng bình thường
-                            $shippingFee = 0;
-                            error_log("DEBUG CartController: Free shipping applied from other promotion: " . $promotion['promotionType']);
-                            break;
                         }
                     }
                 }
-            } else {
-                // Khách vãng lai - LUÔN tính phí vận chuyển 30,000₫, KHÔNG áp dụng FREESHIP
-                error_log("DEBUG CartController: Guest user - shipping fee fixed at 30000, no FREESHIP applied");
             }
             
-            // Debug log phí vận chuyển
-            error_log("DEBUG CartController: Shipping fee calculated: " . $shippingFee . " (Total: " . $total . ", FREESHIP applied: " . ($shippingFee == 0 ? "Yes" : "No") . ")");
-            
-            // Tính tổng cuối cùng: Tổng tiền hàng - Giảm giá + Phí vận chuyển
-            $finalTotal = $total - $totalDiscount + $shippingFee;
+            // Tính tổng cuối cùng
+            if ($hasFreeshipPromotion) {
+                // Nếu có mã FREESHIP: Tổng tiền hàng - Giảm giá + Phí vận chuyển - Phí vận chuyển (miễn phí)
+                // FREESHIP sẽ được tính như một khoản giảm giá riêng biệt, không ảnh hưởng đến giá sản phẩm gốc
+                // Phí vận chuyển vẫn hiển thị 30,000₫ nhưng được trừ khỏi tổng cộng
+                $finalTotal = $total - $totalDiscount + $shippingFee - $shippingFee;
+                error_log("DEBUG CartController: FREESHIP applied - Final total: " . $finalTotal . " (Total: " . $total . ", Discount: " . $totalDiscount . ", Shipping: " . $shippingFee . ", FREESHIP deduction: " . $shippingFee . ")");
+            } else {
+                // Bình thường: Tổng tiền hàng - Giảm giá + Phí vận chuyển
+                $finalTotal = $total - $totalDiscount + $shippingFee;
+                error_log("DEBUG CartController: Normal calculation - Final total: " . $finalTotal . " (Total: " . $total . ", Discount: " . $totalDiscount . ", Shipping: " . $shippingFee . ")");
+            }
             
             // Debug log để kiểm tra tính toán
             error_log("DEBUG CartController: Total: " . $total . ", TotalDiscount: " . $totalDiscount . ", ShippingFee: " . $shippingFee . ", FinalTotal: " . $finalTotal);
@@ -431,6 +430,9 @@ class CartController {
             exit();
         }
         
+        // Kiểm tra số lượng tồn kho
+        $availableStock = $product['SoLuong'] ?? 0;
+        
         // Kiểm tra nếu sản phẩm hết hàng
         if ($availableStock <= 0) {
             $_SESSION['error_message'] = 'Sản phẩm này hiện đang hết hàng!';
@@ -525,7 +527,7 @@ class CartController {
                 } else {
                     if (isset($_SESSION['guest_cart']) && !empty($_SESSION['guest_cart'])) {
                         foreach ($_SESSION['guest_cart'] as $item) {
-                            $cartCount += $item['quantity'];
+                            $cartTotal += $item['price'] * $item['quantity'];
                         }
                     }
                 }
@@ -1616,5 +1618,4 @@ class CartController {
         }
         exit();
     }
-  }
-  ?>
+}

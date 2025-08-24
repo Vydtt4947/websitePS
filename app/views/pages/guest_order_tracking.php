@@ -27,7 +27,7 @@
         }
         
         .guest-tracking-page {
-            height: 50vh;
+            height: 50hv;
             padding: 2rem 0;
             display: flex;
             justify-content: center; /* căn giữa ngang */
