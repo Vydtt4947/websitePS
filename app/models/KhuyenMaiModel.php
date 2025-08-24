@@ -9,6 +9,28 @@ class KhuyenMaiModel {
         $this->db = (new Database())->getConnection();
     }
 
+    // Phương thức test để kiểm tra kết nối
+    public function testConnection(): array {
+        try {
+            $stmt = $this->db->query('SELECT COUNT(*) as total FROM khuyenmai');
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return ['success' => true, 'total' => $result['total']];
+        } catch (Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    // Phương thức lấy tất cả khuyến mãi (không phân trang)
+    public function getAll(): array {
+        try {
+            $stmt = $this->db->query('SELECT * FROM khuyenmai ORDER BY MaKM DESC');
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Lỗi khi lấy tất cả khuyến mãi: " . $e->getMessage());
+            return [];
+        }
+    }
+
     public function getPaginated(string $search = '', int $page = 1, int $perPage = 10): array {
         $offset = ($page - 1) * $perPage;
         $where = '';

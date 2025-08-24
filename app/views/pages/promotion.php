@@ -893,6 +893,195 @@
             }
         }
         
+                          /* Compact Promotion Cards Styles */
+         .compact-card {
+             background: white;
+             border-radius: 15px;
+             overflow: hidden;
+             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+             transition: all 0.3s ease;
+             border: 2px solid transparent;
+             height: 100%;
+             display: flex;
+             flex-direction: column;
+         }
+         
+         .compact-card:hover {
+             transform: translateY(-5px);
+             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+             border-color: var(--primary-color);
+         }
+         
+         .card-image-container {
+             position: relative;
+             height: 200px;
+             overflow: hidden;
+         }
+         
+         .card-image {
+             width: 100%;
+             height: 100%;
+             object-fit: cover;
+             transition: transform 0.3s ease;
+         }
+         
+         .compact-card:hover .card-image {
+             transform: scale(1.05);
+         }
+         
+         .status-badge {
+             position: absolute;
+             top: 1rem;
+             right: 1rem;
+             padding: 0.4rem 0.8rem;
+             border-radius: 20px;
+             font-size: 0.75rem;
+             font-weight: 600;
+             color: white;
+             backdrop-filter: blur(10px);
+         }
+         
+         .status-badge.active {
+             background: rgba(40, 167, 69, 0.9);
+         }
+         
+         .status-badge.inactive {
+             background: rgba(108, 117, 125, 0.9);
+         }
+         
+         .card-content {
+             padding: 1.5rem;
+             flex: 1;
+             display: flex;
+             flex-direction: column;
+         }
+         
+         .compact-card .card-title {
+             font-family: var(--heading-font);
+             font-size: 1.2rem;
+             margin-bottom: 0.8rem;
+             color: var(--text-color);
+             line-height: 1.3;
+         }
+         
+         .compact-card .card-description {
+             color: #6c757d;
+             margin-bottom: 1rem;
+             line-height: 1.5;
+             font-size: 0.9rem;
+             flex: 1;
+         }
+         
+         .promotion-details {
+             margin-bottom: 1.5rem;
+         }
+         
+         .detail-item {
+             display: flex;
+             align-items: center;
+             margin-bottom: 0.5rem;
+             padding: 0.4rem 0;
+             font-size: 0.85rem;
+         }
+         
+         .detail-item i {
+             margin-right: 0.5rem;
+             width: 16px;
+             text-align: center;
+         }
+         
+         .detail-item span {
+             color: #495057;
+         }
+         
+         .card-action {
+             margin-top: auto;
+         }
+         
+         .card-action .btn {
+             font-size: 0.9rem;
+             padding: 0.6rem 1rem;
+         }
+         
+         /* Database Promotion Cards Styles */
+          .database-promotion-card {
+              transition: all 0.3s ease;
+              border: 2px solid transparent;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+          }
+         
+         .database-promotion-card .card-body {
+             flex: 1;
+             display: flex;
+             flex-direction: column;
+         }
+         
+         .database-promotion-card .card-footer {
+             margin-top: auto;
+         }
+         
+         /* Grid Layout for Database Promotions */
+         .database-promotions-section .row {
+             display: flex !important;
+             flex-wrap: wrap !important;
+         }
+         
+         .database-promotions-section .col-lg-4 {
+             flex: 0 0 33.333333% !important;
+             max-width: 33.333333% !important;
+         }
+         
+         .database-promotions-section .col-md-6 {
+             flex: 0 0 50% !important;
+             max-width: 50% !important;
+         }
+         
+         .database-promotions-section .col-12 {
+             flex: 0 0 100% !important;
+             max-width: 100% !important;
+         }
+         
+         /* Force horizontal layout */
+         .database-promotions-section .row > * {
+             float: none !important;
+         }
+        
+        .database-promotion-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+        
+        .database-promotion-card .promotion-icon-small {
+            transition: all 0.3s ease;
+        }
+        
+        .database-promotion-card:hover .promotion-icon-small {
+            transform: scale(1.1);
+        }
+        
+        .database-promotion-card .detail-item {
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .database-promotion-card .detail-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .inactive-overlay {
+            backdrop-filter: blur(5px);
+        }
+        
+        .promotion-status .badge {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+        }
+        
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -905,10 +1094,40 @@
             }
         }
         
-        @media (max-width: 768px) {
-            .hero-section {
-                padding: 4rem 0;
-            }
+                          @media (max-width: 768px) {
+              /* Responsive grid adjustments for medium screens */
+              .compact-card .card-title {
+                  font-size: 1.1rem;
+                  margin-bottom: 0.6rem;
+              }
+              
+              .compact-card .card-description {
+                  font-size: 0.85rem;
+                  margin-bottom: 0.8rem;
+              }
+              
+              .detail-item {
+                  font-size: 0.8rem;
+                  margin-bottom: 0.4rem;
+              }
+              
+              .card-content {
+                  padding: 1.25rem;
+              }
+              
+              .database-promotions-section .col-lg-4 {
+                  flex: 0 0 50% !important;
+                  max-width: 50% !important;
+              }
+             
+             .database-promotions-section .col-md-6 {
+                 flex: 0 0 50% !important;
+                 max-width: 50% !important;
+             }
+             
+             .hero-section {
+                 padding: 4rem 0;
+             }
             .hero-title {
                 font-size: 2.2rem;
                 margin-bottom: 1rem;
@@ -1087,10 +1306,40 @@
             }
         }
         
-        @media (max-width: 480px) {
-            .hero-section {
-                padding: 3rem 0;
-            }
+                          @media (max-width: 480px) {
+              /* Responsive grid adjustments for small screens */
+              .compact-card .card-title {
+                  font-size: 1rem;
+                  margin-bottom: 0.5rem;
+              }
+              
+              .compact-card .card-description {
+                  font-size: 0.8rem;
+                  margin-bottom: 0.6rem;
+              }
+              
+              .detail-item {
+                  font-size: 0.75rem;
+                  margin-bottom: 0.3rem;
+              }
+              
+              .card-content {
+                  padding: 1rem;
+              }
+              
+              .card-image-container {
+                  height: 180px;
+              }
+              
+              .database-promotions-section .col-lg-4,
+              .database-promotions-section .col-md-6 {
+                  flex: 0 0 100% !important;
+                  max-width: 100% !important;
+              }
+             
+             .hero-section {
+                 padding: 3rem 0;
+             }
             .hero-title {
                 font-size: 1.8rem;
                 margin-bottom: 0.8rem;
@@ -1266,6 +1515,46 @@
                 min-height: 30px;
                 font-size: 0.85rem;
             }
+            
+            .database-promotion-card {
+                padding: 1rem;
+            }
+            
+            .database-promotion-card .promotion-icon-small {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .database-promotion-card .card-title {
+                font-size: 1rem;
+            }
+            
+                         .database-promotion-card .card-description {
+                 min-height: 50px;
+                 font-size: 0.85rem;
+             }
+             
+             /* Responsive grid adjustments */
+             .col-xl-3 {
+                 flex: 0 0 25%;
+                 max-width: 25%;
+             }
+             
+             .col-lg-4 {
+                 flex: 0 0 33.333333%;
+                 max-width: 33.333333%;
+             }
+             
+             .col-md-6 {
+                 flex: 0 0 50%;
+                 max-width: 50%;
+             }
+             
+             .col-12 {
+                 flex: 0 0 100%;
+                 max-width: 100%;
+             }
         }
         
         /* Footer Styles */
@@ -1296,6 +1585,20 @@
 <body>
     <!-- Navigation -->
     <?php include __DIR__ . '/layouts/navbar.php'; ?>
+    
+    <!-- Debug Info (chỉ hiển thị khi cần) -->
+    <?php if (isset($_GET['debug']) && $_GET['debug'] == '1'): ?>
+    <div class="container mt-3">
+        <div class="alert alert-info">
+            <h6>Debug Information:</h6>
+            <p><strong>Promotions count:</strong> <?php echo isset($promotions) ? count($promotions) : 'Not set'; ?></p>
+            <p><strong>Le Quoc Khanh Promotion:</strong> <?php echo isset($leQuocKhanhPromotion) ? 'Found: ' . $leQuocKhanhPromotion['TenKM'] : 'Not found'; ?></p>
+            <?php if (isset($promotions) && !empty($promotions)): ?>
+            <p><strong>First promotion:</strong> <?php echo $promotions[0]['TenKM']; ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -1306,6 +1609,8 @@
                 <i class="fas fa-gift me-2"></i>
                 Ưu đãi lên đến 50%
             </div>
+            
+            
         </div>
     </section>
 
@@ -1372,268 +1677,111 @@
         </div>
     </section>
 
-    <!-- Featured Promotions -->
-    <section class="featured-section">
-        <div class="container">
-            <h2 class="section-title">Ưu Đãi Nổi Bật</h2>
-            
-            <!-- Promotion 1: Giảm Giá 20% -->
-            <div class="promotion-hero-section mb-5">
-                <div class="promotion-hero-container">
-                    <img src="https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlzY291bnR8ZW58MHx8MHx8fDA%3D" 
-                         alt="Giảm giá bánh kem" class="promotion-hero-image">
-                    <div class="promotion-hero-overlay">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="promotion-hero-content">
-                                        <div class="promotion-badge">HOT</div>
-                                        <h3 class="promotion-hero-title">Giảm Giá 20%</h3>
-                                        <p class="promotion-hero-description">
-                                            Cho tất cả bánh kem sinh nhật và bánh ngọt cao cấp. 
-                                            Ưu đãi đặc biệt dành cho khách hàng thân thiết.
-                                        </p>
-                                        <ul class="promotion-hero-features">
-                                            <li><i class="fas fa-check"></i> Áp dụng cho đơn hàng từ 500k</li>
-                                            <li><i class="fas fa-check"></i> Giao hàng trong 24h</li>
-                                            <li><i class="fas fa-check"></i> Áp dụng toàn quốc</li>
-                                            <li><i class="fas fa-check"></i> Không giới hạn số lượng</li>
-                                        </ul>
-                                        <a href="/websitePS/public/products/list" class="btn btn-primary-custom btn-lg">
-                                            <i class="fas fa-percentage me-2"></i>
-                                            Mua Ngay
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="promotion-hero-visual">
-                                        <div class="floating-promo-card">
-                                            <div class="card-icon">
-                                                <i class="fas fa-fire"></i>
-                                            </div>
-                                            <div class="card-content">
-                                                <h4>Flash Sale</h4>
-                                                <p>Chỉ còn 48h</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                   <!-- Featured Promotions -->
+      <section class="featured-section">
+          <div class="container">
+              <h2 class="section-title">Ưu Đãi Đang Diễn Ra</h2>
+              
+              <?php if (isset($promotions) && !empty($promotions)): ?>
+                  <div class="row g-4">
+                      <?php foreach ($promotions as $index => $promo): ?>
+                          <?php 
+                              // Kiểm tra xem khuyến mãi có đang hoạt động không
+                              $today = date('Y-m-d');
+                              $isActive = true;
+                              if ($promo['NgayBatDau'] && $promo['NgayBatDau'] > $today) {
+                                  $isActive = false;
+                              }
+                              if ($promo['NgayKetThuc'] && $promo['NgayKetThuc'] < $today) {
+                                  $isActive = false;
+                              }
+                              
+                              // Chỉ hiển thị 3 khuyến mãi đầu tiên
+                              if ($index >= 3) break;
+                          ?>
+                          
+                          <div class="col-lg-4 col-md-6">
+                              <div class="promotion-card compact-card h-100">
+                                  <div class="card-image-container">
+                                      <img src="<?php 
+                                          if (stripos($promo['TenKM'], 'LEQUOCKHANH') !== false || stripos($promo['TenKM'], 'lễ quốc khánh') !== false || stripos($promo['TenKM'], 'quoc khanh') !== false) {
+                                              echo 'https://aquacityvn.vn/wp-content/uploads/2021/03/iui87.png';
+                                          } elseif (stripos($promo['TenKM'], 'FREESHIP') !== false || stripos($promo['TenKM'], 'freeship') !== false || stripos($promo['TenKM'], 'miễn phí vận chuyển') !== false) {
+                                              echo 'https://file.hstatic.net/200000472237/file/cong-cu-freeship_bd1f7bb8e87e4cf7bd20d42e6eccc170_grande.png';
+                                          } else {
+                                              echo 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlzY291bnR8ZW58MHx8MHx8fDA%3D';
+                                          }
+                                      ?>" 
+                                          alt="<?php echo htmlspecialchars($promo['TenKM']); ?>" class="card-image">
+                                      <div class="status-badge <?php echo $isActive ? 'active' : 'inactive'; ?>">
+                                          <?php echo $isActive ? 'ĐANG HOẠT ĐỘNG' : 'ĐÃ KẾT THÚC'; ?>
+                                      </div>
+                                  </div>
+                                  
+                                  <div class="card-content">
+                                      <h3 class="card-title"><?php echo htmlspecialchars($promo['TenKM'] ? $promo['TenKM'] : 'Khuyến Mãi Đặc Biệt'); ?></h3>
+                                      <p class="card-description">
+                                          <?php echo htmlspecialchars($promo['MoTa'] ? $promo['MoTa'] : 'Khuyến mãi đặc biệt từ Parrot Smell'); ?>
+                                      </p>
+                                      
+                                      <div class="promotion-details">
+                                          <?php if ($promo['PhanTramGiamGia'] && $promo['PhanTramGiamGia'] > 0): ?>
+                                          <div class="detail-item">
+                                              <i class="fas fa-percentage text-danger"></i>
+                                              <span>Giảm giá <?php echo $promo['PhanTramGiamGia']; ?>%</span>
+                                          </div>
+                                          <?php endif; ?>
+                                          
+                                          <?php if ($promo['SoTienGiamGia'] && $promo['SoTienGiamGia'] > 0): ?>
+                                          <div class="detail-item">
+                                              <i class="fas fa-money-bill-wave text-success"></i>
+                                              <span>Giảm <?php echo number_format($promo['SoTienGiamGia'], 0, ',', '.'); ?>đ</span>
+                                          </div>
+                                          <?php endif; ?>
+                                          
+                                          <div class="detail-item">
+                                              <i class="fas fa-calendar-alt text-info"></i>
+                                              <span>Từ <?php echo $promo['NgayBatDau'] ? date('d/m/Y', strtotime($promo['NgayBatDau'])) : 'N/A'; ?> đến <?php echo $promo['NgayKetThuc'] ? date('d/m/Y', strtotime($promo['NgayKetThuc'])) : 'N/A'; ?></span>
+                                          </div>
+                                          
+                                          <div class="detail-item">
+                                              <i class="fas fa-tag text-warning"></i>
+                                              <span>Mã: <strong><?php echo htmlspecialchars($promo['TenKM'] ? $promo['TenKM'] : 'N/A'); ?></strong></span>
+                                          </div>
+                                      </div>
+                                      
+                                      <?php if ($isActive): ?>
+                                      <div class="card-action">
+                                          <a href="/websitePS/public/products/list" class="btn btn-primary-custom w-100">
+                                              <i class="fas fa-shopping-cart me-2"></i>
+                                              Áp Dụng Ngay
+                                          </a>
+                                      </div>
+                                      <?php else: ?>
+                                      <div class="card-action">
+                                          <div class="btn btn-secondary w-100" style="cursor: not-allowed; opacity: 0.6;">
+                                              <i class="fas fa-clock me-2"></i>
+                                              Đã Kết Thúc
+                                          </div>
+                                      </div>
+                                      <?php endif; ?>
+                                  </div>
+                              </div>
+                          </div>
+                      <?php endforeach; ?>
+                  </div>
+              <?php else: ?>
+                  <div class="text-center">
+                      <div class="alert alert-info">
+                          <i class="fas fa-info-circle me-2"></i>
+                          Hiện tại chưa có khuyến mãi nào đang diễn ra. Vui lòng quay lại sau!
+                      </div>
+                  </div>
+              <?php endif; ?>
+          </div>
+      </section>
 
-            <!-- Promotion 2: Miễn Phí Vận Chuyển -->
-            <div class="promotion-hero-section mb-5">
-                <div class="promotion-hero-container">
-                    <img src="https://plus.unsplash.com/premium_photo-1681487829842-2aeff98f8b63?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZnJlZSUyMGRlbGl2ZXJ5fGVufDB8fDB8fHww" 
-                         alt="Miễn phí vận chuyển" class="promotion-hero-image">
-                    <div class="promotion-hero-overlay">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="promotion-hero-content">
-                                        <div class="promotion-badge">NEW</div>
-                                        <h3 class="promotion-hero-title">Miễn Phí Vận Chuyển</h3>
-                                        <p class="promotion-hero-description">
-                                            Giao hàng miễn phí cho mọi đơn hàng từ 300k trở lên. 
-                                            Trải nghiệm dịch vụ giao hàng nhanh chóng và an toàn.
-                                        </p>
-                                        <ul class="promotion-hero-features">
-                                            <li><i class="fas fa-check"></i> Giao hàng trong 24h</li>
-                                            <li><i class="fas fa-check"></i> Áp dụng toàn quốc</li>
-                                            <li><i class="fas fa-check"></i> Đóng gói an toàn</li>
-                                            <li><i class="fas fa-check"></i> Theo dõi đơn hàng</li>
-                                        </ul>
-                                        <a href="/websitePS/public/products/list" class="btn btn-primary-custom btn-lg">
-                                            <i class="fas fa-truck me-2"></i>
-                                            Xem Sản Phẩm
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="promotion-hero-visual">
-                                        <div class="floating-promo-card">
-                                            <div class="card-icon">
-                                                <i class="fas fa-gift"></i>
-                                            </div>
-                                            <div class="card-content">
-                                                <h4>Tặng Quà</h4>
-                                                <p>Miễn phí vận chuyển</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Promotion 3: Combo Tiết Kiệm -->
-            <div class="promotion-hero-section mb-5">
-                <div class="promotion-hero-container">
-                    <img src="https://images.unsplash.com/photo-1656049471454-ff3c59812741?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNhdmUlMjBtb25leXxlbnwwfHwwfHx8MA%3D%3D" 
-                         alt="Combo tiết kiệm" class="promotion-hero-image">
-                    <div class="promotion-hero-overlay">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="promotion-hero-content">
-                                        <div class="promotion-badge">SALE</div>
-                                        <h3 class="promotion-hero-title">Combo Tiết Kiệm</h3>
-                                        <p class="promotion-hero-description">
-                                            Mua combo bánh kem + bánh ngọt với giá ưu đãi. 
-                                            Tiết kiệm chi phí với các gói combo hấp dẫn.
-                                        </p>
-                                        <ul class="promotion-hero-features">
-                                            <li><i class="fas fa-check"></i> Tiết kiệm 30%</li>
-                                            <li><i class="fas fa-check"></i> Nhiều lựa chọn combo</li>
-                                            <li><i class="fas fa-check"></i> Chất lượng cao cấp</li>
-                                            <li><i class="fas fa-check"></i> Tặng kèm quà</li>
-                                        </ul>
-                                        <a href="/websitePS/public/products/list" class="btn btn-primary-custom btn-lg">
-                                            <i class="fas fa-star me-2"></i>
-                                            Chọn Combo
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="promotion-hero-visual">
-                                        <div class="floating-promo-card">
-                                            <div class="card-icon">
-                                                <i class="fas fa-percentage"></i>
-                                            </div>
-                                            <div class="card-content">
-                                                <h4>Tiết Kiệm</h4>
-                                                <p>30% giá trị</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Ongoing Deals -->
-    <section class="ongoing-section">
-        <div class="container">
-            <h2 class="section-title">Ưu Đãi Đang Diễn Ra</h2>
-            
-            <!-- Deal 1: Flash Sale Cupcake -->
-            <div class="deal-hero-section mb-5">
-                <div class="deal-hero-container">
-                    <img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHNhbGV8ZW58MHx8MHx8fDA%3D" 
-                         alt="Flash Sale Cupcake" class="deal-hero-image">
-                    <div class="deal-hero-overlay">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="deal-hero-content">
-                                        <div class="deal-badge">FLASH SALE</div>
-                                        <h3 class="deal-hero-title">50% OFF Cupcake</h3>
-                                        <p class="deal-hero-description">
-                                            Chỉ trong 24 giờ tới! Giảm giá 50% cho tất cả bánh cupcake.
-                                        </p>
-                                        <div class="deal-hero-timer">
-                                            <div class="timer-item">
-                                                <span class="timer-number" id="hours1">23</span>
-                                                <span class="timer-label">Giờ</span>
-                                            </div>
-                                            <div class="timer-item">
-                                                <span class="timer-number" id="minutes1">45</span>
-                                                <span class="timer-label">Phút</span>
-                                            </div>
-                                            <div class="timer-item">
-                                                <span class="timer-number" id="seconds1">32</span>
-                                                <span class="timer-label">Giây</span>
-                                            </div>
-                                        </div>
-                                        <a href="/websitePS/public/products/list" class="btn btn-primary-custom btn-lg">
-                                            <i class="fas fa-fire me-2"></i>
-                                            Mua Ngay
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="deal-hero-visual">
-                                        <div class="floating-deal-card">
-                                            <div class="card-icon">
-                                                <i class="fas fa-clock"></i>
-                                            </div>
-                                            <div class="card-content">
-                                                <h4>Thời Gian</h4>
-                                                <p>Còn lại</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Deal 2: Sinh Nhật Đặc Biệt -->
-            <div class="deal-hero-section mb-5">
-                <div class="deal-hero-container">
-                    <img src="https://plus.unsplash.com/premium_photo-1700695458456-0b4c11aa09f4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzd8fDI1JTI1fGVufDB8fDB8fHww" 
-                         alt="Bánh kem sinh nhật" class="deal-hero-image">
-                    <div class="deal-hero-overlay">
-                        <div class="container">
-                            <div class="row align-items-center">
-                                <div class="col-lg-6">
-                                    <div class="deal-hero-content">
-                                        <div class="deal-badge">SINH NHẬT</div>
-                                        <h3 class="deal-hero-title">Giảm 25% Bánh Kem</h3>
-                                        <p class="deal-hero-description">
-                                            Giảm 25% cho bánh kem sinh nhật trong tháng này.
-                                        </p>
-                                        <div class="deal-hero-timer">
-                                            <div class="timer-item">
-                                                <span class="timer-number" id="days2">15</span>
-                                                <span class="timer-label">Ngày</span>
-                                            </div>
-                                            <div class="timer-item">
-                                                <span class="timer-number" id="hours2">08</span>
-                                                <span class="timer-label">Giờ</span>
-                                            </div>
-                                            <div class="timer-item">
-                                                <span class="timer-number" id="minutes2">30</span>
-                                                <span class="timer-label">Phút</span>
-                                            </div>
-                                        </div>
-                                        <a href="/websitePS/public/products/list" class="btn btn-primary-custom btn-lg">
-                                            <i class="fas fa-birthday-cake me-2"></i>
-                                            Đặt Bánh
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="deal-hero-visual">
-                                        <div class="floating-deal-card">
-                                            <div class="card-icon">
-                                                <i class="fas fa-gift"></i>
-                                            </div>
-                                            <div class="card-content">
-                                                <h4>Ưu Đãi</h4>
-                                                <p>25% giảm giá</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    
 
     <!-- Special Offers -->
     <section class="special-section">
@@ -1783,6 +1931,8 @@
             </div>
         </div>
     </section>
+
+    
 
     <footer class="footer pt-5 pb-4">
         <div class="container text-center text-md-start">
