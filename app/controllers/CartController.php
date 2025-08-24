@@ -143,9 +143,10 @@ class CartController {
                 $shippingFee = 15000;
             }
             
-            // Kiểm tra xem có ưu đãi miễn phí vận chuyển không
+            // Kiểm tra xem có ưu đãi miễn phí vận chuyển không (từ database)
             foreach ($appliedPromotions as $promotion) {
-                if ($promotion['promotionType'] === 'free_shipping') {
+                if (strpos($promotion['promotionType'], 'db_promo_') === 0 && 
+                    strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
                     $shippingFee = 0;
                     break;
                 }
@@ -517,7 +518,7 @@ class CartController {
         }
     }
 
-         public function clear() {
+    public function clear() {
          // Không cần kiểm tra đăng nhập - cho phép khách vãng lai xóa giỏ hàng
  
          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -641,9 +642,10 @@ class CartController {
                  $shippingFee = 15000;
              }
              
-             // Kiểm tra ưu đãi miễn phí vận chuyển
+             // Kiểm tra ưu đãi miễn phí vận chuyển (từ database)
              foreach ($appliedPromotions as $promotion) {
-                 if ($promotion['promotionType'] === 'free_shipping') {
+                 if (strpos($promotion['promotionType'], 'db_promo_') === 0 && 
+                     strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
                      $shippingFee = 0;
                      break;
                  }
@@ -859,9 +861,10 @@ class CartController {
                  $shippingFee = 15000;
              }
              
-             // Kiểm tra ưu đãi miễn phí vận chuyển
+             // Kiểm tra ưu đãi miễn phí vận chuyển (từ database)
              foreach ($appliedPromotions as $promotion) {
-                 if ($promotion['promotionType'] === 'free_shipping') {
+                 if (strpos($promotion['promotionType'], 'db_promo_') === 0 && 
+                     strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
                      $shippingFee = 0;
                      break;
                  }
@@ -1042,9 +1045,10 @@ class CartController {
                   $shippingFee = 15000;
               }
               
-              // Kiểm tra ưu đãi miễn phí vận chuyển
+              // Kiểm tra ưu đãi miễn phí vận chuyển (từ database)
               foreach ($appliedPromotions as $promotion) {
-                  if ($promotion['promotionType'] === 'free_shipping') {
+                  if (strpos($promotion['promotionType'], 'db_promo_') === 0 && 
+                      strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
                       $shippingFee = 0;
                       break;
                   }
@@ -1311,5 +1315,150 @@ class CartController {
           }
           exit();
       }
+
+      /**
+       * Áp dụng mã khuyến mãi từ input
+       */
+      public function applyCoupon() {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+
+          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+              http_response_code(405);
+              echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+              exit();
+          }
+
+          try {
+              $couponCode = trim($_POST['coupon_code'] ?? '');
+              
+              // Debug log
+              error_log("DEBUG applyCoupon: Coupon code received: " . $couponCode);
+              error_log("DEBUG applyCoupon: POST data: " . json_encode($_POST));
+              
+              if (empty($couponCode)) {
+                  echo json_encode(['success' => false, 'message' => 'Vui lòng nhập mã khuyến mãi!']);
+                  exit();
+              }
+
+              // Kiểm tra mã khuyến mãi trong database
+              $promotionModel = new PromotionModel();
+              $coupon = $promotionModel->validateCouponCode($couponCode);
+              
+              // Debug log
+              error_log("DEBUG applyCoupon: Coupon validation result: " . json_encode($coupon));
+              
+              if (!$coupon) {
+                  echo json_encode(['success' => false, 'message' => 'Mã khuyến mãi không hợp lệ hoặc đã hết hạn!']);
+                  exit();
+              }
+
+              // Kiểm tra xem mã đã được áp dụng chưa
+              $selectedPromotions = $_SESSION['selected_promotions'] ?? [];
+              $couponPromotionType = 'db_promo_' . $coupon['MaKM'];
+              
+              // Debug log
+              error_log("DEBUG applyCoupon: Selected promotions: " . json_encode($selectedPromotions));
+              error_log("DEBUG applyCoupon: Coupon promotion type: " . $couponPromotionType);
+              
+              if (in_array($couponPromotionType, $selectedPromotions)) {
+                  echo json_encode(['success' => false, 'message' => 'Mã khuyến mãi đã được áp dụng!']);
+                  exit();
+              }
+
+              // Kiểm tra giới hạn số lượng khuyến mãi (tối đa 3)
+              if (count($selectedPromotions) >= 3) {
+                  echo json_encode(['success' => false, 'message' => 'Bạn chỉ có thể áp dụng tối đa 3 khuyến mãi!']);
+                  exit();
+              }
+
+              // Lưu thông tin đầy đủ của mã khuyến mãi
+              $couponInfo = [
+                  'promotionType' => $couponPromotionType,
+                  'displayName' => $coupon['displayName'] ?? $couponCode,
+                  'description' => $coupon['description'] ?? '',
+                  'discountPercent' => $coupon['PhanTramGiamGia'] ?? 0,
+                  'discountAmount' => $coupon['SoTienGiamGia'] ?? 0
+              ];
+              
+              // Lưu vào session với thông tin đầy đủ
+              if (!isset($_SESSION['applied_coupons'])) {
+                  $_SESSION['applied_coupons'] = [];
+              }
+              $_SESSION['applied_coupons'][$couponPromotionType] = $couponInfo;
+              
+              // Thêm mã khuyến mãi vào selected_promotions
+              $selectedPromotions[] = $couponPromotionType;
+              $_SESSION['selected_promotions'] = $selectedPromotions;
+              
+              // Debug log
+              error_log("DEBUG applyCoupon: Updated selected promotions: " . json_encode($_SESSION['selected_promotions']));
+              error_log("DEBUG applyCoupon: Applied coupon info: " . json_encode($couponInfo));
+
+              echo json_encode([
+                  'success' => true, 
+                  'message' => 'Áp dụng mã khuyến mãi "' . $couponCode . '" thành công!'
+              ]);
+
+                    } catch (Exception $e) {
+              error_log("Error in applyCoupon: " . $e->getMessage());
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra khi áp dụng mã khuyến mãi',
+                  'error' => $e->getMessage()
+              ]);
+          }
+          exit();
+      }
+
+    /**
+     * Bỏ mã khuyến mãi đã áp dụng
+     */
+    public function removeCoupon() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            exit();
+        }
+
+        try {
+            $promotionType = trim($_POST['promotion_type'] ?? '');
+            
+            if (empty($promotionType)) {
+                echo json_encode(['success' => false, 'message' => 'Thiếu thông tin mã khuyến mãi!']);
+                exit();
+            }
+
+            $selectedPromotions = $_SESSION['selected_promotions'] ?? [];
+            
+            // Tìm và xóa mã khuyến mãi
+            $key = array_search($promotionType, $selectedPromotions);
+            if ($key !== false) {
+                unset($selectedPromotions[$key]);
+                $_SESSION['selected_promotions'] = array_values($selectedPromotions); // Re-index array
+                
+                echo json_encode([
+                    'success' => true, 
+                    'message' => 'Đã bỏ mã khuyến mãi thành công!'
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Không tìm thấy mã khuyến mãi này!']);
+            }
+
+        } catch (Exception $e) {
+            error_log("Error in removeCoupon: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi bỏ mã khuyến mãi',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
   }
-?>
+  ?>

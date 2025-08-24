@@ -98,6 +98,36 @@
             background: linear-gradient(90deg, var(--primary-color), #00796b);
         }
         
+        /* Coupon Section */
+        .coupon-section {
+            transition: all 0.3s ease;
+        }
+        .coupon-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .coupon-section input[type="text"] {
+            transition: all 0.3s ease;
+            border: 1px solid #ced4da;
+        }
+        .coupon-section input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 150, 136, 0.25);
+            outline: none;
+        }
+        .coupon-section button {
+            transition: all 0.3s ease;
+        }
+        .coupon-section button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        .coupon-section button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         /* Empty Cart */
         .empty-cart {
             text-align: center;
@@ -1123,6 +1153,97 @@
                 showToast('Có lỗi xảy ra khi xóa sản phẩm!', 'error');
             });
        }
+     
+     // Function để áp dụng mã khuyến mãi
+     function applyCoupon(event) {
+         const couponInput = document.getElementById('coupon-code');
+         const couponMessage = document.getElementById('coupon-message');
+         const couponCode = couponInput.value.trim();
+         
+         if (!couponCode) {
+             showCouponMessage('Vui lòng nhập mã khuyến mãi!', 'error');
+             return;
+         }
+         
+         // Disable button và input
+         const applyButton = event.target;
+         applyButton.disabled = true;
+         applyButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...';
+         couponInput.disabled = true;
+         
+         fetch('/websitePS/public/cart/applyCoupon', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'X-Requested-With': 'XMLHttpRequest'
+             },
+             body: 'coupon_code=' + encodeURIComponent(couponCode)
+         })
+         .then(response => response.json())
+         .then(data => {
+             if (data.success) {
+                 showCouponMessage(data.message, 'success');
+                 // Cập nhật cart summary
+                 updateCartSummary();
+                 // Clear input
+                 couponInput.value = '';
+             } else {
+                 showCouponMessage(data.message, 'error');
+             }
+         })
+         .catch(error => {
+             console.error('Error:', error);
+             showCouponMessage('Có lỗi xảy ra khi áp dụng mã khuyến mãi!', 'error');
+         })
+         .finally(() => {
+             // Restore button và input
+             applyButton.disabled = false;
+             applyButton.innerHTML = '<i class="fas fa-check me-1"></i>Áp dụng';
+             couponInput.disabled = false;
+         });
+     }
+     
+     function showCouponMessage(message, type) {
+         const couponMessage = document.getElementById('coupon-message');
+         couponMessage.textContent = message;
+         couponMessage.style.display = 'block';
+         couponMessage.style.color = type === 'success' ? '#28a745' : '#dc3545';
+         
+         // Ẩn message sau 5 giây
+         setTimeout(() => {
+             couponMessage.style.display = 'none';
+         }, 5000);
+     }
+     
+     // Function để bỏ mã khuyến mãi
+     function removeCoupon(promotionType) {
+         if (!confirm('Bạn có chắc muốn bỏ mã khuyến mãi này?')) {
+             return;
+         }
+         
+         fetch('/websitePS/public/cart/removeCoupon', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded',
+                 'X-Requested-With': 'XMLHttpRequest'
+             },
+             body: 'promotion_type=' + encodeURIComponent(promotionType)
+         })
+         .then(response => response.json())
+         .then(data => {
+             if (data.success) {
+                 showToast(data.message, 'success');
+                 // Cập nhật cart summary
+                 updateCartSummary();
+             } else {
+                 showToast(data.message, 'error');
+             }
+         })
+         .catch(error => {
+             console.error('Error:', error);
+             showToast('Có lỗi xảy ra khi bỏ mã khuyến mãi!', 'error');
+         });
+     }
      
      
      </script>

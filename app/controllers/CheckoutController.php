@@ -66,9 +66,10 @@ class CheckoutController {
             $shippingFee = 15000;
         }
         
-        // Kiểm tra xem có ưu đãi miễn phí vận chuyển không
+        // Kiểm tra xem có ưu đãi miễn phí vận chuyển không (từ database)
         foreach ($appliedPromotions as $promotion) {
-            if ($promotion['promotionType'] === 'free_shipping') {
+            if (strpos($promotion['promotionType'], 'db_promo_') === 0 && 
+                strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
                 $shippingFee = 0;
                 break;
             }
@@ -190,9 +191,10 @@ class CheckoutController {
             $shippingFee = 15000;
         }
         
-        // Kiểm tra xem có ưu đãi miễn phí vận chuyển không
+        // Kiểm tra xem có ưu đãi miễn phí vận chuyển không (từ database)
         foreach ($appliedPromotions as $promotion) {
-            if ($promotion['promotionType'] === 'free_shipping') {
+            if (strpos($promotion['promotionType'], 'db_promo_') === 0 && 
+                strpos(strtolower($promotion['description']), 'miễn phí vận chuyển') !== false) {
                 $shippingFee = 0;
                 break;
             }

@@ -67,14 +67,8 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
                                              <span style="color: #495057; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                                  <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
                                                      <i class="fas fa-crown me-2" style="color: #ffc107;"></i>
-                                                 <?php elseif ($promotion['promotionType'] === 'flash_sale_cupcake'): ?>
-                                                     <i class="fas fa-fire me-2" style="color: #ff6b35;"></i>
-                                                 <?php elseif ($promotion['promotionType'] === 'birthday_cake_25'): ?>
-                                                     <i class="fas fa-birthday-cake me-2" style="color: #e91e63;"></i>
-                                                 <?php elseif ($promotion['promotionType'] === 'general_20'): ?>
-                                                     <i class="fas fa-percentage me-2" style="color: #2196f3;"></i>
-                                                 <?php elseif ($promotion['promotionType'] === 'free_shipping'): ?>
-                                                     <i class="fas fa-shipping-fast me-2" style="color: #4caf50;"></i>
+                                                 <?php elseif (strpos($promotion['promotionType'], 'db_promo_') === 0): ?>
+                                                     <i class="fas fa-tag me-2" style="color: #6f42c1;"></i>
                                                  <?php endif; ?>
                                                  <?= htmlspecialchars($promotion['description']) ?>
                                                  <?php if ($promotion['discount'] > 0): ?>
@@ -134,14 +128,8 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
                                      <?= $stepNumber ?>. 
                                      <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
                                          <i class="fas fa-crown me-1" style="color: #ffd700;"></i>
-                                     <?php elseif ($promotion['promotionType'] === 'flash_sale_cupcake'): ?>
-                                         <i class="fas fa-fire me-1" style="color: #ff6b35;"></i>
-                                     <?php elseif ($promotion['promotionType'] === 'birthday_cake_25'): ?>
-                                         <i class="fas fa-birthday-cake me-1" style="color: #e91e63;"></i>
-                                     <?php elseif ($promotion['promotionType'] === 'general_20'): ?>
-                                         <i class="fas fa-percentage me-1" style="color: #2196f3;"></i>
-                                     <?php elseif ($promotion['promotionType'] === 'free_shipping'): ?>
-                                         <i class="fas fa-shipping-fast me-1" style="color: #4caf50;"></i>
+                                     <?php elseif (strpos($promotion['promotionType'], 'db_promo_') === 0): ?>
+                                         <i class="fas fa-tag me-1" style="color: #6f42c1;"></i>
                                      <?php endif; ?>
                                      <?= htmlspecialchars($promotion['description']) ?>
                                  </span>
@@ -185,6 +173,55 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
             </div>
         </div>
     <?php endif; ?>
+    
+    <!-- Phần nhập mã khuyến mãi -->
+    <div class="coupon-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; margin: 15px 0; padding: 15px; border: 1px solid #dee2e6;">
+        <div style="color: #495057; font-weight: 600; margin-bottom: 10px;">
+            <i class="fas fa-ticket-alt me-2" style="color: #007bff;"></i>Mã khuyến mãi
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" 
+                   id="coupon-code" 
+                   name="coupon_code" 
+                   placeholder="Nhập mã khuyến mãi..." 
+                   style="flex: 1; padding: 10px 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem;"
+                   value="<?= htmlspecialchars($_POST['coupon_code'] ?? '') ?>">
+            <button type="button" 
+                    onclick="applyCoupon(event)" 
+                    style="padding: 10px 15px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; border: none; border-radius: 5px; font-weight: 500; cursor: pointer;">
+                <i class="fas fa-check me-1"></i>Áp dụng
+            </button>
+        </div>
+        <div id="coupon-message" style="margin-top: 8px; font-size: 0.85rem; display: none;"></div>
+        
+        <!-- Hiển thị mã khuyến mãi đã áp dụng -->
+        <?php if (isset($_SESSION['customer_id']) && !empty($selectedPromotions)): ?>
+            <div id="applied-coupons" style="margin-top: 10px;">
+                <?php foreach ($selectedPromotions as $promotionType): ?>
+                    <?php if (strpos($promotionType, 'db_promo_') === 0): ?>
+                        <div class="applied-coupon" style="background: #e8f5e8; border: 1px solid #28a745; border-radius: 5px; padding: 8px 12px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #155724; font-size: 0.85rem;">
+                                <i class="fas fa-check-circle me-2" style="color: #28a745;"></i>
+                                <?php 
+                                // Lấy tên thực tế của mã khuyến mãi
+                                $couponName = $promotionType;
+                                if (isset($_SESSION['applied_coupons'][$promotionType]['displayName'])) {
+                                    $couponName = $_SESSION['applied_coupons'][$promotionType]['displayName'];
+                                }
+                                ?>
+                                Mã: <?= htmlspecialchars($couponName) ?>
+                            </span>
+                            <button type="button" 
+                                    onclick="removeCoupon('<?= $promotionType ?>')" 
+                                    style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer;">
+                                <i class="fas fa-times me-1"></i>Bỏ
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
     
          <?php if (isset($_SESSION['customer_id'])): ?>
          <div class="summary-item">

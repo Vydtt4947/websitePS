@@ -109,7 +109,7 @@ class PromotionModel {
         ];
     }
 
-    // PHƯƠNG THỨC TÍNH TOÁN TẤT CẢ ƯU ĐÃI (TIER + KHÁC) - THEO THỨ TỰ VỚI GIỚI HẠN 40%
+    // PHƯƠNG THỨC TÍNH TOÁN TẤT CẢ ƯU ĐÃI (TIER + MÃ GIẢM GIÁ) - THEO THỨ TỰ VỚI GIỚI HẠN 40%
     public function calculateAllDiscounts($customerId, $orderTotal, $productCategory = null, $selectedPromotions = []) {
         $allPromotions = [];
         $remainingTotal = $orderTotal;
@@ -142,16 +142,12 @@ class PromotionModel {
             }
         }
 
-        // 2. Ưu đãi khuyến mãi thông thường (theo lựa chọn của khách hàng)
-        $regularPromotions = $this->calculateRegularPromotions($remainingTotal, $productCategory);
-        $sortedPromotions = $this->sortPromotionsByPriority($regularPromotions);
+        // 2. Mã giảm giá từ database (theo lựa chọn của khách hàng)
+        $databasePromotions = $this->getDatabasePromotions($customerId, $remainingTotal, $productCategory);
         
-        foreach ($sortedPromotions as $promotion) {
+        foreach ($databasePromotions as $promotion) {
             // Kiểm tra xem khách hàng có chọn ưu đãi này không
             $isSelected = in_array($promotion['promotionType'], $selectedPromotions);
-            
-            // Debug log
-            error_log("PromotionModel: Processing promotion " . $promotion['promotionType'] . " - Selected: " . ($isSelected ? 'true' : 'false'));
             
             if ($isSelected && $promotion['discount'] > 0 && $remainingTotal > 0 && $totalDiscount < $maxDiscount && $selectedCount < $maxPromotions) {
                 // Tính toán giảm giá có thể áp dụng
@@ -168,8 +164,6 @@ class PromotionModel {
                     $totalDiscount += $promotionDiscount;
                     $remainingTotal -= $promotionDiscount;
                     $selectedCount++;
-                    
-                    error_log("PromotionModel: Applied promotion " . $promotion['promotionType'] . " - Discount: " . $promotionDiscount);
                 }
             } else {
                 // Đánh dấu ưu đãi không được chọn
@@ -199,11 +193,9 @@ class PromotionModel {
             $availablePromotions[] = $tierDiscount;
         }
         
-        // 2. Ưu đãi thông thường
-        $regularPromotions = $this->calculateRegularPromotions($orderTotal, $productCategory);
-        $sortedPromotions = $this->sortPromotionsByPriority($regularPromotions);
-        
-        foreach ($sortedPromotions as $promotion) {
+        // 2. Mã giảm giá từ database
+        $databasePromotions = $this->getDatabasePromotions($customerId, $orderTotal, $productCategory);
+        foreach ($databasePromotions as $promotion) {
             if ($promotion['discount'] > 0) {
                 $availablePromotions[] = $promotion;
             }
@@ -212,73 +204,56 @@ class PromotionModel {
         return $availablePromotions;
     }
 
-    // PHƯƠNG THỨC SẮP XẾP ƯU ĐÃI THEO THỨ TỰ ƯU TIÊN
-    private function sortPromotionsByPriority($promotions) {
-        // Định nghĩa thứ tự ưu tiên (số càng nhỏ càng ưu tiên cao)
-        $priorityOrder = [
-            'flash_sale_cupcake' => 1,    // Flash sale ưu tiên cao nhất
-            'birthday_cake_25' => 2,      // Giảm giá bánh kem
-            'general_20' => 3,            // Giảm giá chung
-            'free_shipping' => 4          // Miễn phí vận chuyển cuối cùng
-        ];
-
-        // Sắp xếp theo thứ tự ưu tiên
-        usort($promotions, function($a, $b) use ($priorityOrder) {
-            $priorityA = $priorityOrder[$a['promotionType']] ?? 999;
-            $priorityB = $priorityOrder[$b['promotionType']] ?? 999;
-            return $priorityA - $priorityB;
-        });
-
-        return $promotions;
-    }
-
-    // PHƯƠNG THỨC TÍNH TOÁN ƯU ĐÃI THÔNG THƯỜNG
-    private function calculateRegularPromotions($orderTotal, $productCategory = null) {
+    // PHƯƠNG THỨC LẤY MÃ GIẢM GIÁ TỪ DATABASE
+    private function getDatabasePromotions($customerId, $orderTotal, $productCategory = null) {
         $promotions = [];
-
-        // Flash sale cupcake
-        if ($productCategory && strpos(strtolower($productCategory), 'cupcake') !== false) {
-            $discount = $orderTotal * 0.5;
-            $promotions[] = [
-                'discount' => $discount,
-                'discountType' => 'percentage',
-                'description' => 'Giảm 50% cho bánh Cupcake (Flash Sale)',
-                'promotionType' => 'flash_sale_cupcake'
-            ];
+        
+        try {
+            // Lấy tất cả khuyến mãi đang hoạt động từ database
+            $query = "SELECT * FROM khuyenmai 
+                     WHERE NgayBatDau <= CURDATE() 
+                     AND NgayKetThuc >= CURDATE() 
+                     ORDER BY MaKM DESC";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $databasePromotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($databasePromotions as $promo) {
+                $discount = 0;
+                $discountType = '';
+                $description = '';
+                
+                // Tính toán giảm giá dựa trên loại khuyến mãi
+                if ($promo['PhanTramGiamGia'] > 0) {
+                    // Giảm giá theo phần trăm
+                    $discount = $orderTotal * ($promo['PhanTramGiamGia'] / 100);
+                    $discountType = 'percentage';
+                    $description = $promo['MoTa'] . ' - Giảm ' . $promo['PhanTramGiamGia'] . '%';
+                } elseif ($promo['SoTienGiamGia'] > 0) {
+                    // Giảm giá theo số tiền cố định
+                    $discount = min($promo['SoTienGiamGia'], $orderTotal);
+                    $discountType = 'fixed';
+                    $description = $promo['MoTa'] . ' - Giảm ' . number_format($promo['SoTienGiamGia'], 0, ',', '.') . ' VNĐ';
+                }
+                
+                if ($discount > 0) {
+                    $promotions[] = [
+                        'discount' => $discount,
+                        'discountType' => $discountType,
+                        'description' => $description,
+                        'promotionType' => 'db_promo_' . $promo['MaKM'],
+                        'promotionId' => $promo['MaKM'],
+                        'promotionName' => $promo['TenKM'],
+                        'originalDiscount' => $discount
+                    ];
+                }
+            }
+            
+        } catch (Exception $e) {
+            error_log("Error getting database promotions: " . $e->getMessage());
         }
-
-        // Birthday cake 25%
-        if ($productCategory && strpos(strtolower($productCategory), 'bánh kem') !== false) {
-            $discount = $orderTotal * 0.25;
-            $promotions[] = [
-                'discount' => $discount,
-                'discountType' => 'percentage',
-                'description' => 'Giảm 25% cho bánh kem sinh nhật',
-                'promotionType' => 'birthday_cake_25'
-            ];
-        }
-
-        // General 20% for orders >= 500k
-        if ($orderTotal >= 500000) {
-            $discount = $orderTotal * 0.2;
-            $promotions[] = [
-                'discount' => $discount,
-                'discountType' => 'percentage',
-                'description' => 'Giảm 20% cho đơn hàng từ 500k',
-                'promotionType' => 'general_20'
-            ];
-        }
-
-        // Free shipping for orders >= 300k
-        if ($orderTotal >= 300000) {
-            $promotions[] = [
-                'discount' => 15000,
-                'discountType' => 'fixed',
-                'description' => 'Miễn phí vận chuyển cho đơn hàng từ 300k',
-                'promotionType' => 'free_shipping'
-            ];
-        }
-
+        
         return $promotions;
     }
 
@@ -332,44 +307,25 @@ class PromotionModel {
         return $benefits[$tierName] ?? null;
     }
 
-    // PHƯƠNG THỨC CŨ (GIỮ LẠI ĐỂ TƯƠNG THÍCH)
+    // PHƯƠNG THỨC TÍNH TOÁN MÃ GIẢM GIÁ THEO LOẠI
     public function calculateDiscount($promotionType, $orderTotal, $productCategory = null) {
         $discount = 0;
         $discountType = '';
         $description = '';
 
-        switch ($promotionType) {
-            case 'flash_sale_cupcake':
-                if ($productCategory && strpos(strtolower($productCategory), 'cupcake') !== false) {
-                    $discount = $orderTotal * 0.5;
-                    $discountType = 'percentage';
-                    $description = 'Giảm 50% cho bánh Cupcake (Flash Sale)';
+        // Kiểm tra nếu là mã giảm giá từ database
+        if (strpos($promotionType, 'db_promo_') === 0) {
+            $promotionId = str_replace('db_promo_', '', $promotionType);
+            $databasePromotions = $this->getDatabasePromotions(null, $orderTotal, $productCategory);
+            
+            foreach ($databasePromotions as $promo) {
+                if ($promo['promotionId'] == $promotionId) {
+                    $discount = $promo['discount'];
+                    $discountType = $promo['discountType'];
+                    $description = $promo['description'];
+                    break;
                 }
-                break;
-
-            case 'birthday_cake_25':
-                if ($productCategory && strpos(strtolower($productCategory), 'bánh kem') !== false) {
-                    $discount = $orderTotal * 0.25;
-                    $discountType = 'percentage';
-                    $description = 'Giảm 25% cho bánh kem sinh nhật';
-                }
-                break;
-
-            case 'general_20':
-                if ($orderTotal >= 500000) {
-                    $discount = $orderTotal * 0.2;
-                    $discountType = 'percentage';
-                    $description = 'Giảm 20% cho đơn hàng từ 500k';
-                }
-                break;
-
-            case 'free_shipping':
-                if ($orderTotal >= 300000) {
-                    $discount = 15000;
-                    $discountType = 'fixed';
-                    $description = 'Miễn phí vận chuyển cho đơn hàng từ 300k';
-                }
-                break;
+            }
         }
 
         return [
@@ -381,16 +337,122 @@ class PromotionModel {
     }
 
     public function isPromotionActive($promotionType) {
-        return true; // Tạm thời luôn active
+        // Kiểm tra nếu là mã giảm giá từ database
+        if (strpos($promotionType, 'db_promo_') === 0) {
+            $promotionId = str_replace('db_promo_', '', $promotionType);
+            try {
+                $query = "SELECT COUNT(*) FROM khuyenmai 
+                         WHERE MaKM = :id 
+                         AND NgayBatDau <= CURDATE() 
+                         AND NgayKetThuc >= CURDATE()";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':id', $promotionId);
+                $stmt->execute();
+                return $stmt->fetchColumn() > 0;
+            } catch (Exception $e) {
+                error_log("Error checking promotion active: " . $e->getMessage());
+                return false;
+            }
+        }
+        
+        // Ưu đãi phân khúc luôn active
+        if ($promotionType === 'tier_discount') {
+            return true;
+        }
+        
+        return false;
     }
 
     public function getActivePromotions() {
-        return [
-            'flash_sale_cupcake' => '50% OFF Cupcake',
-            'birthday_cake_25' => 'Giảm 25% Bánh Kem',
-            'general_20' => 'Giảm Giá 20%',
-            'free_shipping' => 'Miễn Phí Vận Chuyển'
-        ];
+        $promotions = [];
+        
+        try {
+            // Lấy tất cả khuyến mãi đang hoạt động từ database
+            $query = "SELECT MaKM, TenKM, MoTa FROM khuyenmai 
+                     WHERE NgayBatDau <= CURDATE() 
+                     AND NgayKetThuc >= CURDATE() 
+                     ORDER BY MaKM DESC";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            $databasePromotions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($databasePromotions as $promo) {
+                $promotions['db_promo_' . $promo['MaKM']] = $promo['TenKM'] . ' - ' . $promo['MoTa'];
+            }
+            
+        } catch (Exception $e) {
+            error_log("Error getting active promotions: " . $e->getMessage());
+        }
+        
+        // Thêm ưu đãi phân khúc
+        $promotions['tier_discount'] = 'Ưu đãi phân khúc khách hàng';
+        
+        return $promotions;
+    }
+
+    /**
+     * Kiểm tra và validate mã khuyến mãi từ input của khách hàng
+     */
+    public function validateCouponCode(string $couponCode): ?array {
+        try {
+            // Debug log
+            error_log("DEBUG validateCouponCode: Validating coupon code: " . $couponCode);
+            
+            // Trước tiên, kiểm tra xem mã có tồn tại không (không quan tâm ngày tháng)
+            $checkSql = "SELECT * FROM khuyenmai WHERE TenKM = :coupon_code LIMIT 1";
+            $checkStmt = $this->db->prepare($checkSql);
+            $checkStmt->bindParam(':coupon_code', $couponCode, PDO::PARAM_STR);
+            $checkStmt->execute();
+            $checkResult = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            
+            error_log("DEBUG validateCouponCode: Raw check result: " . json_encode($checkResult));
+            
+            if (!$checkResult) {
+                error_log("DEBUG validateCouponCode: Coupon code not found in database");
+                return null;
+            }
+            
+            // Kiểm tra trạng thái (nếu có cột TrangThai)
+            if (isset($checkResult['TrangThai']) && $checkResult['TrangThai'] !== 'active') {
+                error_log("DEBUG validateCouponCode: Coupon status is not active: " . $checkResult['TrangThai']);
+                return null;
+            }
+            
+            // Kiểm tra ngày tháng
+            $currentDate = date('Y-m-d');
+            $startDate = $checkResult['NgayBatDau'];
+            $endDate = $checkResult['NgayKetThuc'];
+            
+            error_log("DEBUG validateCouponCode: Current date: " . $currentDate);
+            error_log("DEBUG validateCouponCode: Start date: " . $startDate);
+            error_log("DEBUG validateCouponCode: End date: " . $endDate);
+            
+            // So sánh ngày tháng
+            if ($startDate > $currentDate) {
+                error_log("DEBUG validateCouponCode: Coupon start date is in the future");
+                return null;
+            }
+            
+            if ($endDate < $currentDate) {
+                error_log("DEBUG validateCouponCode: Coupon end date has passed");
+                return null;
+            }
+            
+            error_log("DEBUG validateCouponCode: Coupon is valid and active");
+            
+            // Trả về thông tin đầy đủ bao gồm promotionType để sử dụng trong logic
+            $result = $checkResult;
+            $result['promotionType'] = 'db_promo_' . $checkResult['MaKM'];
+            $result['displayName'] = $checkResult['TenKM'];
+            $result['description'] = $checkResult['MoTa'];
+            
+            return $result;
+            
+        } catch (Exception $e) {
+            error_log("Error validating coupon code: " . $e->getMessage());
+            return null;
+        }
     }
 }
 ?>
