@@ -379,7 +379,7 @@ class OrderModel {
         // Debug log
         error_log("Order tracking search - OrderCode: $orderCode, Phone: $phone");
         
-        // Thử tìm đơn hàng với số điện thoại khớp chính xác
+        // Tìm đơn hàng với cả mã đơn hàng VÀ số điện thoại khớp chính xác
         $query = "
             SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
             FROM donhang dh
@@ -392,34 +392,16 @@ class OrderModel {
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        error_log("Query 1 result: " . print_r($result, true));
+        error_log("Order tracking result: " . print_r($result, true));
         
+        // Chỉ trả về kết quả nếu tìm thấy đơn hàng với số điện thoại khớp chính xác
         if ($result) {
+            error_log("Order found with matching phone number");
             return $result;
+        } else {
+            error_log("No order found with matching order code and phone number");
+            return null;
         }
-        
-        // Nếu không tìm thấy với số điện thoại, thử tìm chỉ với mã đơn hàng
-        $query2 = "
-            SELECT dh.*, kh.HoTen, kh.Email, kh.SoDienThoai, dh.TrangThai as TenTrangThai, dh.PhuongThucThanhToan
-            FROM donhang dh
-            LEFT JOIN khachhang kh ON dh.MaKH = kh.MaKH
-            WHERE dh.MaDH = :orderCode
-        ";
-        $stmt2 = $this->db->prepare($query2);
-        $stmt2->bindParam(':orderCode', $orderCode, PDO::PARAM_INT);
-        $stmt2->execute();
-        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-        
-        error_log("Query 2 result: " . print_r($result2, true));
-        
-        if ($result2) {
-            // Nếu tìm thấy đơn hàng nhưng số điện thoại không khớp, vẫn trả về kết quả
-            // nhưng log để debug
-            error_log("Found order but phone doesn't match. Order phone: " . ($result2['SoDienThoai'] ?? 'NULL') . ", Search phone: $phone");
-            return $result2;
-        }
-        
-        return null;
     }
 
     // Lấy trạng thái đơn hàng dưới dạng text
