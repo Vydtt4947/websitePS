@@ -23,11 +23,21 @@
             font-family: var(--body-font);
             color: var(--text-color);
             background-color: var(--secondary-color);
+            overflow-x: hidden; /* tránh thanh cuộn ngang */
         }
         
         .guest-tracking-page {
             min-height: 100vh;
             padding: 2rem 0;
+            display: flex;
+            justify-content: center; /* căn giữa ngang */
+        }
+        
+        .guest-scale {
+            transform: scale(0.6); /* giữ thu nhỏ 60% */
+            transform-origin: top center;
+            width: 100%;
+            max-width: 1400px; /* giới hạn chiều rộng gốc trước khi scale */
         }
         
         .guest-tracking-container {
@@ -482,350 +492,352 @@
 <body>
 
 <div class="guest-tracking-page">
-    <div class="container">
-        <div class="guest-tracking-container">
-            <div class="guest-tracking-header">
-                <h1><i class="fas fa-search me-3"></i>Tra cứu đơn hàng</h1>
-                <p>Dành cho khách vãng lai - Nhập mã đơn hàng và số điện thoại để theo dõi tình trạng đơn hàng</p>
-            </div>
-            
-            <div class="guest-tracking-content">
-                <!-- Form tra cứu -->
-                <div class="search-form">
-                    <h3 class="form-title">
-                        <i class="fas fa-clipboard-list me-2"></i>
-                        Thông tin tra cứu
-                    </h3>
-                    
-                    <form action="/websitePS/public/ordertracking/search" method="POST">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="orderCode" class="form-label">
-                                        <i class="fas fa-hashtag me-2"></i>Mã đơn hàng
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="orderCode" 
-                                           name="orderCode" 
-                                           placeholder="Nhập mã đơn hàng..."
-                                           value="<?= htmlspecialchars($orderCode ?? '') ?>"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="phone" class="form-label">
-                                        <i class="fas fa-phone me-2"></i>Số điện thoại
-                                    </label>
-                                    <input type="tel" 
-                                           class="form-control" 
-                                           id="phone" 
-                                           name="phone" 
-                                           placeholder="Nhập số điện thoại..."
-                                           value="<?= htmlspecialchars($phone ?? '') ?>"
-                                           required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-search">
-                            <i class="fas fa-search me-2"></i>
-                            Tra cứu đơn hàng
-                        </button>
-                    </form>
+    <div class="guest-scale">
+        <div class="container">
+            <div class="guest-tracking-container">
+                <div class="guest-tracking-header">
+                    <h1><i class="fas fa-search me-3"></i>Tra cứu đơn hàng</h1>
+                    <p>Dành cho khách vãng lai - Nhập mã đơn hàng và số điện thoại để theo dõi tình trạng đơn hàng</p>
                 </div>
-
-                <!-- Hiển thị lỗi -->
-                <?php if (isset($error) && $error): ?>
-                    <div class="error-message">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>Không tìm thấy đơn hàng</h4>
-                        <p><?= htmlspecialchars($error) ?></p>
+                
+                <div class="guest-tracking-content">
+                    <!-- Form tra cứu -->
+                    <div class="search-form">
+                        <h3 class="form-title">
+                            <i class="fas fa-clipboard-list me-2"></i>
+                            Thông tin tra cứu
+                        </h3>
+                        
+                        <form action="/websitePS/public/ordertracking/search" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="orderCode" class="form-label">
+                                            <i class="fas fa-hashtag me-2"></i>Mã đơn hàng
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="orderCode" 
+                                               name="orderCode" 
+                                               placeholder="Nhập mã đơn hàng..."
+                                               value="<?= htmlspecialchars($orderCode ?? '') ?>"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label">
+                                            <i class="fas fa-phone me-2"></i>Số điện thoại
+                                        </label>
+                                        <input type="tel" 
+                                               class="form-control" 
+                                               id="phone" 
+                                               name="phone" 
+                                               placeholder="Nhập số điện thoại..."
+                                               value="<?= htmlspecialchars($phone ?? '') ?>"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-search">
+                                <i class="fas fa-search me-2"></i>
+                                Tra cứu đơn hàng
+                            </button>
+                        </form>
                     </div>
-                <?php endif; ?>
 
-                <!-- Hiển thị kết quả đơn hàng -->
-                <?php if (isset($order) && $order): ?>
-                    <div class="order-result">
-                        <div class="order-header">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <div class="order-number">Đơn hàng #<?= $order['MaDH'] ?></div>
-                                    <div class="order-date">
-                                        <i class="fas fa-calendar me-2"></i>
-                                        Đặt hàng: <?= date('d/m/Y H:i', strtotime($order['NgayDatHang'])) ?>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <?php 
-                                    $orderModel = new OrderModel();
-                                    $statusText = $orderModel->getOrderStatusText($order['TrangThai']);
-                                    
-                                    // Mô tả chi tiết cho từng trạng thái
-                                    $statusDescriptions = [
-                                        'Pending' => 'Đơn hàng đã được tiếp nhận và đang chờ xử lý',
-                                        'Processing' => 'Đơn hàng đang được chuẩn bị và đóng gói',
-                                        'Shipping' => 'Đơn hàng đã được giao cho đơn vị vận chuyển',
-                                        'Delivered' => 'Đơn hàng đã được giao thành công',
-                                        'Cancelled' => 'Đơn hàng đã được hủy'
-                                    ];
-                                    $statusDescription = $statusDescriptions[$order['TrangThai']] ?? '';
-                                    ?>
-                                    <div class="status-badge status-<?= strtolower($order['TrangThai']) ?>">
-                                        <?= $statusText ?>
-                                    </div>
-                                    <?php if ($statusDescription): ?>
-                                        <div style="font-size: 0.85rem; color: #6c757d; margin-top: 0.5rem; max-width: 200px;">
-                                            <?= $statusDescription ?>
+                    <!-- Hiển thị lỗi -->
+                    <?php if (isset($error) && $error): ?>
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>Không tìm thấy đơn hàng</h4>
+                            <p><?= htmlspecialchars($error) ?></p>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Hiển thị kết quả đơn hàng -->
+                    <?php if (isset($order) && $order): ?>
+                        <div class="order-result">
+                            <div class="order-header">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="order-number">Đơn hàng #<?= $order['MaDH'] ?></div>
+                                        <div class="order-date">
+                                            <i class="fas fa-calendar me-2"></i>
+                                            Đặt hàng: <?= date('d/m/Y H:i', strtotime($order['NgayDatHang'])) ?>
                                         </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Thông tin đơn hàng -->
-                        <div class="order-info">
-                            <div class="info-item">
-                                <div class="info-label">Khách hàng</div>
-                                <div class="info-value"><?= htmlspecialchars($order['HoTen'] ?? 'Khách vãng lai') ?></div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Email</div>
-                                <div class="info-value"><?= htmlspecialchars($order['Email'] ?? 'Không có') ?></div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Số điện thoại</div>
-                                <div class="info-value"><?= htmlspecialchars($order['SoDienThoai'] ?? 'Không có') ?></div>
-                            </div>
-                            <div class="info-item">
-                                <div class="info-label">Phương thức thanh toán</div>
-                                <div class="info-value"><?= htmlspecialchars($order['PhuongThucThanhToan'] ?? 'Chưa xác định') ?></div>
-                            </div>
-                        </div>
-
-                        <!-- Timeline trạng thái đơn hàng -->
-                        <div class="order-timeline">
-                            <h4 class="timeline-title">
-                                <i class="fas fa-route me-2"></i>
-                                Tiến trình đơn hàng
-                            </h4>
-                            
-                            <?php
-                            $orderModel = new OrderModel();
-                            $currentStatus = $order['TrangThai'];
-                            $orderDate = strtotime($order['NgayDatHang']);
-                            
-                            // Định nghĩa các bước trong timeline
-                            $timelineSteps = [
-                                'Pending' => [
-                                    'icon' => 'fas fa-clock',
-                                    'title' => 'Đơn hàng đã được đặt',
-                                    'description' => 'Đơn hàng của bạn đã được tiếp nhận và đang chờ xử lý',
-                                    'date' => date('d/m/Y H:i', $orderDate)
-                                ],
-                                'Processing' => [
-                                    'icon' => 'fas fa-cogs',
-                                    'title' => 'Đang xử lý',
-                                    'description' => 'Đơn hàng đang được chuẩn bị và đóng gói',
-                                    'date' => $currentStatus == 'Processing' || $currentStatus == 'Shipping' || $currentStatus == 'Delivered' ? date('d/m/Y H:i', $orderDate + 3600) : null
-                                ],
-                                'Shipping' => [
-                                    'icon' => 'fas fa-shipping-fast',
-                                    'title' => 'Đang giao hàng',
-                                    'description' => 'Đơn hàng đã được giao cho đơn vị vận chuyển',
-                                    'date' => $currentStatus == 'Shipping' || $currentStatus == 'Delivered' ? date('d/m/Y H:i', $orderDate + 7200) : null
-                                ],
-                                'Delivered' => [
-                                    'icon' => 'fas fa-check-circle',
-                                    'title' => 'Đã giao hàng',
-                                    'description' => 'Đơn hàng đã được giao thành công',
-                                    'date' => $currentStatus == 'Delivered' ? date('d/m/Y H:i', $orderDate + 14400) : null
-                                ]
-                            ];
-                            
-                            // Nếu đơn hàng bị hủy
-                            if ($currentStatus == 'Cancelled') {
-                                $timelineSteps = [
-                                    'Pending' => [
-                                        'icon' => 'fas fa-clock',
-                                        'title' => 'Đơn hàng đã được đặt',
-                                        'description' => 'Đơn hàng của bạn đã được tiếp nhận',
-                                        'date' => date('d/m/Y H:i', $orderDate)
-                                    ],
-                                    'Cancelled' => [
-                                        'icon' => 'fas fa-times-circle',
-                                        'title' => 'Đơn hàng đã bị hủy',
-                                        'description' => 'Đơn hàng đã được hủy theo yêu cầu hoặc do không thể xử lý',
-                                        'date' => date('d/m/Y H:i', $orderDate + 3600)
-                                    ]
-                                ];
-                            }
-                            
-                            foreach ($timelineSteps as $status => $step):
-                                $isCompleted = false;
-                                $isCurrent = false;
-                                
-                                if ($currentStatus == 'Cancelled') {
-                                    $isCompleted = $status == 'Pending' || $status == 'Cancelled';
-                                    $isCurrent = $status == 'Cancelled';
-                                } else {
-                                    $isCompleted = array_search($status, ['Pending', 'Processing', 'Shipping', 'Delivered']) <= array_search($currentStatus, ['Pending', 'Processing', 'Shipping', 'Delivered']);
-                                    $isCurrent = $status == $currentStatus;
-                                }
-                                
-                                $iconClass = $isCompleted ? 'completed' : ($isCurrent ? 'current' : 'pending');
-                            ?>
-                                <div class="timeline-item">
-                                    <div class="timeline-icon <?= $iconClass ?>">
-                                        <i class="<?= $step['icon'] ?>"></i>
                                     </div>
-                                    <div class="timeline-content">
-                                        <div class="timeline-status"><?= $step['title'] ?></div>
-                                        <div class="timeline-description"><?= $step['description'] ?></div>
-                                        <?php if ($step['date']): ?>
-                                            <div class="timeline-date">
-                                                <i class="fas fa-calendar-alt me-1"></i>
-                                                <?= $step['date'] ?>
+                                    <div class="text-end">
+                                        <?php 
+                                        $orderModel = new OrderModel();
+                                        $statusText = $orderModel->getOrderStatusText($order['TrangThai']);
+                                        
+                                        // Mô tả chi tiết cho từng trạng thái
+                                        $statusDescriptions = [
+                                            'Pending' => 'Đơn hàng đã được tiếp nhận và đang chờ xử lý',
+                                            'Processing' => 'Đơn hàng đang được chuẩn bị và đóng gói',
+                                            'Shipping' => 'Đơn hàng đã được giao cho đơn vị vận chuyển',
+                                            'Delivered' => 'Đơn hàng đã được giao thành công',
+                                            'Cancelled' => 'Đơn hàng đã được hủy'
+                                        ];
+                                        $statusDescription = $statusDescriptions[$order['TrangThai']] ?? '';
+                                        ?>
+                                        <div class="status-badge status-<?= strtolower($order['TrangThai']) ?>">
+                                            <?= $statusText ?>
+                                        </div>
+                                        <?php if ($statusDescription): ?>
+                                            <div style="font-size: 0.85rem; color: #6c757d; margin-top: 0.5rem; max-width: 200px;">
+                                                <?= $statusDescription ?>
                                             </div>
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
-
-                        <!-- Thông tin bổ sung -->
-                        <div class="additional-info">
-                            <h4>
-                                <i class="fas fa-info-circle me-2"></i>
-                                Thông tin bổ sung
-                            </h4>
-                            <div class="info-grid">
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Mã đơn hàng</div>
-                                    <div class="info-grid-value">#<?= $order['MaDH'] ?></div>
-                                </div>
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Ngày đặt hàng</div>
-                                    <div class="info-grid-value"><?= date('d/m/Y', strtotime($order['NgayDatHang'])) ?></div>
-                                </div>
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Giờ đặt hàng</div>
-                                    <div class="info-grid-value"><?= date('H:i', strtotime($order['NgayDatHang'])) ?></div>
-                                </div>
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Số sản phẩm</div>
-                                    <div class="info-grid-value"><?= isset($orderDetails['items']) ? count($orderDetails['items']) : 0 ?> sản phẩm</div>
-                                </div>
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Phương thức thanh toán</div>
-                                    <div class="info-grid-value"><?= $order['PhuongThucThanhToan'] == 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản' ?></div>
-                                </div>
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Trạng thái hiện tại</div>
-                                    <div class="info-grid-value"><?= $orderModel->getOrderStatusText($order['TrangThai']) ?></div>
-                                </div>
-                                <?php if (isset($order) && $order): ?>
-                                <div class="info-grid-item">
-                                    <div class="info-grid-label">Thời gian đã trôi qua</div>
-                                    <div class="info-grid-value" id="timeElapsed">
-                                        <?php
-                                        $orderDate = new DateTime($order['NgayDatHang']);
-                                        $now = new DateTime();
-                                        $interval = $now->diff($orderDate);
-                                        
-                                        if ($interval->days > 0) {
-                                            echo $interval->days . ' ngày ' . $interval->h . ' giờ trước';
-                                        } elseif ($interval->h > 0) {
-                                            echo $interval->h . ' giờ ' . $interval->i . ' phút trước';
-                                        } else {
-                                            echo $interval->i . ' phút trước';
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                                <?php endif; ?>
                             </div>
-                        </div>
 
-                        <!-- Chi tiết sản phẩm -->
-                        <?php if (isset($orderDetails) && $orderDetails): ?>
-                            <div class="order-items">
-                                <h4 class="items-title">
-                                    <i class="fas fa-shopping-bag me-2"></i>
-                                    Chi tiết sản phẩm
+                            <!-- Thông tin đơn hàng -->
+                            <div class="order-info">
+                                <div class="info-item">
+                                    <div class="info-label">Khách hàng</div>
+                                    <div class="info-value"><?= htmlspecialchars($order['HoTen'] ?? 'Khách vãng lai') ?></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Email</div>
+                                    <div class="info-value"><?= htmlspecialchars($order['Email'] ?? 'Không có') ?></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Số điện thoại</div>
+                                    <div class="info-value"><?= htmlspecialchars($order['SoDienThoai'] ?? 'Không có') ?></div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Phương thức thanh toán</div>
+                                    <div class="info-value"><?= htmlspecialchars($order['PhuongThucThanhToan'] ?? 'Chưa xác định') ?></div>
+                                </div>
+                            </div>
+
+                            <!-- Timeline trạng thái đơn hàng -->
+                            <div class="order-timeline">
+                                <h4 class="timeline-title">
+                                    <i class="fas fa-route me-2"></i>
+                                    Tiến trình đơn hàng
                                 </h4>
                                 
-                                <?php foreach ($orderDetails['items'] as $item): ?>
-                                    <div class="item-card">
-                                        <img src="<?= !empty($item['HinhAnh']) ? $item['HinhAnh'] : 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1987&auto=format&fit=crop' ?>" 
-                                             alt="<?= htmlspecialchars($item['TenSP']) ?>" 
-                                             class="item-image">
-                                        <div class="item-details">
-                                            <div class="item-name"><?= htmlspecialchars($item['TenSP']) ?></div>
-                                            <div class="item-meta">
-                                                Số lượng: <?= $item['SoLuong'] ?> | 
-                                                Đơn giá: <?= number_format($item['DonGia'], 0, ',', '.') ?> ₫
-                                            </div>
+                                <?php
+                                $orderModel = new OrderModel();
+                                $currentStatus = $order['TrangThai'];
+                                $orderDate = strtotime($order['NgayDatHang']);
+                                
+                                // Định nghĩa các bước trong timeline
+                                $timelineSteps = [
+                                    'Pending' => [
+                                        'icon' => 'fas fa-clock',
+                                        'title' => 'Đơn hàng đã được đặt',
+                                        'description' => 'Đơn hàng của bạn đã được tiếp nhận và đang chờ xử lý',
+                                        'date' => date('d/m/Y H:i', $orderDate)
+                                    ],
+                                    'Processing' => [
+                                        'icon' => 'fas fa-cogs',
+                                        'title' => 'Đang xử lý',
+                                        'description' => 'Đơn hàng đang được chuẩn bị và đóng gói',
+                                        'date' => $currentStatus == 'Processing' || $currentStatus == 'Shipping' || $currentStatus == 'Delivered' ? date('d/m/Y H:i', $orderDate + 3600) : null
+                                    ],
+                                    'Shipping' => [
+                                        'icon' => 'fas fa-shipping-fast',
+                                        'title' => 'Đang giao hàng',
+                                        'description' => 'Đơn hàng đã được giao cho đơn vị vận chuyển',
+                                        'date' => $currentStatus == 'Shipping' || $currentStatus == 'Delivered' ? date('d/m/Y H:i', $orderDate + 7200) : null
+                                    ],
+                                    'Delivered' => [
+                                        'icon' => 'fas fa-check-circle',
+                                        'title' => 'Đã giao hàng',
+                                        'description' => 'Đơn hàng đã được giao thành công',
+                                        'date' => $currentStatus == 'Delivered' ? date('d/m/Y H:i', $orderDate + 14400) : null
+                                    ]
+                                ];
+                                
+                                // Nếu đơn hàng bị hủy
+                                if ($currentStatus == 'Cancelled') {
+                                    $timelineSteps = [
+                                        'Pending' => [
+                                            'icon' => 'fas fa-clock',
+                                            'title' => 'Đơn hàng đã được đặt',
+                                            'description' => 'Đơn hàng của bạn đã được tiếp nhận',
+                                            'date' => date('d/m/Y H:i', $orderDate)
+                                        ],
+                                        'Cancelled' => [
+                                            'icon' => 'fas fa-times-circle',
+                                            'title' => 'Đơn hàng đã bị hủy',
+                                            'description' => 'Đơn hàng đã được hủy theo yêu cầu hoặc do không thể xử lý',
+                                            'date' => date('d/m/Y H:i', $orderDate + 3600)
+                                        ]
+                                    ];
+                                }
+                                
+                                foreach ($timelineSteps as $status => $step):
+                                    $isCompleted = false;
+                                    $isCurrent = false;
+                                    
+                                    if ($currentStatus == 'Cancelled') {
+                                        $isCompleted = $status == 'Pending' || $status == 'Cancelled';
+                                        $isCurrent = $status == 'Cancelled';
+                                    } else {
+                                        $isCompleted = array_search($status, ['Pending', 'Processing', 'Shipping', 'Delivered']) <= array_search($currentStatus, ['Pending', 'Processing', 'Shipping', 'Delivered']);
+                                        $isCurrent = $status == $currentStatus;
+                                    }
+                                    
+                                    $iconClass = $isCompleted ? 'completed' : ($isCurrent ? 'current' : 'pending');
+                                ?>
+                                    <div class="timeline-item">
+                                        <div class="timeline-icon <?= $iconClass ?>">
+                                            <i class="<?= $step['icon'] ?>"></i>
                                         </div>
-                                        <div class="item-price">
-                                            <?= number_format($item['SoLuong'] * $item['DonGia'], 0, ',', '.') ?> ₫
+                                        <div class="timeline-content">
+                                            <div class="timeline-status"><?= $step['title'] ?></div>
+                                            <div class="timeline-description"><?= $step['description'] ?></div>
+                                            <?php if ($step['date']): ?>
+                                                <div class="timeline-date">
+                                                    <i class="fas fa-calendar-alt me-1"></i>
+                                                    <?= $step['date'] ?>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                        <?php endif; ?>
 
-                        <!-- Tổng tiền -->
-                        <div class="order-total">
-                            <div class="total-label">Tổng tiền đơn hàng</div>
-                            <div class="total-amount"><?= number_format($order['TongTien'], 0, ',', '.') ?> ₫</div>
-                        </div>
-                        
-                        <!-- Thông tin liên hệ hỗ trợ -->
-                        <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border-radius: 15px; padding: 1.5rem; margin-top: 2rem; border-left: 4px solid #ffc107;">
-                            <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                                <i class="fas fa-headset me-3" style="font-size: 1.5rem; color: #856404;"></i>
-                                <h5 style="color: #856404; margin: 0;">Cần hỗ trợ?</h5>
-                            </div>
-                            <p style="color: #856404; margin-bottom: 1rem;">
-                                Nếu bạn có thắc mắc về đơn hàng hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi:
-                            </p>
-                            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                                <div style="background: rgba(255,255,255,0.8); padding: 0.75rem 1rem; border-radius: 10px; flex: 1; min-width: 200px;">
-                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">
-                                        <i class="fas fa-phone me-2"></i>Hotline
+                            <!-- Thông tin bổ sung -->
+                            <div class="additional-info">
+                                <h4>
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Thông tin bổ sung
+                                </h4>
+                                <div class="info-grid">
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Mã đơn hàng</div>
+                                        <div class="info-grid-value">#<?= $order['MaDH'] ?></div>
                                     </div>
-                                    <div style="color: #856404;">0767 150 474</div>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.8); padding: 0.75rem 1rem; border-radius: 10px; flex: 1; min-width: 200px;">
-                                    <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">
-                                        <i class="fas fa-envelope me-2"></i>Email
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Ngày đặt hàng</div>
+                                        <div class="info-grid-value"><?= date('d/m/Y', strtotime($order['NgayDatHang'])) ?></div>
                                     </div>
-                                    <div style="color: #856404;">cucxacdufong@gmail.com</div>
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Giờ đặt hàng</div>
+                                        <div class="info-grid-value"><?= date('H:i', strtotime($order['NgayDatHang'])) ?></div>
+                                    </div>
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Số sản phẩm</div>
+                                        <div class="info-grid-value"><?= isset($orderDetails['items']) ? count($orderDetails['items']) : 0 ?> sản phẩm</div>
+                                    </div>
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Phương thức thanh toán</div>
+                                        <div class="info-grid-value"><?= $order['PhuongThucThanhToan'] == 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản' ?></div>
+                                    </div>
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Trạng thái hiện tại</div>
+                                        <div class="info-grid-value"><?= $orderModel->getOrderStatusText($order['TrangThai']) ?></div>
+                                    </div>
+                                    <?php if (isset($order) && $order): ?>
+                                    <div class="info-grid-item">
+                                        <div class="info-grid-label">Thời gian đã trôi qua</div>
+                                        <div class="info-grid-value" id="timeElapsed">
+                                            <?php
+                                            $orderDate = new DateTime($order['NgayDatHang']);
+                                            $now = new DateTime();
+                                            $interval = $now->diff($orderDate);
+                                            
+                                            if ($interval->days > 0) {
+                                                echo $interval->days . ' ngày ' . $interval->h . ' giờ trước';
+                                            } elseif ($interval->h > 0) {
+                                                echo $interval->h . ' giờ ' . $interval->i . ' phút trước';
+                                            } else {
+                                                echo $interval->i . ' phút trước';
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+                            <!-- Chi tiết sản phẩm -->
+                            <?php if (isset($orderDetails) && $orderDetails): ?>
+                                <div class="order-items">
+                                    <h4 class="items-title">
+                                        <i class="fas fa-shopping-bag me-2"></i>
+                                        Chi tiết sản phẩm
+                                    </h4>
+                                    
+                                    <?php foreach ($orderDetails['items'] as $item): ?>
+                                        <div class="item-card">
+                                            <img src="<?= !empty($item['HinhAnh']) ? $item['HinhAnh'] : 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1987&auto=format&fit=crop' ?>" 
+                                                 alt="<?= htmlspecialchars($item['TenSP']) ?>" 
+                                                 class="item-image">
+                                            <div class="item-details">
+                                                <div class="item-name"><?= htmlspecialchars($item['TenSP']) ?></div>
+                                                <div class="item-meta">
+                                                    Số lượng: <?= $item['SoLuong'] ?> | 
+                                                    Đơn giá: <?= number_format($item['DonGia'], 0, ',', '.') ?> ₫
+                                                </div>
+                                            </div>
+                                            <div class="item-price">
+                                                <?= number_format($item['SoLuong'] * $item['DonGia'], 0, ',', '.') ?> ₫
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Tổng tiền -->
+                            <div class="order-total">
+                                <div class="total-label">Tổng tiền đơn hàng</div>
+                                <div class="total-amount"><?= number_format($order['TongTien'], 0, ',', '.') ?> ₫</div>
+                            </div>
+                            
+                            <!-- Thông tin liên hệ hỗ trợ -->
+                            <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border-radius: 15px; padding: 1.5rem; margin-top: 2rem; border-left: 4px solid #ffc107;">
+                                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                                    <i class="fas fa-headset me-3" style="font-size: 1.5rem; color: #856404;"></i>
+                                    <h5 style="color: #856404; margin: 0;">Cần hỗ trợ?</h5>
+                                </div>
+                                <p style="color: #856404; margin-bottom: 1rem;">
+                                    Nếu bạn có thắc mắc về đơn hàng hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi:
+                                </p>
+                                <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                                    <div style="background: rgba(255,255,255,0.8); padding: 0.75rem 1rem; border-radius: 10px; flex: 1; min-width: 200px;">
+                                        <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">
+                                            <i class="fas fa-phone me-2"></i>Hotline
+                                        </div>
+                                        <div style="color: #856404;">0767 150 474</div>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.8); padding: 0.75rem 1rem; border-radius: 10px; flex: 1; min-width: 200px;">
+                                        <div style="font-weight: 600; color: #856404; margin-bottom: 0.25rem;">
+                                            <i class="fas fa-envelope me-2"></i>Email
+                                        </div>
+                                        <div style="color: #856404;">cucxacdufong@gmail.com</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    <?php endif; ?>
+
+                    <!-- Hướng dẫn -->
+                    <div class="help-text">
+                        <h5><i class="fas fa-info-circle me-2"></i>Hướng dẫn tra cứu</h5>
+                        <ul>
+                            <li><strong>Mã đơn hàng:</strong> Là số thứ tự đơn hàng được cấp khi bạn đặt hàng thành công</li>
+                            <li><strong>Số điện thoại:</strong> Số điện thoại bạn đã sử dụng khi đặt hàng</li>
+                            <li>Nếu bạn không nhớ mã đơn hàng, vui lòng liên hệ với chúng tôi qua hotline: <strong>0767 150 474</strong></li>
+                            <li>Bạn cũng có thể tra cứu trực tiếp bằng cách click vào link trong email xác nhận đơn hàng</li>
+                        </ul>
                     </div>
-                <?php endif; ?>
-
-                <!-- Hướng dẫn -->
-                <div class="help-text">
-                    <h5><i class="fas fa-info-circle me-2"></i>Hướng dẫn tra cứu</h5>
-                    <ul>
-                        <li><strong>Mã đơn hàng:</strong> Là số thứ tự đơn hàng được cấp khi bạn đặt hàng thành công</li>
-                        <li><strong>Số điện thoại:</strong> Số điện thoại bạn đã sử dụng khi đặt hàng</li>
-                        <li>Nếu bạn không nhớ mã đơn hàng, vui lòng liên hệ với chúng tôi qua hotline: <strong>0767 150 474</strong></li>
-                        <li>Bạn cũng có thể tra cứu trực tiếp bằng cách click vào link trong email xác nhận đơn hàng</li>
-                    </ul>
-                </div>
-                
-                <!-- Nút về trang chủ -->
-                <div class="back-to-home">
-                    <a href="/websitePS/public/" class="btn-back">
-                        <i class="fas fa-home me-2"></i>
-                        Về trang chủ
-                    </a>
+                    
+                    <!-- Nút về trang chủ -->
+                    <div class="back-to-home">
+                        <a href="/websitePS/public/" class="btn-back">
+                            <i class="fas fa-home me-2"></i>
+                            Về trang chủ
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

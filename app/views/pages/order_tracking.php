@@ -33,6 +33,24 @@ require_once __DIR__ . '/../../models/OrderModel.php';
             padding: 2rem 0;
         }
         
+        /* Narrow layout wrapper */
+        .tracking-narrow-wrapper {width:100%;max-width:50%;margin:0 auto;transition:max-width .3s ease;}
+        @media (max-width: 992px) {
+            .tracking-narrow-wrapper {
+                max-width: 60%;
+            }
+        }
+        @media (max-width: 768px) {
+            .tracking-narrow-wrapper {
+                max-width: 85%;
+            }
+        }
+        @media (max-width: 576px) {
+            .tracking-narrow-wrapper {
+                max-width: 95%;
+            }
+        }
+        
         .tracking-container {
             background-color: white;
             border-radius: 25px;
@@ -328,7 +346,7 @@ require_once __DIR__ . '/../../models/OrderModel.php';
 <?php include __DIR__ . '/layouts/navbar.php'; ?>
 
 <div class="tracking-page">
-    <div class="container">
+    <div class="container tracking-narrow-wrapper">
         <div class="tracking-container">
             <div class="tracking-header">
                 <h1><i class="fas fa-search me-3"></i>Tra cứu đơn hàng</h1>

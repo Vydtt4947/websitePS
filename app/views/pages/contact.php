@@ -561,6 +561,68 @@
             color: var(--secondary-color);
             margin-bottom: 1.5rem;
         }
+
+        /* === EXTRA COMPACT CONTACT (reduce ~20%) === */
+        .hero-section { padding:6.4rem 0 !important; min-height:85vh !important; }
+        .hero-title { font-size:3.2rem !important; margin-bottom:1.1rem !important; }
+        .hero-subtitle { font-size:1.12rem !important; margin-bottom:2rem !important; }
+        .hero-features { gap:1.3rem !important; margin-bottom:2.2rem !important; }
+        .hero-feature { padding:.6rem 1.15rem !important; }
+        .hero-feature i { font-size:1.05rem !important; }
+        .hero-badge { padding:.4rem 1.15rem !important; font-size:.8rem !important; }
+        .floating-card { padding:1.6rem !important; }
+        .floating-card i { font-size:2.4rem !important; margin-bottom:.8rem !important; }
+
+        .contact-section { padding:4rem 0 !important; }
+        .contact-title { font-size:2.1rem !important; }
+        .contact-subtitle { font-size:1rem !important; margin-bottom:2.4rem !important; }
+        .contact-grid { gap:1.6rem !important; margin-bottom:3.2rem !important; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)) !important; }
+        .contact-card { padding:2rem !important; border-radius:16px !important; }
+        .contact-card-icon { width:64px !important; height:64px !important; font-size:1.5rem !important; margin-bottom:1.1rem !important; }
+        .contact-card-title { font-size:1.25rem !important; margin-bottom:.7rem !important; }
+        .contact-card-content { font-size:.92rem !important; }
+        .contact-info-item { padding:.75rem .9rem !important; margin-bottom:.75rem !important; }
+        .contact-info-item i { font-size:1rem !important; }
+
+        .form-section { padding:2.4rem !important; margin-bottom:3rem !important; }
+        .form-title { font-size:1.7rem !important; margin-bottom:1.4rem !important; }
+        .form-control, .form-select { padding:.8rem 1.1rem !important; margin-bottom:1.1rem !important; font-size:.95rem !important; border-radius:12px !important; }
+        textarea.form-control { min-height:130px !important; }
+        .btn-submit { padding:.85rem 2rem !important; font-size:1rem !important; }
+
+        .social-section { margin-bottom:3rem !important; }
+        .social-title { font-size:1.7rem !important; margin-bottom:1.6rem !important; }
+        .social-buttons { gap:1.1rem !important; }
+        .social-btn { width:58px !important; height:58px !important; font-size:1.25rem !important; }
+
+        .map-section { padding:2.4rem !important; border-radius:16px !important; }
+        .map-title { font-size:1.7rem !important; margin-bottom:1.5rem !important; }
+        .map-frame { height:400px !important; }
+        .map-instruction { margin-top:1.1rem !important; padding:.75rem !important; font-size:.9rem !important; }
+
+        .footer { padding:2.4rem 0 1.6rem !important; margin-top:3rem !important; }
+        .footer h6 { margin-bottom:1.1rem !important; }
+
+        @media (min-width:1200px){ .container { max-width:1080px !important; } }
+
+        @media (max-width: 768px){
+            .hero-section { padding:3.6rem 0 !important; min-height:65vh !important; }
+            .hero-title { font-size:2.1rem !important; }
+            .hero-subtitle { font-size:1rem !important; }
+            .floating-card { margin-top:1.2rem !important; }
+            .contact-card { padding:1.7rem !important; }
+            .form-section { padding:1.9rem !important; }
+            .map-frame { height:300px !important; }
+        }
+        @media (max-width:480px){
+            .hero-title { font-size:1.85rem !important; }
+            .hero-subtitle { font-size:.95rem !important; }
+            .contact-title { font-size:1.8rem !important; }
+            .contact-card { padding:1.5rem !important; }
+            .form-title { font-size:1.5rem !important; }
+            .social-title { font-size:1.5rem !important; }
+            .map-title { font-size:1.5rem !important; }
+        }
     </style>
 </head>
 <body>

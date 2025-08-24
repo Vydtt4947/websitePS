@@ -1580,6 +1580,69 @@
             color: var(--secondary-color);
             margin-bottom: 1rem;
         }
+
+        /* === EXTRA COMPACT OVERRIDES (~10% smaller) === */
+        .hero-section { padding: 5.4rem 0 0 !important; }
+        .hero-title { font-size: clamp(2.1rem, 5.2vw, 2.9rem) !important; margin-bottom: 1rem !important; }
+        .hero-subtitle { font-size: .98rem !important; margin-bottom: 1.5rem !important; max-width: 700px !important; }
+        .hero-badge { padding: 0.6rem 1.2rem !important; font-size: .9rem !important; }
+
+        .hero-image-container { height: 360px !important; }
+        .hero-image-title { font-size: 2.2rem !important; }
+        .hero-image-description { font-size: .95rem !important; }
+        .hero-image-visual { height: 320px !important; }
+        .floating-card { padding: 1.2rem !important; }
+        .floating-card .card-icon { width:46px !important; height:46px !important; }
+
+        .section-title { font-size: 2rem !important; margin-bottom: 2rem !important; }
+        .featured-section { padding: 2.7rem 0 !important; }
+        .promotion-card { padding: 1.8rem !important; }
+        .promotion-icon { width:64px !important; height:64px !important; font-size:1.55rem !important; margin-bottom:1rem !important; }
+        .promotion-title { font-size:1.18rem !important; }
+        .promotion-description { margin-bottom: 1rem !important; font-size:.92rem !important; }
+        .promotion-features li { font-size: .9rem !important; }
+
+        .deal-hero-container { height:270px !important; }
+        .deal-hero-title { font-size:1.65rem !important; }
+        .deal-hero-description { font-size:.88rem !important; }
+        .deal-hero-timer .timer-number { font-size:1.35rem !important; }
+
+        .special-section { padding: 2.7rem 0 !important; }
+        .special-title { font-size:2.25rem !important; }
+        .special-subtitle { font-size:1rem !important; }
+        .special-grid { gap:1.25rem !important; margin-top:2.1rem !important; }
+        .special-card { padding:1.25rem !important; height:460px !important; }
+        .card-icon-wrapper { width:46px !important; height:46px !important; }
+        .card-title { font-size:1.2rem !important; }
+        .card-description { font-size:.9rem !important; min-height:60px !important; }
+        .benefit-item span { font-size:.8rem !important; }
+        .benefit-item { margin-bottom:.5rem !important; padding:.35rem .45rem !important; }
+        .card-button { padding:.55rem 1.05rem !important; min-height:38px !important; font-size:.85rem !important; }
+
+        .compact-card .card-title { font-size:1.1rem !important; }
+        .compact-card .card-description { font-size:.85rem !important; }
+        .detail-item { font-size:.78rem !important; }
+        .card-image-container { height:185px !important; }
+
+        .btn-primary-custom, .btn-outline-primary-custom { padding:10px 24px !important; font-size:.9rem !important; }
+        .btn.btn-primary-custom.w-100 { padding: .65rem 1rem !important; }
+
+        .footer { padding:1.8rem 0 1.2rem !important; margin-top:2.5rem !important; }
+
+        /* Container max width tighten */
+        @media (min-width:1200px){ .container { max-width: 1100px; } }
+
+        /* Mobile further tightening */
+        @media (max-width: 576px) {
+            .hero-title { font-size:1.9rem !important; }
+            .hero-subtitle { font-size:.9rem !important; }
+            .hero-section { padding:3.4rem 0 0 !important; }
+            .hero-image-container { height:300px !important; }
+            .hero-image-title { font-size:1.85rem !important; }
+            .promotion-card { padding:1.3rem !important; }
+            .special-title { font-size:1.9rem !important; }
+            .special-card { height:auto !important; }
+        }
     </style>
 </head>
 <body>

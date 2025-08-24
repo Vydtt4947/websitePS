@@ -1222,6 +1222,89 @@ function getProductImage($product) {
              
              
          }
+    /* === COMPACT TWEAKS (Giảm kích thước tổng thể) === */
+    .hero-section { padding: 3rem 0 2rem !important; }
+    .hero-title { font-size: clamp(1.9rem, 4.8vw, 2.6rem) !important; }
+    .hero-subtitle { font-size: 1rem !important; margin-bottom: 1.25rem !important; }
+
+    .product-content { padding: 2.25rem 2rem !important; }
+    @media (max-width: 992px) { .product-content { padding: 1.75rem 1.25rem !important; } }
+    @media (max-width: 576px) { .product-content { padding: 1.25rem .9rem !important; } }
+
+    .product-gallery img { height: auto !important; max-height: 360px; aspect-ratio: 4/3; }
+    @media (min-width: 1200px) { .product-gallery img { max-height: 380px; } }
+
+    .product-tag { padding: .55rem 1.1rem !important; font-size: .8rem !important; border-radius: 18px !important; }
+    .product-tags { gap: .5rem !important; margin-bottom: 1.25rem !important; }
+
+    .product-price { font-size: clamp(1.9rem, 3.2vw, 2.4rem) !important; margin-bottom: 1.25rem !important; text-shadow: none !important; }
+
+    .product-meta { padding: 1.5rem 1.5rem !important; border-radius: 18px !important; }
+    .meta-item { padding: .55rem 0 !important; }
+
+    .product-description { font-size: 1rem !important; padding: 1.1rem 1.25rem !important; margin-bottom: 1.5rem !important; }
+
+    .purchase-section { padding: 1.75rem 1.5rem !important; border-radius: 20px !important; }
+    .quantity-section { gap: .75rem !important; margin-bottom: 1.25rem !important; }
+    .quantity-btn { width: 42px !important; height: 42px !important; font-size: 1rem !important; }
+    .quantity-input { width: 70px !important; font-size: 1.05rem !important; padding: .8rem .4rem !important; }
+    .add-to-cart-btn { padding: 14px !important; font-size: 1.05rem !important; }
+
+    .feature-item { padding: 1.1rem 1rem !important; }
+    .features-title { font-size: 1.5rem !important; margin-bottom: 1.25rem !important; }
+
+    .related-title { font-size: 2rem !important; margin-bottom: 2rem !important; }
+    .product-card-title { font-size: 1.05rem !important; }
+    .product-card-price { font-size: 1.1rem !important; }
+    .product-card img { height: 190px !important; }
+
+    .reviews-section .section-title { font-size: 2rem !important; margin-bottom: 2rem !important; }
+    #reviews-container .review-item .card-body { padding: 1rem 1rem 1.1rem !important; }
+
+    /* Giảm bán kính tổng thể để cảm giác gọn hơn */
+    .product-container { border-radius: 22px !important; }
+
+    /* Mobile further tightening */
+    @media (max-width: 480px) {
+        .hero-section { padding: 2.5rem 0 1.5rem !important; }
+        .hero-title { font-size: 2.1rem !important; }
+        .product-price { font-size: 2rem !important; }
+        .product-gallery img { max-height: 300px; }
+    }
+    /* === EXTRA COMPACT (giảm thêm ~10%) === */
+    .product-section > .container,
+    .reviews-section > .container,
+    .hero-section > .container { max-width: 1100px !important; }
+    .hero-section { padding: 2.7rem 0 1.6rem !important; }
+    .hero-title { font-size: clamp(1.7rem, 4.2vw, 2.35rem) !important; }
+    .hero-subtitle { font-size: .92rem !important; }
+    .product-content { padding: 2rem 1.7rem !important; }
+    @media (max-width: 992px){ .product-content { padding:1.5rem 1.1rem !important; } }
+    .product-gallery img { max-height: 340px !important; }
+    .product-tags { gap: .4rem !important; margin-bottom: 1rem !important; }
+    .product-tag { padding:.48rem .95rem !important; font-size:.74rem !important; }
+    .product-price { font-size: clamp(1.7rem, 2.9vw, 2.15rem) !important; margin-bottom:1rem !important; }
+    .product-meta { padding:1.35rem 1.25rem !important; }
+    .product-description { font-size:.92rem !important; padding: .95rem 1rem !important; }
+    .purchase-section { padding:1.55rem 1.35rem !important; }
+    .quantity-btn { width:38px !important; height:38px !important; }
+    .quantity-input { width:64px !important; font-size:.95rem !important; }
+    .add-to-cart-btn { padding:12px !important; font-size:.95rem !important; }
+    .features-title { font-size:1.35rem !important; }
+    .feature-item { padding:.9rem .85rem !important; }
+    .related-title { font-size:1.8rem !important; }
+    .product-card img { height:175px !important; }
+    .product-card-title { font-size:.95rem !important; }
+    .product-card-price { font-size:1rem !important; }
+    .reviews-section .section-title { font-size:1.8rem !important; }
+    #reviews-container .review-item .card-body { padding:.85rem .85rem .9rem !important; }
+    .footer { padding:2.2rem 0 !important; }
+    /* Mobile tighten */
+    @media (max-width:480px){
+      .hero-title { font-size:1.9rem !important; }
+      .product-gallery img { max-height:280px !important; }
+      .product-price { font-size:1.9rem !important; }
+    }
     </style>
 </head>
 <body>
