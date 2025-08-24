@@ -128,6 +128,190 @@ class PromotionController {
         require_once __DIR__ . '/../views/pages/tier_benefits.php';
     }
 
+    /**
+     * API để lấy danh sách khuyến mãi (JSON)
+     */
+    public function api() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $khuyenMaiModel = new KhuyenMaiModel();
+        
+        try {
+            // Lấy tất cả khuyến mãi
+            $allPromotions = $khuyenMaiModel->getAll();
+            
+            // Lọc khuyến mãi còn hiệu lực
+            $currentDate = date('Y-m-d');
+            $activePromotions = array_filter($allPromotions, function($promo) use ($currentDate) {
+                if (isset($promo['NgayKetThuc']) && $promo['NgayKetThuc']) {
+                    return $promo['NgayKetThuc'] >= $currentDate;
+                }
+                return true;
+            });
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'promotions' => array_values($activePromotions),
+                    'total' => count($activePromotions),
+                    'currentDate' => $currentDate,
+                    'lastUpdated' => date('Y-m-d H:i:s')
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy dữ liệu khuyến mãi',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+    /**
+     * API để lấy khuyến mãi theo ID (JSON)
+     */
+    public function apiShow($id) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $khuyenMaiModel = new KhuyenMaiModel();
+        
+        try {
+            // Lấy khuyến mãi theo ID
+            $promotion = $khuyenMaiModel->getById($id);
+            
+            if (!$promotion) {
+                header('Content-Type: application/json');
+                http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Khuyến mãi không tồn tại'
+                ]);
+                exit();
+            }
+            
+            // Kiểm tra còn hiệu lực không
+            $currentDate = date('Y-m-d');
+            $isActive = true;
+            
+            if (isset($promotion['NgayKetThuc']) && $promotion['NgayKetThuc']) {
+                $isActive = $promotion['NgayKetThuc'] >= $currentDate;
+            }
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'promotion' => $promotion,
+                    'isActive' => $isActive,
+                    'currentDate' => $currentDate,
+                    'daysLeft' => $isActive && isset($promotion['NgayKetThuc']) ? 
+                        max(0, (strtotime($promotion['NgayKetThuc']) - strtotime($currentDate)) / 86400) : 0
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy thông tin khuyến mãi',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+    /**
+     * API để lấy khuyến mãi theo danh mục sản phẩm (JSON)
+     */
+    public function apiByCategory($categoryId) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $khuyenMaiModel = new KhuyenMaiModel();
+        
+        try {
+            // Lấy khuyến mãi theo danh mục
+            $promotions = $khuyenMaiModel->getByCategory($categoryId);
+            
+            // Lọc khuyến mãi còn hiệu lực
+            $currentDate = date('Y-m-d');
+            $activePromotions = array_filter($promotions, function($promo) use ($currentDate) {
+                if (isset($promo['NgayKetThuc']) && $promo['NgayKetThuc']) {
+                    return $promo['NgayKetThuc'] >= $currentDate;
+                }
+                return true;
+            });
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'promotions' => array_values($activePromotions),
+                    'categoryId' => $categoryId,
+                    'total' => count($activePromotions),
+                    'currentDate' => $currentDate
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy khuyến mãi theo danh mục',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+    /**
+     * API để lấy khuyến mãi cho khách hàng cụ thể (JSON)
+     */
+    public function apiForCustomer($customerId) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $promotionModel = new PromotionModel();
+        
+        try {
+            // Lấy khuyến mãi phù hợp với khách hàng
+            $promotions = $promotionModel->getAvailablePromotions($customerId);
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'promotions' => $promotions,
+                    'customerId' => $customerId,
+                    'total' => count($promotions),
+                    'currentDate' => date('Y-m-d H:i:s')
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy khuyến mãi cho khách hàng',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
 
 }
 ?>

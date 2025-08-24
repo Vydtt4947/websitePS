@@ -208,4 +208,178 @@ class CustomerAuthController {
         header('Location: /websitePS/public/');
         exit();
     }
+
+    /**
+     * API để đăng nhập khách hàng (JSON)
+     */
+    public function loginApi() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            http_response_code(405);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Method not allowed'
+            ]);
+            exit();
+        }
+        
+        try {
+            $email = trim($_POST['email'] ?? '');
+            $password = $_POST['password'] ?? '';
+            
+            if (empty($email) || empty($password)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email và mật khẩu không được để trống'
+                ]);
+                exit();
+            }
+            
+            $customerAuthModel = new CustomerAuthModel();
+            $customer = $customerAuthModel->attemptLogin($email, $password);
+            
+            if ($customer) {
+                // Đăng nhập thành công
+                $_SESSION['customer_id'] = $customer['MaKH'];
+                $_SESSION['customer_name'] = $customer['HoTen'];
+                $_SESSION['customer_email'] = $customer['Email'];
+                $_SESSION['customer_phone'] = $customer['SoDienThoai'] ?? '';
+                
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Đăng nhập thành công!',
+                    'data' => [
+                        'customer' => [
+                            'id' => $customer['MaKH'],
+                            'name' => $customer['HoTen'],
+                            'email' => $customer['Email'],
+                            'phone' => $customer['SoDienThoai'] ?? ''
+                        ]
+                    ]
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email hoặc mật khẩu không chính xác'
+                ]);
+            }
+            
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi đăng nhập',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+    /**
+     * API để đăng ký khách hàng (JSON)
+     */
+    public function registerApi() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            http_response_code(405);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Method not allowed'
+            ]);
+            exit();
+        }
+        
+        try {
+            $customerData = [
+                'HoTen' => trim($_POST['fullname'] ?? ''),
+                'Email' => trim($_POST['email'] ?? ''),
+                'MatKhau' => $_POST['password'] ?? '',
+                'SoDienThoai' => trim($_POST['phone'] ?? '')
+            ];
+            
+            // Validation cơ bản
+            if (empty($customerData['HoTen']) || empty($customerData['Email']) || empty($customerData['MatKhau'])) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Vui lòng điền đầy đủ thông tin bắt buộc'
+                ]);
+                exit();
+            }
+            
+            $customerAuthModel = new CustomerAuthModel();
+            
+            // Kiểm tra email đã tồn tại chưa
+            if ($customerAuthModel->emailExists($customerData['Email'])) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email này đã được sử dụng'
+                ]);
+                exit();
+            }
+            
+            // Tạo tài khoản mới
+            $result = $customerAuthModel->createCustomer($customerData);
+            
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Tạo tài khoản thành công!'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Có lỗi xảy ra khi tạo tài khoản'
+                ]);
+            }
+            
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi đăng ký',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+    /**
+     * API để đăng xuất khách hàng (JSON)
+     */
+    public function logoutApi() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        try {
+            // Xóa thông tin khách hàng
+            unset($_SESSION['customer_id']);
+            unset($_SESSION['customer_name']);
+            unset($_SESSION['customer_email']);
+            unset($_SESSION['customer_phone']);
+            
+            // Xóa giỏ hàng session khi logout
+            $sessionCartModel = new SessionCartModel();
+            $sessionCartModel->ensureCartCleared();
+            
+            echo json_encode([
+                'success' => true,
+                'message' => 'Đăng xuất thành công!'
+            ]);
+            
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi đăng xuất',
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
 }

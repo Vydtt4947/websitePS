@@ -216,4 +216,100 @@ class ProductsController extends BaseController {
         }
         exit();
     }
+
+    /**
+     * API endpoint để lấy danh sách sản phẩm (JSON)
+     */
+    public function apiList() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $searchTerm = $_GET['search'] ?? '';
+        $category = $_GET['category'] ?? '';
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $sort = $_GET['sort'] ?? 'name';
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+
+        // Lấy danh sách sản phẩm
+        $products = $this->productModel->getProductsForCustomer($searchTerm, $category, $sort, $page, $limit);
+        $categories = $this->productModel->getAllCategories();
+        
+        // Tính tổng số trang
+        $totalProducts = $this->productModel->getTotalProductsForCustomer($searchTerm, $category);
+        $totalPages = ceil($totalProducts / $limit);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'products' => $products,
+                'categories' => $categories,
+                'pagination' => [
+                    'currentPage' => $page,
+                    'totalPages' => $totalPages,
+                    'totalProducts' => $totalProducts,
+                    'limit' => $limit
+                ],
+                'filters' => [
+                    'search' => $searchTerm,
+                    'category' => $category,
+                    'sort' => $sort
+                ]
+            ]
+        ]);
+        exit();
+    }
+
+    /**
+     * API endpoint để lấy chi tiết sản phẩm (JSON)
+     */
+    public function apiShow($id) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $product = $this->productModel->getProductById($id);
+
+        if (!$product) {
+            header('Content-Type: application/json');
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại!'
+            ]);
+            exit();
+        }
+
+        // Lấy sản phẩm liên quan
+        $relatedProducts = $this->productModel->getRelatedProducts($id, $product['MaDM'] ?? null);
+
+        // Lấy đánh giá sản phẩm
+        require_once __DIR__ . '/../models/ReviewModel.php';
+        $reviewModel = new ReviewModel();
+        
+        $reviews = $reviewModel->getProductReviews($id, 20, false);
+        $productRating = $reviewModel->getAverageRating($id, true);
+        $reviewStats = $reviewModel->getReviewStatistics($id);
+        
+        // Kiểm tra khách hàng có thể đánh giá không
+        $canReview = null;
+        if (isset($_SESSION['customer_id'])) {
+            $canReview = $reviewModel->canCustomerReview($_SESSION['customer_id'], $id);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'product' => $product,
+                'relatedProducts' => $relatedProducts,
+                'reviews' => $reviews,
+                'rating' => $productRating,
+                'reviewStats' => $reviewStats,
+                'canReview' => $canReview
+            ]
+        ]);
+        exit();
+    }
 }

@@ -144,9 +144,14 @@ class ReviewController {
         
         echo json_encode([
             'success' => true,
-            'reviews' => $reviews,
-            'rating' => $rating
+            'data' => [
+                'reviews' => $reviews,
+                'rating' => $rating,
+                'productId' => $productId,
+                'totalReviews' => count($reviews)
+            ]
         ]);
+        exit();
     }
 
     /**

@@ -101,4 +101,72 @@ class KhuyenMaiModel {
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+
+    /**
+     * Lấy khuyến mãi theo danh mục sản phẩm
+     */
+    public function getByCategory(int $categoryId): array {
+        try {
+            $sql = "
+                SELECT km.* 
+                FROM khuyenmai km
+                INNER JOIN khuyenmai_danhmuc kmd ON km.MaKM = kmd.MaKM
+                WHERE kmd.MaDM = :categoryId
+                ORDER BY km.MaKM DESC
+            ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':categoryId', $categoryId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Lỗi khi lấy khuyến mãi theo danh mục: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Lấy khuyến mãi còn hiệu lực
+     */
+    public function getActive(): array {
+        try {
+            $currentDate = date('Y-m-d');
+            $sql = "
+                SELECT * FROM khuyenmai 
+                WHERE (NgayKetThuc IS NULL OR NgayKetThuc >= :currentDate)
+                AND (NgayBatDau IS NULL OR NgayBatDau <= :currentDate)
+                ORDER BY MaKM DESC
+            ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':currentDate', $currentDate);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Lỗi khi lấy khuyến mãi còn hiệu lực: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Lấy khuyến mãi sắp hết hạn (còn 7 ngày)
+     */
+    public function getExpiringSoon(): array {
+        try {
+            $currentDate = date('Y-m-d');
+            $sevenDaysLater = date('Y-m-d', strtotime('+7 days'));
+            
+            $sql = "
+                SELECT * FROM khuyenmai 
+                WHERE NgayKetThuc BETWEEN :currentDate AND :sevenDaysLater
+                ORDER BY NgayKetThuc ASC
+            ";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':currentDate', $currentDate);
+            $stmt->bindValue(':sevenDaysLater', $sevenDaysLater);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log("Lỗi khi lấy khuyến mãi sắp hết hạn: " . $e->getMessage());
+            return [];
+        }
+    }
 }

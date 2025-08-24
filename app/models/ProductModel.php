@@ -109,6 +109,38 @@ class ProductModel {
         ];
     }
 
+    public function getTotalProductsForCustomer($searchTerm = '', $category = '') {
+        // Xây dựng câu query đếm tổng số sản phẩm
+        $sql = "SELECT COUNT(*) as total FROM sanpham sp WHERE 1=1";
+        
+        $params = [];
+        
+        // Thêm điều kiện tìm kiếm
+        if (!empty($searchTerm)) {
+            $sql .= " AND (sp.TenSP LIKE :searchTerm OR sp.MoTa LIKE :searchTerm)";
+            $searchPattern = '%' . $searchTerm . '%';
+            $params[':searchTerm'] = $searchPattern;
+        }
+        
+        // Thêm điều kiện danh mục
+        if (!empty($category)) {
+            $sql .= " AND sp.MaDM = :category";
+            $params[':category'] = $category;
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        
+        // Bind các tham số
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $result['total'] ?? 0;
+    }
+
     public function getAllProductsWithCategory() {
         $query = "
             SELECT 

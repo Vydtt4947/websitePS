@@ -978,5 +978,338 @@ class CartController {
               ]);
           }
       }
+
+          /**
+     * API để lấy thông tin giỏ hàng (JSON)
+     */
+    public function getCartApi() {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          
+          try {
+              $cartModel = new CartModel();
+              $sessionCartModel = new SessionCartModel();
+              $promotionModel = new PromotionModel();
+              
+              $cart = [];
+              $customerId = $_SESSION['customer_id'] ?? null;
+              
+              // Lấy giỏ hàng dựa trên trạng thái đăng nhập
+              if ($customerId) {
+                  $cart = $cartModel->getCart($customerId);
+              } else {
+                  $cart = $sessionCartModel->getCart();
+              }
+              
+              // Tính toán tổng tiền
+              $total = 0;
+              $itemCount = 0;
+              
+              foreach ($cart as $item) {
+                  $itemTotal = $item['price'] * $item['quantity'];
+                  $total += $itemTotal;
+                  $itemCount += $item['quantity'];
+              }
+              
+              // Lấy ưu đãi được chọn
+              $selectedPromotions = $_SESSION['selected_promotions'] ?? [];
+              
+              // Tính toán ưu đãi (chỉ cho khách hàng đã đăng nhập)
+              $appliedPromotions = [];
+              $totalDiscount = 0;
+              $finalTotal = $total;
+              
+              if ($customerId) {
+                  $productCategories = array_unique(array_column($cart, 'category'));
+                  $discountResult = $promotionModel->calculateAllDiscounts(
+                      $customerId, 
+                      $total, 
+                      implode(',', $productCategories), 
+                      $selectedPromotions
+                  );
+                  
+                  $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {
+                      return isset($promotion['isSelected']) && $promotion['isSelected'];
+                  });
+                  $totalDiscount = $discountResult['totalDiscount'];
+                  $finalTotal = $discountResult['finalTotal'];
+              }
+              
+              // Tính phí vận chuyển
+              $shippingFee = 0;
+              if (!empty($cart) && $total < 100000) {
+                  $shippingFee = 15000;
+              }
+              
+              // Kiểm tra ưu đãi miễn phí vận chuyển
+              foreach ($appliedPromotions as $promotion) {
+                  if ($promotion['promotionType'] === 'free_shipping') {
+                      $shippingFee = 0;
+                      break;
+                  }
+              }
+              
+              $finalTotal += $shippingFee;
+              
+              header('Content-Type: application/json');
+              echo json_encode([
+                  'success' => true,
+                  'data' => [
+                      'cart' => $cart,
+                      'summary' => [
+                          'itemCount' => $itemCount,
+                          'subtotal' => $total,
+                          'totalDiscount' => $totalDiscount,
+                          'shippingFee' => $shippingFee,
+                          'finalTotal' => $finalTotal
+                      ],
+                      'promotions' => [
+                          'selected' => $selectedPromotions,
+                          'applied' => $appliedPromotions
+                      ],
+                      'customerId' => $customerId,
+                      'isLoggedIn' => !is_null($customerId)
+                  ]
+              ]);
+              
+          } catch (Exception $e) {
+              header('Content-Type: application/json');
+              http_response_code(500);
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra khi lấy thông tin giỏ hàng',
+                  'error' => $e->getMessage()
+              ]);
+          }
+          exit();
+      }
+
+          /**
+     * API để thêm sản phẩm vào giỏ hàng (JSON)
+     */
+    public function addToCartApi() {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          
+          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+              http_response_code(405);
+              echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+              exit();
+          }
+          
+          try {
+              $productId = $_POST['product_id'] ?? null;
+              $quantity = (int)($_POST['quantity'] ?? 1);
+              
+              if (!$productId || $quantity < 1) {
+                  echo json_encode(['success' => false, 'message' => 'Thông tin không hợp lệ']);
+                  exit();
+              }
+              
+              $cartModel = new CartModel();
+              $sessionCartModel = new SessionCartModel();
+              
+              $result = false;
+              $customerId = $_SESSION['customer_id'] ?? null;
+              
+              if ($customerId) {
+                  $result = $cartModel->addToCart($customerId, $productId, $quantity);
+              } else {
+                  $result = $sessionCartModel->addToCart($productId, $quantity);
+              }
+              
+              if ($result) {
+                  echo json_encode([
+                      'success' => true,
+                      'message' => 'Đã thêm sản phẩm vào giỏ hàng!'
+                  ]);
+              } else {
+                  echo json_encode([
+                      'success' => false,
+                      'message' => 'Không thể thêm sản phẩm vào giỏ hàng'
+                  ]);
+              }
+              
+          } catch (Exception $e) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra',
+                  'error' => $e->getMessage()
+              ]);
+          }
+          exit();
+      }
+
+          /**
+     * API để cập nhật số lượng sản phẩm trong giỏ hàng (JSON)
+     */
+    public function updateCartApi() {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          
+          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+              http_response_code(405);
+              echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+              exit();
+          }
+          
+          try {
+              $productId = $_POST['product_id'] ?? null;
+              $quantity = (int)($_POST['quantity'] ?? 1);
+              
+              if (!$productId || $quantity < 0) {
+                  echo json_encode(['success' => false, 'message' => 'Thông tin không hợp lệ']);
+                  exit();
+              }
+              
+              $cartModel = new CartModel();
+              $sessionCartModel = new SessionCartModel();
+              
+              $result = false;
+              $customerId = $_SESSION['customer_id'] ?? null;
+              
+              if ($customerId) {
+                  if ($quantity === 0) {
+                      $result = $cartModel->removeFromCart($customerId, $productId);
+                  } else {
+                      $result = $cartModel->updateQuantity($customerId, $productId, $quantity);
+                  }
+              } else {
+                  if ($quantity === 0) {
+                      $result = $sessionCartModel->removeFromCart($productId);
+                  } else {
+                      $result = $sessionCartModel->updateQuantity($productId, $quantity);
+                  }
+              }
+              
+              if ($result) {
+                  echo json_encode([
+                      'success' => true,
+                      'message' => 'Đã cập nhật giỏ hàng!'
+                  ]);
+              } else {
+                  echo json_encode([
+                      'success' => false,
+                      'message' => 'Không thể cập nhật giỏ hàng'
+                  ]);
+              }
+              
+          } catch (Exception $e) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra',
+                  'error' => $e->getMessage()
+              ]);
+          }
+          exit();
+      }
+
+          /**
+     * API để xóa sản phẩm khỏi giỏ hàng (JSON)
+     */
+    public function removeFromCartApi() {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          
+          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+              http_response_code(405);
+              echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+              exit();
+          }
+          
+          try {
+              $productId = $_POST['product_id'] ?? null;
+              
+              if (!$productId) {
+                  echo json_encode(['success' => false, 'message' => 'Thiếu thông tin sản phẩm']);
+                  exit();
+              }
+              
+              $cartModel = new CartModel();
+              $sessionCartModel = new SessionCartModel();
+              
+              $result = false;
+              $customerId = $_SESSION['customer_id'] ?? null;
+              
+              if ($customerId) {
+                  $result = $cartModel->removeFromCart($customerId, $productId);
+              } else {
+                  $result = $sessionCartModel->removeFromCart($productId);
+              }
+              
+              if ($result) {
+                  echo json_encode([
+                      'success' => true,
+                      'message' => 'Đã xóa sản phẩm khỏi giỏ hàng!'
+                  ]);
+              } else {
+                  echo json_encode([
+                      'success' => false,
+                      'message' => 'Không thể xóa sản phẩm'
+                  ]);
+              }
+              
+          } catch (Exception $e) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra',
+                  'error' => $e->getMessage()
+              ]);
+          }
+          exit();
+      }
+
+          /**
+     * API để xóa toàn bộ giỏ hàng (JSON)
+     */
+    public function clearCartApi() {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
+          
+          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+              http_response_code(405);
+              echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+              exit();
+          }
+          
+          try {
+              $cartModel = new CartModel();
+              $sessionCartModel = new SessionCartModel();
+              
+              $result = false;
+              $customerId = $_SESSION['customer_id'] ?? null;
+              
+              if ($customerId) {
+                  $result = $cartModel->clearCart($customerId);
+              } else {
+                  $result = $sessionCartModel->clearCart();
+              }
+              
+              if ($result) {
+                  echo json_encode([
+                      'success' => true,
+                      'message' => 'Đã xóa toàn bộ giỏ hàng!'
+                  ]);
+              } else {
+                  echo json_encode([
+                      'success' => false,
+                      'message' => 'Không thể xóa giỏ hàng'
+                  ]);
+              }
+              
+          } catch (Exception $e) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Có lỗi xảy ra',
+                  'error' => $e->getMessage()
+              ]);
+          }
+          exit();
+      }
   }
 ?>
