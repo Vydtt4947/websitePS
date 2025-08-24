@@ -394,12 +394,8 @@
             }
         }
         
-        if (!isset($shippingFee)) {
-            $shippingFee = 0;
-            if ($total < 100000) {
-                $shippingFee = 15000;
-            }
-        }
+        // Không cần ghi đè $shippingFee - controller đã tính toán đúng rồi
+        // $shippingFee đã được tính từ CheckoutController với logic mới
         
         // Đảm bảo $finalTotal được định nghĩa
         if (!isset($finalTotal)) {
@@ -567,57 +563,51 @@
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="qr-layout">
-                                            <div class="qr-side-left">
-                                                <div class="payment-instructions">
-                                                    <h6><i class="fas fa-info-circle me-2"></i>Hướng dẫn thanh toán:</h6>
-                                                    <ol class="mb-2">
-                                                        <li>Mở ứng dụng ngân hàng của bạn</li>
-                                                        <li>Chọn tính năng quét mã QR</li>
-                                                        <li>Quét mã QR bên phải</li>
-                                                        <li>Kiểm tra thông tin & xác nhận</li>
-                                                        <li>Lưu lại biên lai thanh toán</li>
-                                                    </ol>
+                                    <div class="modal-body text-center">
+                                        <div class="qr-code-container">
+                                            <div class="qr-code-card">
+                                                <div class="qr-header">
+                                                    <div class="bank-logo">
+                                                        <i class="fas fa-university text-danger"></i>
+                                                    </div>
+                                                    <div class="account-info">
+                                                        <div class="account-name">NGUYEN HOANG PHUONG</div>
+                                                        <div class="account-number">44331515001531</div>
+                                                    </div>
                                                 </div>
-                                                <div class="qr-actions d-flex gap-2 mt-3">
-                                                    <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">
-                                                        <i class="fas fa-times me-1"></i>Đóng
-                                                    </button>
-                                                    <button type="button" class="btn btn-success flex-fill" onclick="confirmPayment()">
-                                                        <i class="fas fa-check me-1"></i>Đã thanh toán
-                                                    </button>
+                                                <div class="qr-code-image">
+                                                    <img src="https://i.ibb.co/VqKJ8M1/mbbank-qr.png" alt="MBBank QR Code" class="img-fluid" style="max-width: 200px; border: 1px solid #e9ecef; border-radius: 10px;">
                                                 </div>
-                                            </div>
-                                            <div class="qr-side-right text-center">
-                                                <div class="qr-code-container">
-                                                    <div class="qr-code-card">
-                                                        <div class="qr-header">
-                                                            <div class="bank-logo">
-                                                                <i class="fas fa-university text-danger"></i>
-                                                            </div>
-                                                            <div class="account-info">
-                                                                <div class="account-name">NGUYEN HOANG PHUONG</div>
-                                                                <div class="account-number">44331515001531</div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="qr-code-image">
-                                                            <img src="https://i.ibb.co/VqKJ8M1/mbbank-qr.png" alt="MBBank QR Code" class="img-fluid" style="max-width: 200px; border: 1px solid #e9ecef; border-radius: 10px;">
-                                                        </div>
-                                                        <div class="qr-footer">
-                                                            <div class="payment-info">
-                                                                <div class="amount">Số tiền: <strong><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</strong></div>
-                                                                <div class="order-id">Mã đơn hàng: <strong>#<?= uniqid('PS') ?></strong></div>
-                                                            </div>
-                                                            <div class="qr-logos">
-                                                                <span class="qr-logo vietqr">VIETQR</span>
-                                                                <span class="qr-logo napas">napas 247</span>
-                                                            </div>
-                                                        </div>
+                                                <div class="qr-footer">
+                                                    <div class="payment-info">
+                                                        <div class="amount">Số tiền: <strong><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</strong></div>
+                                                        <div class="order-id">Mã đơn hàng: <strong>#<?= uniqid('PS') ?></strong></div>
+                                                    </div>
+                                                    <div class="qr-logos">
+                                                        <span class="qr-logo vietqr">VIETQR</span>
+                                                        <span class="qr-logo napas">napas 247</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="payment-instructions mt-3">
+                                            <h6><i class="fas fa-info-circle me-2"></i>Hướng dẫn thanh toán:</h6>
+                                            <ol class="text-start">
+                                                <li>Mở ứng dụng ngân hàng của bạn</li>
+                                                <li>Chọn tính năng quét mã QR</li>
+                                                <li>Quét mã QR bên trên</li>
+                                                <li>Kiểm tra thông tin và xác nhận thanh toán</li>
+                                                <li>Lưu lại biên lai thanh toán</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-2"></i>Đóng
+                                        </button>
+                                        <button type="button" class="btn btn-success" onclick="confirmPayment()">
+                                            <i class="fas fa-check me-2"></i>Đã thanh toán
+                                        </button>
                                     </div>
                                  </div>
                              </div>
@@ -683,7 +673,7 @@
                         </div>
                         <div class="total-row final">
                             <span>Tổng cộng:</span>
-                            <span><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</span>
+                            <span><?= number_format($finalTotal, 0, ',', '.') ?> đ</span>
                         </div>
                     </div>
                 </div>

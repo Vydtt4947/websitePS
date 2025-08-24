@@ -492,10 +492,10 @@ foreach ($orderDetails['items'] as $item) {
     $totalItems += $item['SoLuong'];
 }
 
-// Tính phí vận chuyển (logic thực tế)
+// Tính phí vận chuyển - NHẤT QUÁN với logic mới
 $shippingFee = 0;
-if ($orderDetails['info']['TongTien'] < 100000) {
-    $shippingFee = 15000; // Phí vận chuyển cho đơn hàng dưới 100k
+if ($orderDetails['info']['TongTien'] > 0) {  // Có sản phẩm thì tính phí ship
+    $shippingFee = 30000;  // 30,000₫ cho TẤT CẢ đơn hàng
 }
 
 $estimatedDelivery = getEstimatedDeliveryTime($orderDetails['info']['NgayDatHang'], $orderDetails['info']['TenTrangThai']);
@@ -813,7 +813,7 @@ $statusVietnamese = getStatusInVietnamese($orderDetails['info']['TenTrangThai'])
                     
                     <div class="summary-item">
                         <span>Tổng thanh toán:</span>
-                        <span><?= number_format($orderDetails['info']['TongTien'] + $shippingFee, 0, ',', '.') ?> đ</span>
+                        <span><?= number_format($orderDetails['info']['TongTien'], 0, ',', '.') ?> đ</span>
                     </div>
                     
                     <div class="action-buttons">
