@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2025 at 08:24 PM
+-- Generation Time: Aug 23, 2025 at 08:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,23 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `cake_shop_remake`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `baocao`
---
-
-CREATE TABLE `baocao` (
-  `MaBC` int(11) NOT NULL,
-  `TenBC` varchar(255) NOT NULL,
-  `LoaiBC` varchar(100) DEFAULT NULL,
-  `NgayTao` date NOT NULL DEFAULT current_timestamp(3),
-  `MaNV` int(11) DEFAULT NULL,
-  `DuongDan` text DEFAULT NULL,
-  `NoiDung` varchar(1000) DEFAULT NULL,
-  `TrangThaiDuyet` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -86,7 +69,8 @@ INSERT INTO `chitietdonhang` (`MaDH`, `MaSP`, `SoLuong`, `DonGia`) VALUES
 (60, 4, 1, 35000.00),
 (60, 8, 1, 500000.00),
 (61, 5, 1, 500000.00),
-(61, 6, 1, 750000.00);
+(61, 6, 1, 750000.00),
+(62, 2, 1, 45000.00);
 
 -- --------------------------------------------------------
 
@@ -104,6 +88,14 @@ CREATE TABLE `danhgia` (
   `NgayDanhGia` date NOT NULL DEFAULT current_timestamp(3),
   `MaSP` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Dumping data for table `danhgia`
+--
+
+INSERT INTO `danhgia` (`MaDG`, `MaKH`, `MaDH`, `SoSao`, `NoiDung`, `DanhGia`, `NgayDanhGia`, `MaSP`) VALUES
+(7, 100, 61, 4, 'ngon đó', NULL, '2025-08-23', 6),
+(8, 100, 62, 3, 'ffegrghrh', NULL, '2025-08-23', 2);
 
 -- --------------------------------------------------------
 
@@ -190,7 +182,8 @@ INSERT INTO `donhang` (`MaDH`, `MaKH`, `MaNV`, `NgayDatHang`, `TrangThai`, `Phuo
 (58, 95, NULL, '2025-08-22 21:53:00.000', 'Delivered', 'cod', NULL, NULL, 142500.00),
 (59, 95, NULL, '2025-08-22 21:54:28.000', 'Delivered', 'bank', NULL, NULL, 450000.00),
 (60, 99, NULL, '2025-08-22 22:04:50.000', 'Delivered', 'cod', NULL, NULL, 655000.00),
-(61, 100, NULL, '2025-08-23 01:22:59.000', 'Delivered', 'cod', NULL, NULL, 750000.00);
+(61, 100, NULL, '2025-08-23 01:22:59.000', 'Delivered', 'cod', NULL, NULL, 750000.00),
+(62, 100, NULL, '2025-08-23 23:17:29.000', 'Delivered', 'cod', NULL, NULL, 60000.00);
 
 -- --------------------------------------------------------
 
@@ -242,9 +235,9 @@ CREATE TABLE `khachhang` (
 
 INSERT INTO `khachhang` (`MaKH`, `HoTen`, `SoDienThoai`, `Email`, `NgaySinh`, `DiemTichLuy`, `MaPK`, `user_id`, `created_at`, `MatKhau`, `DiaChiGiaoHang`, `TinhThanh`, `QuanHuyen`, `GhiChuGiaoHang`) VALUES
 (95, 'Nguyen Hoang Phuong', '0325093767', 'boyvncraft2272000@gmail.com', NULL, 0, 1, 15, '2025-08-22 21:51:00.730', '$2y$10$wtQbWAJV//839KS.MFLaruKSMzP4CZoIyoGIbdySaeAgJPjUeLsX6', NULL, NULL, NULL, NULL),
-(98, 'phuong', '', 'netherjosep@hotmail.com', NULL, 0, NULL, 18, '2025-08-22 22:02:03.189', '$2y$10$XMNbsfPByc9OhtbXoi1Ui.dd2w7CY4DGhGRuJe4n0uoOEWpFpMyaG', NULL, NULL, NULL, NULL),
 (99, 'Phương Nguyễn Hoàng', '0325093757', 'cucxacdufong@gmail.com', NULL, 0, 1, NULL, '2025-08-22 22:04:50.227', NULL, NULL, NULL, NULL, NULL),
-(100, 'Đinh Thúy Vy', '0348675235', 'dinhvy789@gmail.com', '2025-08-20', 0, 1, 20, '2025-08-23 00:37:04.068', '$2y$10$q9vtwhAGyA0g1tDWyte92eUzXVLNC6Gc.rI7eBLYaapqUF2y7wRGa', '123 Đường A', 'TP. Hồ Chí Minh', 'Quận 1', '');
+(100, 'Đinh Thúy Vy', '0348675235', 'dinhvy789@gmail.com', '2025-08-20', 0, 1, 20, '2025-08-23 00:37:04.068', '$2y$10$q9vtwhAGyA0g1tDWyte92eUzXVLNC6Gc.rI7eBLYaapqUF2y7wRGa', '123 Đường A', 'TP. Hồ Chí Minh', 'Quận 1', ''),
+(101, 'Lê văn A', '0654987123', 'levana@gmail.com', NULL, 0, NULL, 25, '2025-08-23 23:34:18.115', '$2y$10$boYPPCLynjK5v9UdpXZdC.YwR67WMFN7DaLymIxbTyAZ.hDAztYty', NULL, NULL, NULL, NULL);
 
 --
 -- Triggers `khachhang`
@@ -266,13 +259,22 @@ DELIMITER ;
 
 CREATE TABLE `kho` (
   `MaKho` int(11) NOT NULL,
-  `MaSP` int(11) NOT NULL,
-  `MaNV` int(11) NOT NULL,
-  `MaNL` int(11) NOT NULL,
+  `MaSP` int(11) DEFAULT NULL,
+  `MaNV` int(11) DEFAULT NULL,
+  `MaNL` int(11) DEFAULT NULL,
   `NgayGiaoDich` datetime(3) NOT NULL,
   `LoaiGiaoDich` enum('Nhap','Xuat') NOT NULL,
-  `SoLuong` int(11) NOT NULL CHECK (`SoLuong` >= 0)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `SoLuong` int(11) NOT NULL CHECK (`SoLuong` > 0)
+) ;
+
+--
+-- Dumping data for table `kho`
+--
+
+INSERT INTO `kho` (`MaKho`, `MaSP`, `MaNV`, `MaNL`, `NgayGiaoDich`, `LoaiGiaoDich`, `SoLuong`) VALUES
+(2, 8, 8, NULL, '2025-08-23 23:41:40.242', 'Nhap', 9),
+(3, 6, 8, NULL, '2025-08-23 23:42:37.670', 'Nhap', 10),
+(4, 2, 8, NULL, '2025-08-23 23:42:54.737', 'Xuat', 16);
 
 -- --------------------------------------------------------
 
@@ -427,12 +429,12 @@ CREATE TABLE `sanpham` (
 
 INSERT INTO `sanpham` (`MaSP`, `TenSP`, `MoTa`, `DonGia`, `MaDM`, `SoLuong`, `HinhAnh`, `TrangThai`, `NgayThem`) VALUES
 (1, 'Bánh Tiramisu', 'Bánh tiramisu truyền thống Ý với hương vị cà phê đậm đà', 85000.00, 1, 50, 'https://images.unsplash.com/photo-1714385905983-6f8e06fffae1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
-(2, 'Bánh Mì Sourdough', 'Bánh mì sourdough với vỏ giòn và ruột mềm', 45000.00, 2, 100, 'https://plus.unsplash.com/premium_photo-1664640733898-d5c3f71f44e1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
+(2, 'Bánh Mì Sourdough', 'Bánh mì sourdough với vỏ giòn và ruột mềm', 45000.00, 2, 84, 'https://plus.unsplash.com/premium_photo-1664640733898-d5c3f71f44e1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
 (3, 'Bánh Chocolate Cake', 'Bánh chocolate đen với kem tươi', 120000.00, 3, 29, 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2hvY29sYXRlJTIwY2FrZXxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
 (4, 'Bánh Croissant', 'Bánh croissant Pháp với lớp vỏ xốp giòn', 35000.00, 2, 86, 'https://images.unsplash.com/photo-1600521853186-93b88b3a07b0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGNyb2lzc2FudHxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-09 13:05:54.645'),
 (5, 'Bánh Kem Mây Hồng', 'Bánh kem 2 tầng phủ sốt dâu hồng, xen kẽ lớp kem tươi mịn, trang trí mâm xôi tươi bắt mắt – lựa chọn hoàn hảo cho mọi bữa tiệc ngọt ngào!', 500000.00, 3, 0, 'https://plus.unsplash.com/premium_photo-1713447395823-2e0b40b75a89?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2FrZXxlbnwwfHwwfHx8MA%3D%3D', 'Available', '2025-08-15 12:17:51.378'),
-(6, 'Bánh Kem Trái Tim Anh Đào', 'Bánh kem hình trái tim với lớp kem phủ màu trắng ngà tinh tế, viền quanh bằng những chấm kem nhỏ xinh, tạo cảm giác mềm mại và sang trọng. Trên mặt bánh nổi bật với một quả anh đào đỏ tươi đặt trên lớp kem tươi cuộn tròn, làm điểm nhấn ngọt ngào và lãng mạn. Thiết kế đơn giản nhưng rất thanh lịch, phù hợp để tặng người thương, sinh nhật, kỷ niệm tình yêu hoặc các dịp đặc biệt.', 750000.00, 3, 0, 'https://plus.unsplash.com/premium_photo-1679047666503-28884e055869?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGNha2V8ZW58MHx8MHx8fDA%3D', 'Available', '2025-08-15 12:25:00.371'),
-(8, 'Bánh Cam Mọng Nước', 'Bánh gồm nhiều lớp bông lan mềm mịn, xen kẽ các lớp kem cam tươi mát, phủ trên cùng là lớp thạch cam óng ánh và trang trí thêm một lát cam cùng trái việt quất tươi nổi bật. Hương vị bánh thơm ngọt, chua nhẹ, kết hợp vị tươi mát của cam và sự mềm mại của bông lan, tạo cảm giác thanh nhẹ, sảng khoái. Phù hợp làm món tráng miệng, dùng kèm trà chiều hoặc trong các buổi tiệc nhẹ.', 500000.00, 3, 0, 'https://images.unsplash.com/photo-1642069251474-5cc71cfdf49b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FrZSUyMHN3ZWV0fGVufDB8fDB8fHww', 'Available', '2025-08-16 20:56:52.518');
+(6, 'Bánh Kem Trái Tim Anh Đào', 'Bánh kem hình trái tim với lớp kem phủ màu trắng ngà tinh tế, viền quanh bằng những chấm kem nhỏ xinh, tạo cảm giác mềm mại và sang trọng. Trên mặt bánh nổi bật với một quả anh đào đỏ tươi đặt trên lớp kem tươi cuộn tròn, làm điểm nhấn ngọt ngào và lãng mạn. Thiết kế đơn giản nhưng rất thanh lịch, phù hợp để tặng người thương, sinh nhật, kỷ niệm tình yêu hoặc các dịp đặc biệt.', 750000.00, 3, 10, 'https://plus.unsplash.com/premium_photo-1679047666503-28884e055869?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjV8fGNha2V8ZW58MHx8MHx8fDA%3D', 'Available', '2025-08-15 12:25:00.371'),
+(8, 'Bánh Cam Mọng Nước', 'Bánh gồm nhiều lớp bông lan mềm mịn, xen kẽ các lớp kem cam tươi mát, phủ trên cùng là lớp thạch cam óng ánh và trang trí thêm một lát cam cùng trái việt quất tươi nổi bật. Hương vị bánh thơm ngọt, chua nhẹ, kết hợp vị tươi mát của cam và sự mềm mại của bông lan, tạo cảm giác thanh nhẹ, sảng khoái. Phù hợp làm món tráng miệng, dùng kèm trà chiều hoặc trong các buổi tiệc nhẹ.', 500000.00, 3, 9, 'https://images.unsplash.com/photo-1642069251474-5cc71cfdf49b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FrZSUyMHN3ZWV0fGVufDB8fDB8fHww', 'Available', '2025-08-16 20:56:52.518');
 
 -- --------------------------------------------------------
 
@@ -471,10 +473,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `role`) VALUES
 (15, 'boyvncraft2272000', 'boyvncraft2272000@gmail.com', '$2y$10$wtQbWAJV//839KS.MFLaruKSMzP4CZoIyoGIbdySaeAgJPjUeLsX6', '2025-08-22 21:51:00.728', 'member'),
-(18, 'netherjosep', 'netherjosep@hotmail.com', '$2y$10$XMNbsfPByc9OhtbXoi1Ui.dd2w7CY4DGhGRuJe4n0uoOEWpFpMyaG', '2025-08-22 22:02:03.186', 'member'),
 (20, 'dinhvy789', 'dinhvy789@gmail.com', '$2y$10$q9vtwhAGyA0g1tDWyte92eUzXVLNC6Gc.rI7eBLYaapqUF2y7wRGa', '2025-08-23 00:37:04.067', 'member'),
-(23, 'tulinhkhung123', 'tulinhkhung123@gmail.com', '$2y$10$6Dh0nv5GMSCiEDdNBeDDY.HN63pyfm05YiE9mkYf8f6d6FP2L6OF.', '2025-08-23 01:04:16.667', 'staff'),
-(24, 'admin', 'admin@parrotsmell.com', '$2y$10$8FtcO3K1aXNOvFxhAR2T/OQq2LMmWpXNckhYaRTqvdji0l9IAVveq', '2025-08-23 01:06:09.701', 'admin');
+(23, 'tulinhkhung123', 'tulinhkhung123@gmail.com', '$2y$10$/atDr3KdCada.ZrnCDo33uPWkWkLCzIPhrMvemA0b2uUPD6uytQ7K', '2025-08-23 01:04:16.667', 'staff'),
+(24, 'admin', 'admin@parrotsmell.com', '$2y$10$8FtcO3K1aXNOvFxhAR2T/OQq2LMmWpXNckhYaRTqvdji0l9IAVveq', '2025-08-23 01:06:09.701', 'admin'),
+(25, 'levana', 'levana@gmail.com', '$2y$10$boYPPCLynjK5v9UdpXZdC.YwR67WMFN7DaLymIxbTyAZ.hDAztYty', '2025-08-23 23:34:18.111', 'member');
 
 -- --------------------------------------------------------
 
@@ -495,13 +497,6 @@ CREATE TABLE `vanchuyen` (
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `baocao`
---
-ALTER TABLE `baocao`
-  ADD PRIMARY KEY (`MaBC`),
-  ADD KEY `MaNV` (`MaNV`);
 
 --
 -- Indexes for table `chitietdonhang`
@@ -640,16 +635,10 @@ ALTER TABLE `vanchuyen`
 --
 
 --
--- AUTO_INCREMENT for table `baocao`
---
-ALTER TABLE `baocao`
-  MODIFY `MaBC` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `danhgia`
 --
 ALTER TABLE `danhgia`
-  MODIFY `MaDG` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `MaDG` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `danhmuc`
@@ -667,25 +656,25 @@ ALTER TABLE `diachi`
 -- AUTO_INCREMENT for table `donhang`
 --
 ALTER TABLE `donhang`
-  MODIFY `MaDH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `MaDH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `giohang`
 --
 ALTER TABLE `giohang`
-  MODIFY `MaGH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `MaGH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
 
 --
 -- AUTO_INCREMENT for table `khachhang`
 --
 ALTER TABLE `khachhang`
-  MODIFY `MaKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `MaKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `kho`
 --
 ALTER TABLE `kho`
-  MODIFY `MaKho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `MaKho` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `khuyenmai`
@@ -733,7 +722,7 @@ ALTER TABLE `thanhtoan`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `vanchuyen`
@@ -744,12 +733,6 @@ ALTER TABLE `vanchuyen`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `baocao`
---
-ALTER TABLE `baocao`
-  ADD CONSTRAINT `baocao_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `chitietdonhang`
@@ -794,6 +777,14 @@ ALTER TABLE `giohang`
 ALTER TABLE `khachhang`
   ADD CONSTRAINT `khachhang_MaPK_fkey` FOREIGN KEY (`MaPK`) REFERENCES `phankhuckh` (`MaPK`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `khachhang_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `kho`
+--
+ALTER TABLE `kho`
+  ADD CONSTRAINT `kho_MaNL_fkey` FOREIGN KEY (`MaNL`) REFERENCES `nguyenlieu` (`MaNL`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `kho_MaNV_fkey` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `kho_MaSP_fkey` FOREIGN KEY (`MaSP`) REFERENCES `sanpham` (`MaSP`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `lichsu_donhang`
