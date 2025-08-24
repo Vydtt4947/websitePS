@@ -1156,6 +1156,12 @@
      
      // Function để áp dụng mã khuyến mãi
      function applyCoupon(event) {
+         // Kiểm tra đăng nhập
+         <?php if (!isset($_SESSION['customer_id'])): ?>
+         showCouponMessage('Bạn cần đăng nhập để sử dụng mã khuyến mãi!', 'error');
+         return;
+         <?php endif; ?>
+         
          const couponInput = document.getElementById('coupon-code');
          const couponMessage = document.getElementById('coupon-message');
          const couponCode = couponInput.value.trim();
@@ -1217,6 +1223,12 @@
      
      // Function để bỏ mã khuyến mãi
      function removeCoupon(promotionType) {
+         // Kiểm tra đăng nhập
+         <?php if (!isset($_SESSION['customer_id'])): ?>
+         showToast('Bạn cần đăng nhập để thao tác với mã khuyến mãi!', 'error');
+         return;
+         <?php endif; ?>
+         
          if (!confirm('Bạn có chắc muốn bỏ mã khuyến mãi này?')) {
              return;
          }

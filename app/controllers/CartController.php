@@ -102,7 +102,7 @@ class CartController {
             
             // Debug logs removed for production
             
-            // Tính toán ưu đãi nếu có sản phẩm trong giỏ hàng và đã đăng nhập
+            // Tính toán ưu đãi (chỉ cho khách hàng đã đăng nhập)
             $availablePromotions = [];
             $discountResult = [
                 'promotions' => [],
@@ -116,7 +116,6 @@ class CartController {
             $finalTotal = $total;
             $maxDiscount = 0;
             $discountPercentage = 0;
-            $availablePromotions = [];
             
             if (!empty($cart) && isset($_SESSION['customer_id'])) {
                 // Chỉ tính ưu đãi cho khách hàng đã đăng nhập
@@ -135,6 +134,14 @@ class CartController {
                 $discountPercentage = $discountResult['discountPercentage'];
                 
                 // Debug logs removed for production
+            } else {
+                // Khách vãng lai - không có ưu đãi
+                $availablePromotions = [];
+                $appliedPromotions = [];
+                $totalDiscount = 0;
+                $finalTotal = $total;
+                $maxDiscount = 0;
+                $discountPercentage = 0;
             }
             
             // Tính phí vận chuyển - chỉ tính khi có sản phẩm trong giỏ hàng
@@ -1319,16 +1326,22 @@ class CartController {
       /**
        * Áp dụng mã khuyến mãi từ input
        */
-      public function applyCoupon() {
-          if (session_status() === PHP_SESSION_NONE) {
-              session_start();
-          }
+          public function applyCoupon() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-          if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-              http_response_code(405);
-              echo json_encode(['success' => false, 'message' => 'Method not allowed']);
-              exit();
-          }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            exit();
+        }
+
+        // Chỉ cho phép khách hàng đã đăng nhập
+        if (!isset($_SESSION['customer_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Bạn cần đăng nhập để áp dụng mã khuyến mãi!']);
+            exit();
+        }
 
           try {
               $couponCode = trim($_POST['coupon_code'] ?? '');
@@ -1423,6 +1436,12 @@ class CartController {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            exit();
+        }
+
+        // Chỉ cho phép khách hàng đã đăng nhập
+        if (!isset($_SESSION['customer_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Bạn cần đăng nhập để thao tác với mã khuyến mãi!']);
             exit();
         }
 

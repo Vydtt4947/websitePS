@@ -174,63 +174,76 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         </div>
     <?php endif; ?>
     
-    <!-- Phần nhập mã khuyến mãi -->
-    <div class="coupon-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; margin: 15px 0; padding: 15px; border: 1px solid #dee2e6;">
-        <div style="color: #495057; font-weight: 600; margin-bottom: 10px;">
-            <i class="fas fa-ticket-alt me-2" style="color: #007bff;"></i>Mã khuyến mãi
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <input type="text" 
-                   id="coupon-code" 
-                   name="coupon_code" 
-                   placeholder="Nhập mã khuyến mãi..." 
-                   style="flex: 1; padding: 10px 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem;"
-                   value="<?= htmlspecialchars($_POST['coupon_code'] ?? '') ?>">
-            <button type="button" 
-                    onclick="applyCoupon(event)" 
-                    style="padding: 10px 15px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; border: none; border-radius: 5px; font-weight: 500; cursor: pointer;">
-                <i class="fas fa-check me-1"></i>Áp dụng
-            </button>
-        </div>
-        <div id="coupon-message" style="margin-top: 8px; font-size: 0.85rem; display: none;"></div>
-        
-        <!-- Hiển thị mã khuyến mãi đã áp dụng -->
-        <?php if (isset($_SESSION['customer_id']) && !empty($selectedPromotions)): ?>
-            <div id="applied-coupons" style="margin-top: 10px;">
-                <?php foreach ($selectedPromotions as $promotionType): ?>
-                    <?php if (strpos($promotionType, 'db_promo_') === 0): ?>
-                        <div class="applied-coupon" style="background: #e8f5e8; border: 1px solid #28a745; border-radius: 5px; padding: 8px 12px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #155724; font-size: 0.85rem;">
-                                <i class="fas fa-check-circle me-2" style="color: #28a745;"></i>
-                                <?php 
-                                // Lấy tên thực tế của mã khuyến mãi
-                                $couponName = $promotionType;
-                                if (isset($_SESSION['applied_coupons'][$promotionType]['displayName'])) {
-                                    $couponName = $_SESSION['applied_coupons'][$promotionType]['displayName'];
-                                }
-                                ?>
-                                Mã: <?= htmlspecialchars($couponName) ?>
-                            </span>
-                            <button type="button" 
-                                    onclick="removeCoupon('<?= $promotionType ?>')" 
-                                    style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer;">
-                                <i class="fas fa-times me-1"></i>Bỏ
-                            </button>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+    <!-- Phần nhập mã khuyến mãi (chỉ cho khách hàng đã đăng nhập) -->
+    <?php if (isset($_SESSION['customer_id'])): ?>
+        <div class="coupon-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; margin: 15px 0; padding: 15px; border: 1px solid #dee2e6;">
+            <div style="color: #495057; font-weight: 600; margin-bottom: 10px;">
+                <i class="fas fa-ticket-alt me-2" style="color: #007bff;"></i>Mã khuyến mãi
             </div>
-        <?php endif; ?>
-    </div>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" 
+                       id="coupon-code" 
+                       name="coupon_code" 
+                       placeholder="Nhập mã khuyến mãi..." 
+                       style="flex: 1; padding: 10px 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 0.9rem;"
+                       value="<?= htmlspecialchars($_POST['coupon_code'] ?? '') ?>">
+                <button type="button" 
+                        onclick="applyCoupon(event)" 
+                        style="padding: 10px 15px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; border: none; border-radius: 5px; font-weight: 500; cursor: pointer;">
+                    <i class="fas fa-check me-1"></i>Áp dụng
+                </button>
+            </div>
+            <div id="coupon-message" style="margin-top: 8px; font-size: 0.85rem; display: none;"></div>
+            
+            <!-- Hiển thị mã khuyến mãi đã áp dụng -->
+            <?php if (!empty($selectedPromotions)): ?>
+                <div id="applied-coupons" style="margin-top: 10px;">
+                    <?php foreach ($selectedPromotions as $promotionType): ?>
+                        <?php if (strpos($promotionType, 'db_promo_') === 0): ?>
+                            <div class="applied-coupon" style="background: #e8f5e8; border: 1px solid #28a745; border-radius: 5px; padding: 8px 12px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #155724; font-size: 0.85rem;">
+                                    <i class="fas fa-check-circle me-2" style="color: #28a745;"></i>
+                                    <?php 
+                                    // Lấy tên thực tế của mã khuyến mãi
+                                    $couponName = $promotionType;
+                                    if (isset($_SESSION['applied_coupons'][$promotionType]['displayName'])) {
+                                        $couponName = $_SESSION['applied_coupons'][$promotionType]['displayName'];
+                                    }
+                                    ?>
+                                    Mã: <?= htmlspecialchars($couponName) ?>
+                                </span>
+                                <button type="button" 
+                                        onclick="removeCoupon('<?= $promotionType ?>')" 
+                                        style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer;">
+                                    <i class="fas fa-times me-1"></i>Bỏ
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php else: ?>
+        <!-- Thông báo cho khách vãng lai -->
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 1px solid #ffc107; border-radius: 10px; margin: 15px 0; padding: 15px; text-align: center;">
+            <div style="color: #856404; font-weight: 600; margin-bottom: 8px;">
+                <i class="fas fa-info-circle me-2"></i>Mã khuyến mãi
+            </div>
+            <div style="color: #856404; font-size: 0.9rem;">
+                <i class="fas fa-lock me-2"></i>Vui lòng <a href="/websitePS/public/customerauth/login" style="color: #0056b3; text-decoration: underline; font-weight: 500;">đăng nhập</a> để sử dụng mã khuyến mãi và các ưu đãi khác
+            </div>
+        </div>
+    <?php endif; ?>
     
-         <?php if (isset($_SESSION['customer_id'])): ?>
-         <div class="summary-item">
-             <span class="summary-label">Tổng giảm giá:</span>
-             <span class="summary-value" id="total-discount" style="color: <?= $totalDiscount > 0 ? '#dc3545' : '#6c757d' ?>;">
-                 <?= $totalDiscount > 0 ? '-' . number_format($totalDiscount, 0, ',', '.') . ' đ' : '0 đ' ?>
-             </span>
-         </div>
-     <?php endif; ?>
+    <!-- Tổng giảm giá (chỉ cho khách hàng đã đăng nhập) -->
+    <?php if (isset($_SESSION['customer_id'])): ?>
+        <div class="summary-item">
+            <span class="summary-label">Tổng giảm giá:</span>
+            <span class="summary-value" id="total-discount" style="color: <?= $totalDiscount > 0 ? '#dc3545' : '#6c757d' ?>;">
+                <?= $totalDiscount > 0 ? '-' . number_format($totalDiscount, 0, ',', '.') . ' đ' : '0 đ' ?>
+            </span>
+        </div>
+    <?php endif; ?>
     
     <div class="summary-item">
         <span class="summary-label">Phí vận chuyển:</span>
