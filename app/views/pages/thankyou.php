@@ -229,167 +229,173 @@
 </head>
 <body>
 <div class="thankyou-page">
-    <div class="thankyou-container">
-        <div class="thankyou-card">
-            <div class="success-icon">
-                <i class="fas fa-check"></i>
-            </div>
-            
-            <h1 class="thankyou-title">Cảm ơn bạn!</h1>
-            <p class="thankyou-subtitle">
-                Đơn hàng của bạn đã được đặt thành công. Chúng tôi sẽ xử lý và giao hàng trong thời gian sớm nhất.
-            </p>
-            
-            <?php
-            // Sử dụng giá đã được áp dụng khuyến mãi từ database
-            $total = isset($orderDetails['info']['TongTien']) ? $orderDetails['info']['TongTien'] : 0;
-            
-            // Tính lại subtotal từ items để so sánh
-            $subtotal = 0;
-            if (isset($orderDetails) && isset($orderDetails['items'])) {
-                foreach ($orderDetails['items'] as $item) {
-                    $subtotal += $item['DonGia'] * $item['SoLuong'];
-                }
-            }
-            
-            // Tính phí vận chuyển cơ bản
-            $baseShippingFee = 0;
-            if ($subtotal < 100000) {
-                $baseShippingFee = 15000;
-            }
-            
-            // Tính tổng giảm giá (nếu có)
-            // Nếu total < subtotal + shippingFee thì có giảm giá
-            $expectedTotal = $subtotal + $baseShippingFee;
-            $discount = 0;
-            $actualShippingFee = $baseShippingFee;
-            
-            if ($total < $expectedTotal) {
-                $discount = $expectedTotal - $total;
-                // Nếu có giảm giá và total = subtotal thì miễn phí vận chuyển
-                if ($total == $subtotal) {
-                    $actualShippingFee = 0;
-                    $discount = $baseShippingFee;
-                }
-            }
-            
-            // Debug logging
-            error_log("Thankyou page - Total from DB: " . $total);
-            error_log("Thankyou page - Subtotal calculated: " . $subtotal);
-            error_log("Thankyou page - Expected total: " . $expectedTotal);
-            error_log("Thankyou page - Discount calculated: " . $discount);
-            error_log("Thankyou page - Actual shipping fee: " . $actualShippingFee);
-            ?>
-            <div class="order-details">
-                <h5>
-                    <i class="fas fa-receipt me-2"></i>
-                    Thông tin đơn hàng
-                </h5>
-                <div class="detail-item">
-                    <span>Mã đơn hàng:</span>
-                    <span>#<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : 'PS' . date('YmdHis') ?></span>
+    <div class="thankyou-content-scale">
+        <div class="thankyou-container">
+            <div class="thankyou-card">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
                 </div>
-                <div class="detail-item">
-                    <span>Ngày đặt:</span>
-                    <span><?= isset($orderDetails['info']['NgayDatHang']) ? date('d/m/Y H:i', strtotime($orderDetails['info']['NgayDatHang'])) : date('d/m/Y H:i') ?></span>
-                </div>
-                <div class="detail-item">
-                    <span>Trạng thái:</span>
-                    <span class="text-success">Đã xác nhận</span>
-                </div>
-                <div class="detail-item">
-                    <span>Tổng tiền hàng:</span>
-                    <span><?= number_format($subtotal, 0, ',', '.') ?> đ</span>
-                </div>
-                <?php if ($discount > 0): ?>
-                <div class="detail-item" style="color: #dc3545;">
-                    <span>Giảm giá:</span>
-                    <span>-<?= number_format($discount, 0, ',', '.') ?> đ</span>
-                </div>
-                <?php endif; ?>
-                <div class="detail-item">
-                    <span>Phí vận chuyển:</span>
-                    <span><?= $actualShippingFee > 0 ? number_format($actualShippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' ?></span>
-                </div>
-                <div class="detail-item">
-                    <span>Tổng cộng:</span>
-                    <span><?= number_format($total, 0, ',', '.') ?> đ</span>
-                </div>
-            </div>
-            
-            <div class="delivery-info">
-                <h6>
-                    <i class="fas fa-truck me-2"></i>
-                    Thông tin giao hàng
-                </h6>
-                <p><strong>Thời gian giao hàng:</strong> 2-3 ngày làm việc</p>
-                <p><strong>Phí vận chuyển:</strong> 
-                    <?= $actualShippingFee > 0 ? number_format($actualShippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' ?>
+                
+                <h1 class="thankyou-title">Cảm ơn bạn!</h1>
+                <p class="thankyou-subtitle">
+                    Đơn hàng của bạn đã được đặt thành công. Chúng tôi sẽ xử lý và giao hàng trong thời gian sớm nhất.
                 </p>
-                                 <p><strong>Phương thức thanh toán:</strong> 
-                     <?php 
-                     $paymentMethod = isset($orderDetails['info']['PhuongThucThanhToan']) ? $orderDetails['info']['PhuongThucThanhToan'] : 'cod';
-                     if ($paymentMethod === 'bank') {
-                         echo 'Chuyển khoản ngân hàng (MBBank)';
-                     } else {
-                         echo 'Thanh toán khi nhận hàng';
-                     }
-                     ?>
-                 </p>
-            </div>
-            
-            <div class="action-buttons">
-                <a href="/websitePS/public/" class="btn-home">
-                    <i class="fas fa-home me-2"></i>
-                    Về trang chủ
-                </a>
-                <?php if (isset($_SESSION['customer_id'])): ?>
-                    <a href="/websitePS/public/customerorders/show/<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : '' ?>" class="btn-orders">
-                        <i class="fas fa-list me-2"></i>
-                        Xem đơn hàng
-                    </a>
-                <?php else: ?>
-                    <a href="/websitePS/public/ordertracking" class="btn-orders">
-                        <i class="fas fa-search me-2"></i>
-                        Tra cứu đơn hàng
-                    </a>
-                <?php endif; ?>
-            </div>
-            
-            <?php if (!isset($_SESSION['customer_id'])): ?>
-                <div class="mt-4 p-4 bg-primary text-white rounded">
-                    <h6 class="mb-3">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Thông tin quan trọng cho khách vãng lai
-                    </h6>
-                    <div class="mb-3">
-                        <strong>Mã đơn hàng của bạn:</strong> 
-                        <div class="mt-2">
-                            <span class="badge bg-white text-primary fs-5 px-3 py-2">#<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : 'PS' . date('YmdHis') ?></span>
+                
+                <?php
+                // Sử dụng giá đã được áp dụng khuyến mãi từ database
+                $total = isset($orderDetails['info']['TongTien']) ? $orderDetails['info']['TongTien'] : 0;
+                
+                // Tính lại subtotal từ items để so sánh
+                $subtotal = 0;
+                if (isset($orderDetails) && isset($orderDetails['items'])) {
+                    foreach ($orderDetails['items'] as $item) {
+                        $subtotal += $item['DonGia'] * $item['SoLuong'];
+                    }
+                }
+                
+                // Tính phí vận chuyển cơ bản
+                $baseShippingFee = 0;
+                if ($subtotal < 100000) {
+                    $baseShippingFee = 15000;
+                }
+                
+                // Tính tổng giảm giá (nếu có)
+                // Nếu total < subtotal + shippingFee thì có giảm giá
+                $expectedTotal = $subtotal + $baseShippingFee;
+                $discount = 0;
+                $actualShippingFee = $baseShippingFee;
+                
+                if ($total < $expectedTotal) {
+                    $discount = $expectedTotal - $total;
+                    // Nếu có giảm giá và total = subtotal thì miễn phí vận chuyển
+                    if ($total == $subtotal) {
+                        $actualShippingFee = 0;
+                        $discount = $baseShippingFee;
+                    }
+                }
+                
+                // Debug logging
+                error_log("Thankyou page - Total from DB: " . $total);
+                error_log("Thankyou page - Subtotal calculated: " . $subtotal);
+                error_log("Thankyou page - Expected total: " . $expectedTotal);
+                error_log("Thankyou page - Discount calculated: " . $discount);
+                error_log("Thankyou page - Actual shipping fee: " . $actualShippingFee);
+                ?>
+                <div class="order-sections">
+                    <div class="order-section-left">
+                        <div class="order-details">
+                            <h5>
+                                <i class="fas fa-receipt me-2"></i>
+                                Thông tin đơn hàng
+                            </h5>
+                            <div class="detail-item">
+                                <span>Mã đơn hàng:</span>
+                                <span>#<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : 'PS' . date('YmdHis') ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Ngày đặt:</span>
+                                <span><?= isset($orderDetails['info']['NgayDatHang']) ? date('d/m/Y H:i', strtotime($orderDetails['info']['NgayDatHang'])) : date('d/m/Y H:i') ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Trạng thái:</span>
+                                <span class="text-success">Đã xác nhận</span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Tổng tiền hàng:</span>
+                                <span><?= number_format($subtotal, 0, ',', '.') ?> đ</span>
+                            </div>
+                            <?php if ($discount > 0): ?>
+                            <div class="detail-item" style="color: #dc3545;">
+                                <span>Giảm giá:</span>
+                                <span>-<?= number_format($discount, 0, ',', '.') ?> đ</span>
+                            </div>
+                            <?php endif; ?>
+                            <div class="detail-item">
+                                <span>Phí vận chuyển:</span>
+                                <span><?= $actualShippingFee > 0 ? number_format($actualShippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span>Tổng cộng:</span>
+                                <span><?= number_format($total, 0, ',', '.') ?> đ</span>
+                            </div>
                         </div>
                     </div>
-                    <p class="mb-2">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Vui lòng lưu lại mã đơn hàng này!</strong>
-                    </p>
-                    <p class="mb-0 small">
-                        Để tra cứu tình trạng đơn hàng sau này, vui lòng truy cập: 
-                        <a href="/websitePS/public/ordertracking" class="text-white text-decoration-underline fw-bold">Trang tra cứu đơn hàng</a>
-                        <br>
-                        Sử dụng mã đơn hàng và số điện thoại đã đăng ký để tra cứu.
+                    <div class="order-section-right">
+                        <div class="delivery-info">
+                            <h6>
+                                <i class="fas fa-truck me-2"></i>
+                                Thông tin giao hàng
+                            </h6>
+                            <p><strong>Thời gian giao hàng:</strong> 2-3 ngày làm việc</p>
+                            <p><strong>Phí vận chuyển:</strong> 
+                                <?= $actualShippingFee > 0 ? number_format($actualShippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' ?>
+                            </p>
+                            <p><strong>Phương thức thanh toán:</strong> 
+                                <?php 
+                                $paymentMethod = isset($orderDetails['info']['PhuongThucThanhToan']) ? $orderDetails['info']['PhuongThucThanhToan'] : 'cod';
+                                if ($paymentMethod === 'bank') {
+                                    echo 'Chuyển khoản ngân hàng (MBBank)';
+                                } else {
+                                    echo 'Thanh toán khi nhận hàng';
+                                }
+                                ?>
+                            </p>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="/websitePS/public/" class="btn-home">
+                                <i class="fas fa-home me-2"></i>
+                                Về trang chủ
+                            </a>
+                            <?php if (isset($_SESSION['customer_id'])): ?>
+                                <a href="/websitePS/public/customerorders/show/<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : '' ?>" class="btn-orders">
+                                    <i class="fas fa-list me-2"></i>
+                                    Xem đơn hàng
+                                </a>
+                            <?php else: ?>
+                                <a href="/websitePS/public/ordertracking" class="btn-orders">
+                                    <i class="fas fa-search me-2"></i>
+                                    Tra cứu đơn hàng
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php if (!isset($_SESSION['customer_id'])): ?>
+                    <div class="mt-4 p-4 bg-primary text-white rounded">
+                        <h6 class="mb-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Thông tin quan trọng cho khách vãng lai
+                        </h6>
+                        <div class="mb-3">
+                            <strong>Mã đơn hàng của bạn:</strong> 
+                            <div class="mt-2">
+                                <span class="badge bg-white text-primary fs-5 px-3 py-2">#<?= isset($orderDetails['info']['MaDH']) ? $orderDetails['info']['MaDH'] : 'PS' . date('YmdHis') ?></span>
+                            </div>
+                        </div>
+                        <p class="mb-2">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Vui lòng lưu lại mã đơn hàng này!</strong>
+                        </p>
+                        <p class="mb-0 small">
+                            Để tra cứu tình trạng đơn hàng sau này, vui lòng truy cập: 
+                            <a href="/websitePS/public/ordertracking" class="text-white text-decoration-underline fw-bold">Trang tra cứu đơn hàng</a>
+                            <br>
+                            Sử dụng mã đơn hàng và số điện thoại đã đăng ký để tra cứu.
+                        </p>
+                    </div>
+                <?php endif; ?>
+                
+                <div class="mt-4">
+                    <p class="text-muted">
+                        <i class="fas fa-home me-1"></i>
+                        Địa chỉ: 02 Võ Oanh, Phường 25, Quận Bình Thạnh, TP.HCM | 
+                        <i class="fas fa-envelope me-1"></i>
+                        Email: cucxacdufong@gmail.com | 
+                        <i class="fas fa-phone me-1"></i>
+                        Điện thoại: 0767 150 474
                     </p>
                 </div>
-            <?php endif; ?>
-            
-            <div class="mt-4">
-                <p class="text-muted">
-                    <i class="fas fa-home me-1"></i>
-                    Địa chỉ: 02 Võ Oanh, Phường 25, Quận Bình Thạnh, TP.HCM | 
-                    <i class="fas fa-envelope me-1"></i>
-                    Email: cucxacdufong@gmail.com | 
-                    <i class="fas fa-phone me-1"></i>
-                    Điện thoại: 0767 150 474
-                </p>
             </div>
         </div>
     </div>
