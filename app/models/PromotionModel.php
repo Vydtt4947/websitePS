@@ -392,9 +392,27 @@ class PromotionModel {
     }
 
     /**
+     * Lấy danh sách ưu đãi có thể chọn bằng checkbox (chỉ ưu đãi phân khúc)
+     */
+    public function getSelectablePromotions() {
+        $promotions = [];
+        
+        // Chỉ trả về ưu đãi phân khúc để hiển thị checkbox
+        $promotions[] = [
+            'promotionType' => 'tier_discount',
+            'description' => 'Ưu đãi phân khúc khách hàng',
+            'discount' => 0, // Sẽ được tính toán dựa trên phân khúc thực tế
+            'icon' => 'fas fa-crown',
+            'color' => '#ffc107'
+        ];
+        
+        return $promotions;
+    }
+
+    /**
      * Kiểm tra và validate mã khuyến mãi từ input của khách hàng
      */
-    public function validateCouponCode(string $couponCode): ?array {
+    public function validateCouponCode(string $couponCode, float $orderTotal = 0): ?array {
         try {
             // Debug log
             error_log("DEBUG validateCouponCode: Validating coupon code: " . $couponCode);
@@ -437,6 +455,15 @@ class PromotionModel {
             if ($endDate < $currentDate) {
                 error_log("DEBUG validateCouponCode: Coupon end date has passed");
                 return null;
+            }
+            
+            // Kiểm tra điều kiện đơn hàng cho mã FREESHIP
+            if (strtoupper($couponCode) === 'FREESHIP') {
+                if ($orderTotal < 500000) {
+                    error_log("DEBUG validateCouponCode: FREESHIP requires order total >= 500,000 VND, current: " . $orderTotal);
+                    return null;
+                }
+                error_log("DEBUG validateCouponCode: FREESHIP order total requirement met: " . $orderTotal);
             }
             
             error_log("DEBUG validateCouponCode: Coupon is valid and active");

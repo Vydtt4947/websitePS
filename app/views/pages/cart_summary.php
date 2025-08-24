@@ -28,85 +28,7 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         <span class="summary-value"><?= number_format($total, 0, ',', '.') ?> đ</span>
     </div>
     
-         <!-- Chọn ưu đãi (chỉ cho khách hàng đã đăng nhập) -->
-     <?php if (isset($_SESSION['customer_id'])): ?>
-        <div class="promotion-section-cart">
-            <div class="promotion-title-cart">
-                <i class="fas fa-gift me-2"></i>Chọn ưu đãi (Tùy chọn - Tối đa 3 khuyến mãi):
-            </div>
-            <div style="font-size: 0.85rem; color: #6c757d; margin-bottom: 10px; font-style: italic;">
-                <i class="fas fa-info-circle me-1"></i>
-                Bạn có thể chọn 0-3 khuyến mãi hoặc không chọn khuyến mãi nào
-            </div>
-                
-                <form method="POST" action="/websitePS/public/cart" id="promotionForm" style="margin: 0;">
-                    <!-- Hidden input để đảm bảo form luôn có data khi submit -->
-                    <input type="hidden" name="promotion_form_submitted" value="1">
-                    <?php 
-                    // Hiển thị tất cả ưu đãi khách hàng có thể chọn (bao gồm cả tier discount)
-                    $selectablePromotions = $availablePromotions;
-                    ?>
-                                         <?php if (!empty($selectablePromotions)): ?>
-                         <?php foreach ($selectablePromotions as $promotion): ?>
-                             <?php 
-                             $isSelected = in_array($promotion['promotionType'], $selectedPromotions);
-                             $selectedCount = count($selectedPromotions);
-                             // Cho phép bỏ chọn tất cả khuyến mãi, không disable
-                             $isDisabled = false;
-                             ?>
-                                                           <div class="promotion-option-cart">
-                                 <div style="display: flex; align-items: center;">
-                                     <div style="flex: 1; min-width: 0;">
-                                         <label style="display: flex; align-items: center; margin: 0; cursor: pointer;">
-                                             <input type="checkbox" 
-                                                    name="selected_promotions[]" 
-                                                    value="<?= $promotion['promotionType'] ?>"
-                                                    <?= $isSelected ? 'checked' : '' ?>
-                                                    onchange="updatePromotions()"
-                                                    style="margin-right: 10px; cursor: pointer;">
-                                             <span style="color: #495057; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                 <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
-                                                     <i class="fas fa-crown me-2" style="color: #ffc107;"></i>
-                                                 <?php elseif (strpos($promotion['promotionType'], 'db_promo_') === 0): ?>
-                                                     <i class="fas fa-tag me-2" style="color: #6f42c1;"></i>
-                                                 <?php endif; ?>
-                                                 <?= htmlspecialchars($promotion['description']) ?>
-                                                 <?php if ($promotion['discount'] > 0): ?>
-                                                     <span class="badge bg-success ms-2" style="font-size: 0.7rem;">
-                                                         -<?= number_format($promotion['discount'], 0, ',', '.') ?> ₫
-                                                     </span>
-                                                 <?php endif; ?>
-                                             </span>
-                                         </label>
-                                     </div>
-                                 </div>
-                             </div>
-                         <?php endforeach; ?>
-                     <?php else: ?>
-                         <div style="text-align: center; padding: 15px; color: #6c757d; font-style: italic;">
-                             <i class="fas fa-info-circle me-2"></i>
-                             Hiện tại không có ưu đãi khuyến mãi nào khả dụng cho đơn hàng này
-                         </div>
-                     <?php endif; ?>
-                    
-                    <?php if (!empty($selectablePromotions)): ?>
-                        <div class="promotion-info-cart">
-                            <div style="text-align: center; font-size: 0.8rem; color: #6c757d;">
-                                Đã chọn: <span id="selected-count"><?= count($selectedPromotions) ?></span>/3 khuyến mãi
-                                <div id="no-promotion-message" style="<?= count($selectedPromotions) === 0 ? '' : 'display: none;' ?>">
-                                    <span style="color: #28a745; font-weight: 500;">✓ Không áp dụng khuyến mãi</span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <div style="margin-top: 15px; text-align: center;">
-                        <button type="submit" style="display: none;" id="hiddenSubmitBtn">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    <?php endif; ?>
+
     
          <!-- Hiển thị ưu đãi đã áp dụng (chỉ cho khách hàng đã đăng nhập) -->
      <?php if (isset($_SESSION['customer_id'])): ?>
@@ -227,10 +149,10 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         <!-- Thông báo cho khách vãng lai -->
         <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 1px solid #ffc107; border-radius: 10px; margin: 15px 0; padding: 15px; text-align: center;">
             <div style="color: #856404; font-weight: 600; margin-bottom: 8px;">
-                <i class="fas fa-info-circle me-2"></i>Mã khuyến mãi
+                <i class="fas fa-info-circle me-2"></i>Mã khuyến mãi & Ưu đãi
             </div>
             <div style="color: #856404; font-size: 0.9rem;">
-                <i class="fas fa-lock me-2"></i>Vui lòng <a href="/websitePS/public/customerauth/login" style="color: #0056b3; text-decoration: underline; font-weight: 500;">đăng nhập</a> để sử dụng mã khuyến mãi và các ưu đãi khác
+                <i class="fas fa-lock me-2"></i>Vui lòng <a href="/websitePS/public/customerauth/login" style="color: #0056b3; text-decoration: underline; font-weight: 500;">đăng nhập</a> để sử dụng mã khuyến mãi và ưu đãi phân khúc
             </div>
         </div>
     <?php endif; ?>
