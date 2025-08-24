@@ -95,8 +95,8 @@ class ReviewController {
             header('Location: /websitePS/public/products/show/' . $productId);
         } else {
             $_SESSION['error_message'] = $result['message'];
-            // Nếu lỗi, redirect về trang đơn hàng
-            header('Location: /websitePS/public/customerorders/show/' . $orderId);
+            // Nếu lỗi, vẫn redirect về trang sản phẩm để khách hàng có thể sửa lại
+            header('Location: /websitePS/public/products/show/' . $productId);
         }
         exit();
     }

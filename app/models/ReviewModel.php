@@ -258,7 +258,7 @@ class ReviewModel {
      */
     public function createReview($customerId, $productId, $orderId, $rating, $content) {
         // Validation cơ bản
-        if (!$customerId || !$productId || !$orderId || !$rating || !$content) {
+        if (!$customerId || !$productId || !$orderId || !$rating) {
             return [
                 'success' => false,
                 'message' => 'Thông tin đánh giá không đầy đủ'
@@ -272,13 +272,7 @@ class ReviewModel {
             ];
         }
         
-        // Nội dung không bắt buộc, nhưng nếu có thì phải có ít nhất 5 ký tự
-        if (!empty(trim($content)) && strlen(trim($content)) < 5) {
-            return [
-                'success' => false,
-                'message' => 'Nội dung đánh giá phải có ít nhất 5 ký tự (hoặc để trống)'
-            ];
-        }
+        // Nội dung không bắt buộc, có thể để trống hoặc nhập bất kỳ độ dài nào
         
         // Kiểm tra đã đánh giá đơn hàng này chưa
         $sql = "

@@ -1518,9 +1518,9 @@ function getProductImage($product) {
                                     </div>
                                     
                                     <div class="mb-3">
-                                        <label for="content_<?= $order['MaDH'] ?>" class="form-label">Nhận xét: <small class="text-muted">(không bắt buộc)</small></label>
+                                        <label for="content_<?= $order['MaDH'] ?>" class="form-label">Nhận xét:</label>
                                         <textarea name="content" id="content_<?= $order['MaDH'] ?>" class="form-control" rows="3" 
-                                                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này... (không bắt buộc)"></textarea>
+                                                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
                                     </div>
                                     
                                     <button type="submit" class="btn btn-primary btn-sm">
