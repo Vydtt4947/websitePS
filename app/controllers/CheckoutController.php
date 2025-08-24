@@ -50,7 +50,7 @@ class CheckoutController {
         $finalTotal = $total;
         
         if (isset($_SESSION['customer_id'])) {
-            // Sử dụng logic ưu đãi mới với lựa chọn của khách hàng
+            // Sử dụng logic ưu đãi mới với tự động áp dụng ưu đãi phân khúc
             $discountResult = $promotionModel->calculateAllDiscounts($_SESSION['customer_id'], $total, implode(',', $productCategories), $selectedPromotions);
             
             $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {
@@ -194,7 +194,7 @@ class CheckoutController {
         $finalTotal = $total;
         
         if (isset($_SESSION['customer_id'])) {
-            // Sử dụng logic ưu đãi mới với lựa chọn của khách hàng
+            // Sử dụng logic ưu đãi mới với tự động áp dụng ưu đãi phân khúc
             $discountResult = $promotionModel->calculateAllDiscounts($_SESSION['customer_id'], $total, implode(',', $productCategories), $selectedPromotions);
             
             $appliedPromotions = array_filter($discountResult['promotions'], function($promotion) {

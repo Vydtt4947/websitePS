@@ -28,7 +28,33 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
         <span class="summary-value"><?= number_format($total, 0, ',', '.') ?> đ</span>
     </div>
     
-
+    <!-- Thông báo về ưu đãi phân khúc tự động (chỉ cho khách hàng đã đăng nhập) -->
+    <?php if (isset($_SESSION['customer_id'])): ?>
+        <?php
+        // Kiểm tra xem có ưu đãi phân khúc nào được tự động áp dụng không
+        $autoAppliedTier = null;
+        foreach ($appliedPromotions as $promotion) {
+            if ($promotion['promotionType'] === 'tier_discount' && isset($promotion['isAutoApplied']) && $promotion['isAutoApplied']) {
+                $autoAppliedTier = $promotion;
+                break;
+            }
+        }
+        
+        if ($autoAppliedTier): ?>
+            <div class="summary-item" style="background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-radius: 10px; margin: 10px 0; padding: 15px; border-left: 4px solid #28a745;">
+                <div style="width: 100%; text-align: center;">
+                    <div style="color: #155724; font-weight: 600; margin-bottom: 8px;">
+                        <i class="fas fa-magic me-2" style="color: #28a745;"></i>
+                        Ưu đãi phân khúc đã được tự động áp dụng!
+                    </div>
+                    <div style="font-size: 0.9rem; color: #155724;">
+                        Bạn đang ở phân khúc <strong><?= htmlspecialchars($autoAppliedTier['tierName']) ?></strong> 
+                        và được giảm giá <strong><?= number_format($autoAppliedTier['discount'], 0, ',', '.') ?> đ</strong>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
     
          <!-- Hiển thị ưu đãi đã áp dụng (chỉ cho khách hàng đã đăng nhập) -->
      <?php if (isset($_SESSION['customer_id'])): ?>
@@ -45,15 +71,27 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
                      foreach ($appliedPromotions as $promotion): 
                      ?>
                          <div style="margin-bottom: 5px; padding: 6px; background: white; border-radius: 6px; border-left: 3px solid #28a745;">
-                             <div style="display: flex; align-items: center;">
+                             <div style="display: flex; align-items: center; justify-content: space-between;">
                                  <span style="color: #6c757d; font-size: 0.8rem; font-weight: 600;">
                                      <?= $stepNumber ?>. 
                                      <?php if ($promotion['promotionType'] === 'tier_discount'): ?>
                                          <i class="fas fa-crown me-1" style="color: #ffd700;"></i>
+                                         <?= htmlspecialchars($promotion['description']) ?>
+                                         <?php if (isset($promotion['isAutoApplied']) && $promotion['isAutoApplied']): ?>
+                                             <span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: 8px;">
+                                                 <i class="fas fa-magic me-1"></i>Tự động
+                                             </span>
+                                         <?php endif; ?>
                                      <?php elseif (strpos($promotion['promotionType'], 'db_promo_') === 0): ?>
                                          <i class="fas fa-tag me-1" style="color: #6f42c1;"></i>
+                                         <?= htmlspecialchars($promotion['description']) ?>
+                                         <span style="background: #6f42c1; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: 8px;">
+                                             <i class="fas fa-hand-pointer me-1"></i>Đã chọn
+                                         </span>
                                      <?php endif; ?>
-                                     <?= htmlspecialchars($promotion['description']) ?>
+                                 </span>
+                                 <span style="color: #dc3545; font-weight: 600; font-size: 0.8rem;">
+                                     -<?= number_format($promotion['discount'], 0, ',', '.') ?> đ
                                  </span>
                              </div>
                          </div>
@@ -87,10 +125,18 @@ $selectedPromotions = isset($selectedPromotions) ? $selectedPromotions : [];
             <div style="width: 100%;">
                 <div style="color: #856404; font-weight: 600; margin-bottom: 8px;">
                     <i class="fas fa-crown me-2" style="color: #ffd700;"></i>
-                    Ưu đãi <?= htmlspecialchars($tierPromotion['tierName']) ?> (Đã chọn)
+                    Ưu đãi <?= htmlspecialchars($tierPromotion['tierName']) ?>
+                    <?php if (isset($tierPromotion['isAutoApplied']) && $tierPromotion['isAutoApplied']): ?>
+                        <span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 15px; font-size: 0.75rem; margin-left: 10px;">
+                            <i class="fas fa-magic me-1"></i>Tự động áp dụng
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <div style="font-size: 0.85rem; color: #856404; margin-bottom: 8px;">
+                    Tổng chi tiêu: <?= number_format($tierPromotion['totalSpent'], 0, ',', '.') ?> đ
                 </div>
                 <div style="font-size: 0.85rem; color: #856404;">
-                    Tổng chi tiêu: <?= number_format($tierPromotion['totalSpent'], 0, ',', '.') ?> đ
+                    Giảm giá: <span style="color: #dc3545; font-weight: 600;">-<?= number_format($tierPromotion['discount'], 0, ',', '.') ?> đ</span>
                 </div>
             </div>
         </div>
