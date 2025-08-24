@@ -376,12 +376,8 @@
             }
         }
         
-        if (!isset($shippingFee)) {
-            $shippingFee = 0;
-            if ($total < 100000) {
-                $shippingFee = 15000;
-            }
-        }
+        // Không cần ghi đè $shippingFee - controller đã tính toán đúng rồi
+        // $shippingFee đã được tính từ CheckoutController với logic mới
         
         // Đảm bảo $finalTotal được định nghĩa
         if (!isset($finalTotal)) {
@@ -566,7 +562,7 @@
                                                 </div>
                                                 <div class="qr-footer">
                                                     <div class="payment-info">
-                                                        <div class="amount">Số tiền: <strong><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</strong></div>
+                                                        <div class="amount">Số tiền: <strong><?= number_format($finalTotal, 0, ',', '.') ?> đ</strong></div>
                                                         <div class="order-id">Mã đơn hàng: <strong>#<?= uniqid('PS') ?></strong></div>
                                                     </div>
                                                     <div class="qr-logos">
@@ -659,7 +655,7 @@
                         </div>
                         <div class="total-row final">
                             <span>Tổng cộng:</span>
-                            <span><?= number_format(isset($finalTotal) ? $finalTotal : ($total + $shippingFee), 0, ',', '.') ?> đ</span>
+                            <span><?= number_format($finalTotal, 0, ',', '.') ?> đ</span>
                         </div>
                     </div>
                 </div>

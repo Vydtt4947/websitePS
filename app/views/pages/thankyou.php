@@ -191,10 +191,10 @@
                 }
             }
             
-            // Tính phí vận chuyển cơ bản
+            // Tính phí vận chuyển cơ bản - NHẤT QUÁN với logic mới
             $baseShippingFee = 0;
-            if ($subtotal < 100000) {
-                $baseShippingFee = 15000;
+            if ($subtotal > 0) {  // Có sản phẩm thì tính phí ship
+                $baseShippingFee = 30000;  // 30,000₫ cho TẤT CẢ đơn hàng
             }
             
             // Tính tổng giảm giá (nếu có)
