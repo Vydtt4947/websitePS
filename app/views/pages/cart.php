@@ -120,7 +120,7 @@
         }
         .coupon-section button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
         }
         .coupon-section button:disabled {
             opacity: 0.7;
@@ -509,7 +509,12 @@
                 font-size: 0.8rem;
             }
         }
-        
+        /* Custom 60/40 layout for cart (products : summary) */
+        @media (min-width: 992px){
+            .cart-row-flex{display:flex;flex-wrap:nowrap;}
+            .cart-products-col{flex:0 0 60%;max-width:60%;}
+            .cart-summary-col{flex:0 0 40%;max-width:40%;}
+        }
         /* Footer Styles */
         .footer {
             background-color: var(--text-color);
@@ -744,8 +749,8 @@
                  </div>
             <?php endif; ?>
             
-            <div class="row">
-                <div class="col-lg-8">
+            <div class="row cart-row-flex">
+                <div class="col-12 cart-products-col">
                     <div class="cart-container">
                         <h3 class="mb-4">
                             <i class="fas fa-shopping-cart me-2 text-primary"></i>
@@ -795,7 +800,7 @@
                     </div>
                 </div>
                 
-                                                 <div class="col-lg-4">
+                                                <div class="col-12 cart-summary-col">
                     <div class="cart-summary">
                         <!-- Cart summary sẽ được load bằng AJAX -->
                         <div class="text-center py-4">
