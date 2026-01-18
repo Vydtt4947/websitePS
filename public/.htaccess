@@ -1,5 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /websitePS/public/
 
     # Redirect URL cũ về URL mới
     RewriteRule ^reviews/submit$ review/submit [R=301,L]
@@ -19,5 +20,5 @@
 
     # Quy tắc: Chuyển hướng tất cả các yêu cầu còn lại đến file index.php
     # cờ [L] có nghĩa là đây là quy tắc cuối cùng, không xử lý thêm
-    RewriteRule . index.php [L]
+    RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>

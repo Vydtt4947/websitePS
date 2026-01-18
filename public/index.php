@@ -19,7 +19,7 @@ if (isset($_GET['controller'])) {
 }
 // Nếu không có query string, xử lý routing dựa trên URL thân thiện (/controller/action/...)
 else {
-    $base_path = '/websitePS/public';
+    $base_path = '/websitePS/public/'; // Cập nhật base_path để phù hợp với cấu hình server
     $request_uri = $_SERVER['REQUEST_URI'];
     $request_path = strtok($request_uri, '?');
     $route = '/';
